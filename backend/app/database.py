@@ -1,8 +1,7 @@
 import os
-from sqlalchemy import create_engine, text
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy import text
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
-from flask import current_app
+from sqlalchemy.orm import sessionmaker
 from dotenv import load_dotenv
 
 # Carregar variáveis do arquivo .env
@@ -20,23 +19,24 @@ def get_database_uri():
         raise ValueError("Uma ou mais variáveis de ambiente do banco de dados não foram configuradas corretamente.")
     
     if os.environ.get('FLASK_ENV') == 'production':
-        return f'postgresql+psycopg2://{DATABASE_USER}:{DATABASE_PASSWORD}@{DATABASE_HOST}:{DATABASE_PORT}/{DATABASE_NAME}'
+        return f'postgresql+asyncpg://{DATABASE_USER}:{DATABASE_PASSWORD}@{DATABASE_HOST}:{DATABASE_PORT}/{DATABASE_NAME}'  # PostgreSQL assíncrono
     else:
-        return 'sqlite:///northcromo.db'  # Para desenvolvimento com SQLite
+        return 'sqlite+aiosqlite:///northcromo.db'  # Para SQLite assíncrono
 
-# Função para inicializar o banco de dados
-def init_db(app):
+# Função assíncrona para inicializar o banco de dados
+async def init_db(app):
     # Obtenha a URI do banco de dados
     app.config['SQLALCHEMY_DATABASE_URI'] = get_database_uri()
 
     # Inicializa o engine e o sessionmaker
-    engine = create_engine(app.config['SQLALCHEMY_DATABASE_URI'])
-    Session = sessionmaker(bind=engine)
+    engine = create_async_engine(app.config['SQLALCHEMY_DATABASE_URI'], echo=True)
+    Session = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
 
     # Testando a conexão com o banco de dados
     try:
-        with engine.connect() as con:
-            con.execute(text('SELECT 1'))  # Query simples para testar a conexão
+        # Usando 'async with' dentro de uma função assíncrona
+        async with engine.begin() as conn:
+            await conn.execute(text('SELECT 1'))  # Query simples para testar a conexão
         print("Conexão com o banco de dados bem-sucedida!")
     except Exception as e:
         print(f"Erro ao conectar com o banco de dados: {e}")
