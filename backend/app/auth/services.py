@@ -1,23 +1,16 @@
+# app/auth/services.py
 from werkzeug.security import generate_password_hash, check_password_hash
-from models import User, db
+from models import User, db  # Certifique-se de importar o modelo User
 
-# Função para criar usuário
-def create_user(name, username, password):
-    # Verificar se o usuário já existe
-    existing_user = User.query.filter_by(username=username).first()
-    if existing_user:
-        return False
-
-    # Criar o usuário
-    new_user = User(name=name, username=username)
-    new_user.set_password(password)
+def create_user(username, email, password):
+    hashed_password = generate_password_hash(password, method='sha256')
+    new_user = User(username=username, email=email, password=hashed_password)
     db.session.add(new_user)
     db.session.commit()
-    return True
+    return new_user
 
-# Função para login (verificar senha)
 def login_user(username, password):
-    user = User.query.filter_by(username=username).first()
-    if user and user.check_password(password):
-        return True
-    return False
+    user = User.query.filter_by(username=username).first()  # Buscando o usuário
+    if user and check_password_hash(user.password, password):  # Verifica a senha
+        return user  # O login foi bem-sucedido, retorna o usuário
+    return None  # Caso contrário, retorna None
