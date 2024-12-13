@@ -52,4 +52,4 @@ psycopg2==2.9.10             # Driver para conectar PostgreSQL
 Werkzeug==3.0.4              # Para manipulação de senhas (como o 'generate_password_hash')
 
 # Dependência para gerenciar uploads (por exemplo, usando Flask para uploads de arquivos)
-Flask-Uploads==1.1.2         # Se for necessário para upload de arquivos, se for o caso
+Flask-Uploads==0.2.1  # Versão mais recente disponível no PyPI        # Se for necessário para upload de arquivos, se for o caso
