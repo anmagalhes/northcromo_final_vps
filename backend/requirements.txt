@@ -43,8 +43,13 @@ urllib3==1.26.19
 Werkzeug==3.0.4
 XlsxWriter==3.2.0
 zeep==4.1.0
+
+# Dependências específicas para Flask e PostgreSQL
 Flask-SQLAlchemy==3.0.2      # Para integração com o banco de dados
 Flask-Migrate==4.0.3         # Para migrações de banco de dados
 Flask-Login==0.6.2           # Para gerenciar sessões de usuário
 psycopg2==2.9.10             # Driver para conectar PostgreSQL
 Werkzeug==3.0.4              # Para manipulação de senhas (como o 'generate_password_hash')
+
+# Dependência para gerenciar uploads (por exemplo, usando Flask para uploads de arquivos)
+Flask-Uploads==1.1.2         # Se for necessário para upload de arquivos, se for o caso
