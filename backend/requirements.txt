@@ -53,3 +53,5 @@ Werkzeug==3.0.4              # Para manipulação de senhas (como o 'generate_pa
 
 # Dependência para gerenciar uploads (por exemplo, usando Flask para uploads de arquivos)
 Flask-Uploads==0.2.1  # Versão mais recente disponível no PyPI        # Se for necessário para upload de arquivos, se for o caso
+
+sqlalchemy==1.4.37

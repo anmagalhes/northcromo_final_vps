@@ -4,28 +4,14 @@ from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
 import os
 from models import db
-from dotenv import load_dotenv  # Importando o dotenv
-
-# Carregar as variáveis do arquivo .env
-load_dotenv()
 
 # Inicializa o Flask app
 app = Flask(__name__)
 
 # Variáveis de configuração para o banco de dados
-DATABASE_USER = os.getenv('DATABASE_USER')
-DATABASE_PASSWORD = os.getenv('DATABASE_PASSWORD')
-DATABASE_HOST = os.getenv('DATABASE_HOST')
-DATABASE_PORT = os.getenv('DATABASE_PORT')
-DATABASE_NAME = os.getenv('DATABASE_NAME')
-
-# Verifica se as variáveis de ambiente estão sendo carregadas corretamente
-if not all([DATABASE_USER, DATABASE_PASSWORD, DATABASE_HOST, DATABASE_PORT, DATABASE_NAME]):
-    raise ValueError("Uma ou mais variáveis de ambiente do banco de dados não foram configuradas corretamente.")
-
-# Configurando a URI do banco de dados a partir das variáveis de ambiente
 if os.environ.get('FLASK_ENV') == 'production':
-    DATABASE_URI = f'postgresql+psycopg2://{DATABASE_USER}:{DATABASE_PASSWORD}@{DATABASE_HOST}:{DATABASE_PORT}/{DATABASE_NAME}'
+    # Para produção com PostgreSQL
+    DATABASE_URI = 'postgresql+psycopg2://flask_user:tonyteste@147.93.12.171:5432/northcromo'
 else:
     # Para desenvolvimento com SQLite
     DATABASE_URI = 'sqlite:///northcromo.db'
@@ -44,7 +30,6 @@ def test_db_connection():
     global connection_tested
     if not connection_tested:  # Teste a conexão apenas uma vez
         try:
-            print(f"Tentando conectar ao banco de dados em {DATABASE_URI}")  # Logando a URI do banco
             with engine.connect() as con:
                 con.execute(text('SELECT 1'))  # Query simples para testar a conexão
             print("Conexão com o banco de dados bem-sucedida!")
@@ -67,4 +52,3 @@ app.register_blueprint(users_blueprint, url_prefix='/users')
 # Ponto de entrada
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0")
-    
