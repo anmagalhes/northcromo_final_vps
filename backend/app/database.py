@@ -30,7 +30,16 @@ async def init_db(app):
 
     # Inicializa o engine e o sessionmaker
     engine = create_async_engine(app.config['SQLALCHEMY_DATABASE_URI'], echo=True)
-    Session = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
+
+    Session: AsyncSession = sessionmaker(
+        autocommit = False,
+        autoflush= False,
+        expire_on_commit = False,
+        class_= AsyncSession,
+        bind=engine
+    )
+    
+    # Session = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
 
     # Testando a conexão com o banco de dados
     try:
