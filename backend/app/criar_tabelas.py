@@ -2,6 +2,13 @@ import asyncio
 from app import app  # Importa a instância do Flask
 from models import db  # Importa a instância do banco de dados (SQLAlchemy)
 from models.user import User  # Importa os modelos (como o User)
+from models.componente import Componente
+from models.defeito import Defeito
+from models.funcionario import Funcionario
+from models.grupo_produto import GrupoProduto
+from models.operacao import Operacao
+from models.posto_trabalho import PostoTrabalho
+from models.tarefa_produto import TarefaProduto
 from database import init_db  # Importa a função de inicialização do banco de dados
 
 # Função assíncrona para criar as tabelas no banco de dados
