@@ -8,7 +8,7 @@ class Componente(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(40), unique=True, nullable=False)
-    usuario_id = db.Column(db.Integer, ForeignKey('users.id'))  # Chave estrangeira para 'usuarios'
+    usuario_id = db.Column(db.Integer, ForeignKey('usuario.id'))  # Chave estrangeira para 'usuarios'
 
     # Relacionamento: Cada grupo de produto pertence a um usuário
     usuario = relationship("Users", back_populates='defeitos', lazy='joined')
@@ -27,4 +27,4 @@ class Componente(db.Model):
     deleted_at = db.Column(db.DateTime, nullable=True)  # Data de exclusão (opcional para soft delete)
 
     def __repr__(self):
-        return f'<componente {self.name}>'
+        return f'<Componente {self.name}>'
