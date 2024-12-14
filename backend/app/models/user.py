@@ -65,6 +65,30 @@ class User(db.Model):  # A classe está correta com 'Usuarios' e não 'Usuario'
         back_populates='usuario', 
         uselist=True,  # Indica que é uma relação de um-para-muitos
         lazy='joined')
+    
+      # Relacionamento com defeitos
+    recebimentos = relationship(
+        "Recebimento", 
+        back_populates='usuario', 
+        uselist=True,  # Indica que é uma relação de um-para-muitos
+        lazy='joined')
+    
+    # Relacionamento com defeitos
+    fotoRecebimento = relationship(
+        "FotoRecebimento", 
+        back_populates='usuario', 
+        uselist=True,  # Indica que é uma relação de um-para-muitos
+        lazy='joined')
+    
+    # Relacionamento com defeitos
+    produtos = relationship(
+        "Produto", 
+        back_populates='usuario', 
+        uselist=True,  # Indica que é uma relação de um-para-muitos
+        lazy='joined')
+    
+   
+    
 
     def __repr__(self):
         return f'<User {self.username}>'

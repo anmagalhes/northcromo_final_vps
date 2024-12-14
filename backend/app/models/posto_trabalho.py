@@ -12,6 +12,7 @@ class Posto_Trabalho(db.Model):
 
     # Relacionamento: Cada grupo de produto pertence a um usuário
     usuario = relationship("users", back_populates='posto_trabalho', lazy='joined')
+    produtos = db.relationship('Produto', back_populates='posto_trabalho', lazy='joined')
 
     # Adicionando as colunas de data e hora
     created_at = db.Column(db.DateTime, default=datetime.utcnow)  # Data de criação

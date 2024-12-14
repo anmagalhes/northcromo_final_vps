@@ -19,6 +19,13 @@ class Componente(db.Model):
         back_populates='componente', 
         uselist=True,  # Indica que é uma relação de um-para-muitos
         lazy='joined')
+    
+        # Relacionamento com defeitos
+    produtos = relationship(
+        "Produto", 
+        back_populates='componente', 
+        uselist=True,  # Indica que é uma relação de um-para-muitos
+        lazy='joined')
 
 
     # Adicionando as colunas de data e hora

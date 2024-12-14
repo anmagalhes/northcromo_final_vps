@@ -23,14 +23,15 @@ class Cliente(db.Model):
     fornecedor_cliente = db.Column(db.String(100), nullable=False)  # Fornecedor associado ao cliente
     email_funcionario = db.Column(db.String(100), nullable=True)  # E-mail do Funcionário responsável
     acao = db.Column(db.String(255), nullable=True)  # Ação/observações adicionais
+    usuario_id = db.Column(db.Integer, ForeignKey('usuario.id'))  # Chave estrangeira de usuários
 
     # Timestamps
     created_at = db.Column(db.DateTime, default=datetime.utcnow)  # Data de criação
     updated_at = db.Column(db.DateTime, onupdate=datetime.utcnow)  # Data de atualização
 
     # Chave estrangeira para o usuário criador
-    usuario_id = db.Column(db.Integer, ForeignKey('usuario.id'))  # Chave estrangeira de usuários
     usuario = relationship("Users", back_populates="clientes")  # Relacionamento com Usuários
+    recebimentos = relationship("Recebimento", back_populates="cliente")
 
     def __repr__(self):
         return f'<Cliente {self.nome_cliente}>'

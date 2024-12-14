@@ -9,6 +9,10 @@ from models.funcionario import Funcionario
 from models.operacao import Operacao
 from models.tarefa_produto import TarefaProduto
 from models.posto_trabalho import Posto_Trabalho
+from models.cliente import Cliente
+from models.produto import Produto
+from models.recebimento import Recebimento
+##from models.foto_recebimento import FotoRecebimento
 from database import init_db  # Importa a função de inicialização do banco de dados
 
 # Função assíncrona para criar as tabelas no banco de dados
