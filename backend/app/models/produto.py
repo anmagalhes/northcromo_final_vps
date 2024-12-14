@@ -10,11 +10,11 @@ class Produto(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     cod_produto = db.Column(db.Integer, unique=True, nullable=False)  # Código do produto
     nome_produto = db.Column(db.String(100), nullable=False)
-    id_grupo = db.Column(db.Integer, ForeignKey('grupo_Produto.id'))  # Chave estrangeira para 'Grupo'
-    id_operacao_servico = db.Column(db.Integer, ForeignKey('operacoes_servico.id'))  # Chave estrangeira para 'OperacaoServico'
+    id_grupo = db.Column(db.Integer, ForeignKey('grupo_produto.id'))  # Chave estrangeira para 'Grupo'
+    id_operacao_servico = db.Column(db.Integer, ForeignKey('posto_trabalho.id'))  # Chave estrangeira para 'OperacaoServico'
     und_servicos = db.Column(db.String(50), nullable=False)  # Unidade de serviço
     hora_peca_servicos = db.Column(db.Float, nullable=True)  # Hora de serviço por peça
-    id_componente = db.Column(db.Integer, ForeignKey('componentes.id'))  # Chave estrangeira para 'Componente'
+    id_componente = db.Column(db.Integer, ForeignKey('componente.id'))  # Chave estrangeira para 'Componente'
     id_posto_trabalho = db.Column(db.Integer, ForeignKey('postos_trabalho.id'))  # Chave estrangeira para 'PostoTrabalho'
     fornec_produto = db.Column(db.String(100), nullable=True)  # Fornecedor do produto
     estomin_produto = db.Column(db.Integer, nullable=True)  # Estoque mínimo do produto
@@ -30,10 +30,10 @@ class Produto(db.Model):
     tipo = db.Column(db.String(50), nullable=False)  # Tipo de produto
 
     # Relacionamentos
-    grupo = relationship("Grupo", back_populates="produtos")  # Relacionamento com 'Grupo'
+    grupo = relationship("Grupo_Produto", back_populates="produtos")  # Relacionamento com 'Grupo'
     operacao_servico = relationship("OperacaoServico", back_populates="produtos")  # Relacionamento com 'OperacaoServico'
     componente = relationship("Componente", back_populates="produtos")  # Relacionamento com 'Componente'
-    posto_trabalho = relationship("PostoTrabalho", back_populates="produtos")  # Relacionamento com 'PostoTrabalho'
+    # posto_trabalho = relationship('PostoTrabalho', back_populates='produtos')  # Relacionamento com 'PostoTrabalho'
     usuario = relationship("Users", back_populates="produtos")  # Relacionamento com Usuários
     recebimentos = relationship("Recebimento", back_populates="produtos")
     

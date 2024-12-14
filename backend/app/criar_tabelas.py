@@ -8,7 +8,7 @@ from models.defeito import Defeito
 from models.funcionario import Funcionario
 from models.operacao import Operacao
 from models.tarefa_produto import TarefaProduto
-from models.posto_trabalho import Posto_Trabalho
+from models.PostoTrabalho import PostoTrabalho
 from models.cliente import Cliente
 from models.produto import Produto
 from models.recebimento import Recebimento
