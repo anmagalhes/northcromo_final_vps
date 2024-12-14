@@ -3,7 +3,7 @@ from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
 from .db import db  # Importando a instância do db
 
-class Tarefa_Produto(db.Model):
+class TarefaProduto(db.Model):
     __tablename__ = 'tarefa_Produto'  # Nome da tabela no banco de dados
 
     id = db.Column(db.Integer, primary_key=True)
@@ -19,4 +19,4 @@ class Tarefa_Produto(db.Model):
     deleted_at = db.Column(db.DateTime, nullable=True)  # Data de exclusão (opcional para soft delete)
 
     def __repr__(self):
-        return f'<Tarefa_Produto {self.name}>'
+        return f'<TarefaProduto {self.name}>'

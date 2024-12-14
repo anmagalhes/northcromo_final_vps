@@ -3,7 +3,7 @@ from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
 from .db import db  # Importando a instância do db
 
-class Defeitos(db.Model):
+class Defeito(db.Model):
     __tablename__ = 'defeito'  # Nome da tabela no banco de dados
 
     id = db.Column(db.Integer, primary_key=True)
@@ -23,4 +23,4 @@ class Defeitos(db.Model):
     deleted_at = db.Column(db.DateTime, nullable=True)  # Data de exclusão (opcional para soft delete)
 
     def __repr__(self):
-        return f'<Defeitos {self.name}>'
+        return f'<Defeito {self.name}>'
