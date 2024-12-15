@@ -1,26 +1,27 @@
 {
   "compilerOptions": {
     "target": "esnext",               // Alvo para a versão mais recente do JS
-    "module": "esnext",               // Use módulos ES6
-    "moduleResolution": "node",       // Usar resolução de módulos do Node
+    "module": "esnext",               // Usar módulos ES6
+    "moduleResolution": "node",       // Resolução de módulos como no Node.js
     "esModuleInterop": true,          // Permitir interoperação entre módulos ES6 e CommonJS
-    "declaration": true,              // Gera os arquivos .d.ts
-    "allowJs": true,                  // Permite arquivos .js
-    "strict": true,                   // Habilita verificações rigorosas
-    "skipLibCheck": true,             // Pula verificação de tipos das bibliotecas
-    "forceConsistentCasingInFileNames": true,
-    "outDir": "./dist",               // Saída de arquivos compilados
+    "declaration": true,              // Gera os arquivos .d.ts (opcional, caso precise de declarações de tipos)
+    "allowJs": true,                  // Permite arquivos .js junto com TypeScript
+    "strict": true,                   // Habilita verificações rigorosas de tipo
+    "skipLibCheck": true,             // Ignora verificação de tipo das bibliotecas
+    "forceConsistentCasingInFileNames": true, // Garante consistência de casing nos nomes de arquivos
+    "outDir": "./dist",               // Diretório para arquivos compilados
     "baseUrl": ".",                   // Base URL para resolução de módulos
     "paths": {
       "@components/*": ["src/components/*"],
       "@assets/*": ["src/assets/*"],
       "@utils/*": ["src/utils/*"]
-    }
+    },
+    "jsx": "react-jsx"                // Usar JSX em React
   },
   "include": [
-    "src/**/*"                        // Inclui todos os arquivos na pasta src
+    "src/**/*"                        // Incluir todos os arquivos da pasta src
   ],
   "exclude": [
-    "node_modules"                    // Exclui node_modules
+    "node_modules"                    // Excluir node_modules
   ]
 }
