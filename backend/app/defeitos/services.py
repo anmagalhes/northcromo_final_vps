@@ -1,4 +1,4 @@
-from models.defeito import Defeito
+from ..models.defeito import Defeito
 from app import db  # O db foi inicializado no seu app
 
 # Função para listar todos os defeitos

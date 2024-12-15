@@ -1,5 +1,5 @@
 # Exemplo de função no services.py
-from app.models.grupo_produto import Grupo_Produto
+from ..models.grupo_produto import Grupo_Produto
 from app import db
 from app.grupo_produto import Grupo_Produto
 

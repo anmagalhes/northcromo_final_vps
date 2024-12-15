@@ -1,4 +1,4 @@
-from app.models.foto_recebimento import FotoRecebimento
+from ..models.foto_recebimento import FotoRecebimento
 from app import db
 
 # Função para listar todas as fotos de recebimento

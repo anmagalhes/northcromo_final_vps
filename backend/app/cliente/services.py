@@ -1,4 +1,4 @@
-from app.models.cliente import Cliente
+from ..models.cliente import Cliente
 from app import db
 
 # Listar todos os clientes
