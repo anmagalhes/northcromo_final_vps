@@ -8,6 +8,7 @@ import asyncio
 from flask import Flask, jsonify
 from flask_migrate import Migrate
 from dotenv import load_dotenv
+from app.models import some_function
 from app.models.db import db
 from app.database import init_db  # A função assíncrona que inicializa o banco de dados
 from app.frontend_blueprint import frontend_bp  # Importação absoluta
