@@ -23,5 +23,3 @@ dist-ssr
 *.sln
 *.sw?
 venv
-*.pyc
-__pycache__/
