@@ -1,8 +1,8 @@
 // src/routes/Routes.tsx
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Home from '../pages/Home';
-import About from '../pages/About'; // Exemplo de página adicional
+import Home from '../pages/Home'; // Verifique se o caminho está correto e os arquivos existem
+import About from '../pages/About'; // Verifique o mesmo aqui
 
 const AppRoutes: React.FC = () => {
   return (
