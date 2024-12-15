@@ -12,6 +12,9 @@ from auth import auth_blueprint
 from users import users_blueprint
 from defeitos import defeito_blueprint
 from checklist_recebimento import checklist_recebimento_blueprint
+from foto_recebimento import foto_recebimento_blueprint
+from funcionario import funcionario_blueprint
+from cliente  import cliente_blueprint
 
 # Carregar as variáveis do arquivo .env
 load_dotenv()
@@ -40,7 +43,11 @@ async def create_app():
     app.register_blueprint(auth_blueprint, url_prefix='/auth')  # Rotas de autenticação
     app.register_blueprint(users_blueprint, url_prefix='/users')  # Rotas de usuários
     app.register_blueprint(defeito_blueprint, url_prefix='/api/defeitos')  # Rotas de defeitos
-    app.register_blueprint(checklist_recebimento_blueprint, url_prefix='/checklists')
+    app.register_blueprint(checklist_recebimento_blueprint, url_prefix='/checklist')
+    app.register_blueprint(foto_recebimento_blueprint, url_prefix='/foto_recebimento')
+    app.register_blueprint(funcionario_blueprint, url_prefix='/funcionario')
+    app.register_blueprint(cliente_blueprint, url_prefix='/cliente')
+
 
      # Exemplo de rota da API
     @app.route('/api')

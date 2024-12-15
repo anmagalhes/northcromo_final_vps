@@ -4,5 +4,6 @@ from flask import Blueprint
 # Cria o blueprint para checklist_recebimento
 checklist_recebimento_blueprint = Blueprint('checklist_recebimento', __name__)
 
-# Importa as rotas
-from .routes import *
+# Importa as rotas que serão registradas no blueprint
+from . import routes
+
