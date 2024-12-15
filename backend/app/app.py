@@ -15,6 +15,7 @@ from checklist_recebimento import checklist_recebimento_blueprint
 from foto_recebimento import foto_recebimento_blueprint
 from funcionario import funcionario_blueprint
 from cliente  import cliente_blueprint
+from componente  import componente_blueprint
 
 # Carregar as variáveis do arquivo .env
 load_dotenv()
@@ -47,6 +48,7 @@ async def create_app():
     app.register_blueprint(foto_recebimento_blueprint, url_prefix='/foto_recebimento')
     app.register_blueprint(funcionario_blueprint, url_prefix='/funcionario')
     app.register_blueprint(cliente_blueprint, url_prefix='/cliente')
+    app.register_blueprint(componente_blueprint, url_prefix='/componente')
 
 
      # Exemplo de rota da API
