@@ -5,8 +5,8 @@ After=network.target
 [Service]
 User=www-data
 Group=www-data
-WorkingDirectory=/root/northcromo_final_vps/backend
-ExecStart=/root/northcromo_final_vps/backend/venv/bin/gunicorn --workers 3 --bind 127.0.0.1:8000 app.app:app
+WorkingDirectory=/var/www/northcromo_final_vps/backend  # Caminho correto
+ExecStart=/var/www/northcromo_final_vps/backend/venv/bin/gunicorn --workers 3 --bind 127.0.0.1:8000 app.app:app
 
 [Install]
 WantedBy=multi-user.target
