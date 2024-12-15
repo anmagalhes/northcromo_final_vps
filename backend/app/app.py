@@ -1,9 +1,17 @@
 import asyncio
-from flask import Flask
+from flask import Flask, jsonify
 from flask_migrate import Migrate
 from dotenv import load_dotenv
 from models import db
 from database import init_db  # A função assíncrona que inicializa o banco de dados
+from frontend_blueprint import frontend_bp  # Importação absoluta
+
+
+# Registra os blueprints
+from auth import auth_blueprint
+from users import users_blueprint
+from defeitos import defeito_blueprint
+from checklist_recebimento import checklist_recebimento_blueprint
 
 # Carregar as variáveis do arquivo .env
 load_dotenv()
@@ -26,17 +34,21 @@ async def initialize_database():
 async def create_app():
     await initialize_database()  # Inicializa o banco de dados de forma assíncrona
     
+    # Registra o blueprint do frontend
+    app.register_blueprint(frontend_bp)  # Registra o blueprint do frontend
     # Registra os blueprints
-    from auth import auth_blueprint
-    from users import users_blueprint
-    
-    app.register_blueprint(auth_blueprint, url_prefix='/auth')
-    app.register_blueprint(users_blueprint, url_prefix='/users')
+    app.register_blueprint(auth_blueprint, url_prefix='/auth')  # Rotas de autenticação
+    app.register_blueprint(users_blueprint, url_prefix='/users')  # Rotas de usuários
+    app.register_blueprint(defeito_blueprint, url_prefix='/api/defeitos')  # Rotas de defeitos
+    app.register_blueprint(checklist_recebimento_blueprint, url_prefix='/checklists')
 
-    # A rota principal
-    @app.route('/')
-    def hello_world():
-        return 'Hello, World!'
+     # Exemplo de rota da API
+    @app.route('/api')
+    def api_home():
+        return jsonify({
+            "status": "API is running",
+            "message": "Welcome to the API endpoint!"
+        })
 
     return app
 
