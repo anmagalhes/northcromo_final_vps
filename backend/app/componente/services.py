@@ -1,4 +1,4 @@
-from app.models.componente import Componente
+from ..models.componente import Componente
 from app import db
 
 # Listar todos os componentes
