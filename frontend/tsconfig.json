@@ -1,5 +1,19 @@
 {
-  "files": [],
+  "compilerOptions": {
+    "target": "esnext",                   // Garantir que o código seja transpilado para uma versão moderna
+    "lib": ["dom", "esnext"],             // Incluir suporte para o DOM e as últimas funcionalidades do JS
+    "module": "esnext",                   // Usar módulos ES (para compatibilidade com o Vite)
+    "moduleResolution": "node",           // Configuração padrão de resolução de módulos
+    "jsx": "react-jsx",                   // Configuração necessária para o JSX no React 17+
+    "strict": true,                       // Habilitar verificação rigorosa de tipos
+    "skipLibCheck": true,                 // Ignorar verificações de tipo em arquivos de definição de bibliotecas
+    "esModuleInterop": true,              // Permite importar módulos CommonJS de maneira fácil
+    "resolveJsonModule": true,            // Permite importar arquivos JSON como módulos
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": [
+    "src/**/*"                            // Incluir todos os arquivos dentro da pasta src
+  ],
   "references": [
     { "path": "./tsconfig.app.json" },
     { "path": "./tsconfig.node.json" }
