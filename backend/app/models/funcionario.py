@@ -29,4 +29,4 @@ class Funcionario(db.Model):
     )
 
     def __repr__(self):
-        return f'<Funcionario {self.nome}>'
+        return f'<Funcionario id={self.id} name={self.name}>'

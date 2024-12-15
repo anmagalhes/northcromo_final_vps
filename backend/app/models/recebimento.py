@@ -36,4 +36,4 @@ class Recebimento(db.Model):
     deleted_at = db.Column(db.DateTime, nullable=True)  # Data de exclusão (opcional para soft delete)
 
     def __repr__(self):
-        return f'<Recebimento {self.id_ordem}>'
+        return f'<Recebimento id={self.id} name={self.name}>'

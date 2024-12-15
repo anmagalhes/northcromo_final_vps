@@ -23,7 +23,7 @@ class Defeito(db.Model):
     deleted_at = db.Column(db.DateTime, nullable=True)  # Data de exclusão (opcional para soft delete)
 
     def __repr__(self):
-        return f'<Defeito {self.name}>'
+        return f'<Defeito id={self.id} name={self.name}>'
     
     # Método to_dict para converter o objeto em um dicionário
     def to_dict(self):

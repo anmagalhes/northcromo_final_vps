@@ -21,5 +21,5 @@ class PostoTrabalho(db.Model):
     deleted_at = db.Column(db.DateTime, nullable=True)  # Data de exclusão (opcional para soft delete)
 
     def __repr__(self):
-        return f'<PostoTrabalho {self.nome}>'
+        return f'<PostoTrabalho id={self.id} name={self.name}>'
 

@@ -20,4 +20,5 @@ class Operacao(db.Model):
     deleted_at = db.Column(db.DateTime, nullable=True)  # Data de exclusão (opcional para soft delete)
 
     def __repr__(self):
-        return f'<operacao {self.name}>'
+        return f'<operacao id={self.id} name={self.name}>'
+        

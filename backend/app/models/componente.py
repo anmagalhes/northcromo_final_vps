@@ -34,4 +34,4 @@ class Componente(db.Model):
     deleted_at = db.Column(db.DateTime, nullable=True)  # Data de exclusão (opcional para soft delete)
 
     def __repr__(self):
-        return f'<Componente {self.name}>'
+        return f'<Componente id={self.id} name={self.name if self.name else "Unnamed"}>'

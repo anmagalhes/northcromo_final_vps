@@ -34,4 +34,6 @@ class ChecklistRecebimento(db.Model):
     deleted_at = db.Column(db.DateTime, nullable=True)  # Data de exclusão (opcional para soft delete)
 
     def __repr__(self):
-        return f'<ChecklistRecebimento {self.name}>'
+        # Acessando o nome do produto carregado (mesmo com o lazy load)
+        produto_nome = self.produto.nome if self.produto else 'Produto não encontrado'
+        return f'<ChecklistRecebimento {self.referencia_Produto} - {produto_nome}>'

@@ -19,4 +19,5 @@ class Grupo_Produto(db.Model):
     deleted_at = db.Column(db.DateTime, nullable=True)  # Data de exclusão (opcional para soft delete)
 
     def __repr__(self):
-        return f'<Grupo_Produto {self.name}>'
+        return f'<Grupo_Produto id={self.id} name={self.name}>'
+
