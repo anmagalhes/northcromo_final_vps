@@ -52,3 +52,11 @@ async def init_db(app):
         raise e  # Levanta o erro caso a conexão falhe
 
     return engine, Session
+
+    # Função para obter a sessão do banco
+def get_db_session(engine, Session):
+    return Session()  # Retorna a sessão do banco de dados
+
+# Função para fechar a sessão do banco
+async def close_db_session(session):
+    await session.close()  # Fecha a sessão após a requisição

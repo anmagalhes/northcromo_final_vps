@@ -68,6 +68,23 @@ async def create_app():
 
     return app
 
+# Funções para abrir e fechar a sessão do banco de dados para cada requisição
+@app.before_request
+def before_request():
+    """Abre a sessão do banco de dados antes de cada requisição"""
+    g.db_session = db.session()  # Usando o sessionmaker para abrir a conexão
+
+@app.after_request
+def after_request(response):
+    """Fecha a sessão do banco de dados após a requisição"""
+    try:
+        g.db_session.commit()  # Commitando a transação (se necessário)
+    except Exception as e:
+        g.db_session.rollback()  # Em caso de erro, faz rollback
+    finally:
+        g.db_session.close()  # Fecha a sessão do banco de dados
+    return response
+
 # Função para rodar a aplicação
 def run():
     # Usamos asyncio.run para inicializar o app de forma assíncrona
@@ -76,6 +93,7 @@ def run():
 async def start_app():
     app = await create_app()  # Cria a aplicação Flask com configuração assíncrona
     app.run(debug=True, host="0.0.0.0")  # Rodando Flask de maneira síncrona, mas com setup assíncrono
+
 
 if __name__ == "__main__":
     run()  # Inicia o processo de execução

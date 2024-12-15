@@ -1,7 +1,7 @@
 import asyncio
 from app import app  # Importa a instância do Flask
 from models import db  # Importa a instância do banco de dados (SQLAlchemy)
-from models.user import User # Importa os modelos (como o User)
+from models.user import User  # Importa os modelos (como o User)
 from models.grupo_produto import Grupo_Produto
 from models.componente import Componente
 from models.defeito import Defeito
@@ -15,12 +15,11 @@ from models.recebimento import Recebimento
 from models.foto_recebimento import FotoRecebimento
 from models.checklist_Recebimento import ChecklistRecebimento
 from models.impressao_checklistRecebimento import ImpressaoChecklistRecebimento
-##from models.foto_recebimento import FotoRecebimento
 from database import init_db  # Importa a função de inicialização do banco de dados
 
 # Função assíncrona para criar as tabelas no banco de dados
 async def criar_tabelas():
-    # Inicializa o banco de dados
+    # Inicializa o banco de dados (você precisa garantir que o banco está preparado para async)
     engine, Session = await init_db(app)  # Obtém a engine e session do banco assíncrono
 
     # Cria todas as tabelas definidas nos modelos
