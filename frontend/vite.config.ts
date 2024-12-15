@@ -1,9 +1,8 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
-<<<<<<< HEAD
 import path from 'path'
 
-// https://vitejs.dev/config/
+// https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
   resolve: {
@@ -17,10 +16,3 @@ export default defineConfig({
     port: 3000, // Porta do servidor de desenvolvimento
   },
 });
-=======
-
-// https://vite.dev/config/
-export default defineConfig({
-  plugins: [react()],
-})
->>>>>>> 13b3e1f (Adicionando arquivos não rastreados)
