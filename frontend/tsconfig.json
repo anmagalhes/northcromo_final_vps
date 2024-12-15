@@ -16,8 +16,7 @@
       "@assets/*": ["src/assets/*"],
       "@utils/*": ["src/utils/*"]
     },
-    "jsx": "react-jsx",               // Usar JSX em React
-    "allowImportingTsExtensions": true // Permite importar arquivos .tsx sem precisar da extensão
+    "jsx": "react-jsx"                // Usar JSX em React
   },
   "include": [
     "src/**/*"                        // Incluir todos os arquivos da pasta src
