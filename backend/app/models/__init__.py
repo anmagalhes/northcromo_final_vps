@@ -9,6 +9,11 @@ from .defeito import Defeito
 from .cliente import Cliente
 from .produto import Produto
 from .recebimento import Recebimento
+from .foto_recebimento import FotoRecebimento
+from .checklist_Recebimento import ChecklistRecebimento
+from .impressao_checklistRecebimento import ImpressaoChecklistRecebimento
+
+
 ##from .foto_recebimento import FotoRecebimento
 from .db import db  # Importando a instância db
 

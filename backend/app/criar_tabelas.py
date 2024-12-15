@@ -12,6 +12,9 @@ from models.PostoTrabalho import PostoTrabalho
 from models.cliente import Cliente
 from models.produto import Produto
 from models.recebimento import Recebimento
+from models.foto_recebimento import FotoRecebimento
+from models.checklist_Recebimento import ChecklistRecebimento
+from models.impressao_checklistRecebimento import ImpressaoChecklistRecebimento
 ##from models.foto_recebimento import FotoRecebimento
 from database import init_db  # Importa a função de inicialização do banco de dados
 

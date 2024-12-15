@@ -26,7 +26,10 @@ class Recebimento(db.Model):
     usuario = relationship("User", back_populates="recebimentos")
     ##fotos = relationship('FotoRecebimento', back_populates='ordem')
     funcionario = relationship('Funcionario', back_populates='recebimentos_cadastrados')
-
+    checklists = relationship("ChecklistRecebimento", back_populates="recebimento")
+    impressao_checklists = relationship("ImpressaoChecklistRecebimento", backref="recebimento")
+    
+    
     # Colunas de data e hora
     created_at = db.Column(db.DateTime, default=datetime.utcnow)  # Data de criação
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)  # Data de última atualização

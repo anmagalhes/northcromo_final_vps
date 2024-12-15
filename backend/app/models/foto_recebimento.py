@@ -7,10 +7,10 @@ class FotoRecebimento(db.Model):
     __tablename__ = 'foto_recebimento'  # Nome da tabela
 
     id = db.Column(db.Integer, primary_key=True)  # ID da Foto
-    id_ordem = db.Column(db.String(50), ForeignKey('recebimentos.id_ordem'), nullable=False)  # ID da ordem (chave estrangeira)
+    id_ordem = db.Column(db.String(50), nullable=False)  # ID da ordem (chave estrangeira)
+    recebimento_id = db.Column(db.Integer, ForeignKey('recebimentos.id'), nullable=False)  # Referencia o ID da tabela 'recebimentos'
     nome_foto = db.Column(db.String(255), nullable=False)  # Nome ou caminho do arquivo da foto
-    data_cadastro = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)  # Data de cadastro da foto
-    usuario_id = db.Column(db.Integer, ForeignKey('usuarios.id'))  # Chave estrangeira para 'usuarios'
+    usuario_id = db.Column(db.Integer, ForeignKey('usuario.id'))  # Chave estrangeira para 'usuarios'
     
     # Relacionamento: Cada foto é cadastrada por um usuário
     usuario = relationship("Users", back_populates='fotos_cadastradas', lazy='joined')

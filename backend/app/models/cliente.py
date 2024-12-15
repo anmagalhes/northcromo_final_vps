@@ -32,6 +32,7 @@ class Cliente(db.Model):
     # Chave estrangeira para o usuário criador
     usuario = relationship("Users", back_populates="clientes")  # Relacionamento com Usuários
     recebimentos = relationship("Recebimento", back_populates="cliente")
+    checklists = relationship("ChecklistRecebimento", back_populates="cliente")
 
     def __repr__(self):
         return f'<Cliente {self.nome_cliente}>'

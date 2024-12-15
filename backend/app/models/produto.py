@@ -31,11 +31,13 @@ class Produto(db.Model):
 
     # Relacionamentos
     grupo = relationship("Grupo_Produto", back_populates="produtos")  # Relacionamento com 'Grupo'
-    operacao_servico = relationship("OperacaoServico", back_populates="produtos")  # Relacionamento com 'OperacaoServico'
+    operacao_servico = relationship("PostoTrabalho", back_populates="produtos")  # Relacionamento com 'OperacaoServico'
     componente = relationship("Componente", back_populates="produtos")  # Relacionamento com 'Componente'
-    # posto_trabalho = relationship('PostoTrabalho', back_populates='produtos')  # Relacionamento com 'PostoTrabalho'
+    posto_trabalho = relationship('PostoTrabalho', back_populates='produtos')  # Relacionamento com 'PostoTrabalho'
     usuario = relationship("Users", back_populates="produtos")  # Relacionamento com Usuários
     recebimentos = relationship("Recebimento", back_populates="produtos")
+    checklists = relationship("ChecklistRecebimento", back_populates="produto")
     
+
     def __repr__(self):
         return f'<Produto {self.nome_produto}>'
