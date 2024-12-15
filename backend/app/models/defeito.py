@@ -24,3 +24,15 @@ class Defeito(db.Model):
 
     def __repr__(self):
         return f'<Defeito {self.name}>'
+    
+    # Método to_dict para converter o objeto em um dicionário
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "nome": self.nome,
+            "usuario_id": self.usuario_id,
+            "componente_id": self.componente_id,
+            "created_at": self.created_at,
+            "updated_at": self.updated_at,
+            "deleted_at": self.deleted_at
+        }

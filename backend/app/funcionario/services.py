@@ -1,4 +1,4 @@
-from models.funcionario import Funcionario
+from app.models.funcionario import Funcionario
 from app import db
 
 # Função para listar todos os funcionários

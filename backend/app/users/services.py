@@ -1,4 +1,4 @@
-from models import User, db
+from app.models import User, db
 
 # Função para listar todos os usuários
 def list_users():
