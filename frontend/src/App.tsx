@@ -1,6 +1,6 @@
 // src/App.tsx
 import React from 'react';
-import Clientes from './pages/Clientes';  // Importa a página de clientes
+import Clientes from './pages/clientes';  // Importa a página de clientes
 
 const App: React.FC = () => {
   return (
