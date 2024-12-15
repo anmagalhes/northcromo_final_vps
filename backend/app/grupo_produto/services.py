@@ -1,7 +1,7 @@
 # Exemplo de função no services.py
 from app.models.grupo_produto import Grupo_Produto
 from app import db
-from app.schemas.grupo_produto_schema import Grupo_Produto
+from app.grupo_produto import Grupo_Produto
 
 grupo_produto_schema = Grupo_Produto()
 grupo_produtos_schema = Grupo_Produto(many=True)
