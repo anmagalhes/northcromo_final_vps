@@ -1,5 +1,5 @@
-from ..models.checklist_Recebimento import ChecklistRecebimento
-from app import db
+from app import db  # O db foi inicializado no seu app
+from app.models.checklist_Recebimento import ChecklistRecebimento
 
 def list_checklist():
     checklists = ChecklistRecebimento.query.all()
