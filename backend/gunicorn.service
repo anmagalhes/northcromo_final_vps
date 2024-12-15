@@ -5,8 +5,7 @@ After=network.target
 [Service]
 User=www-data
 Group=www-data
-WorkingDirectory=/var/www/northcromo_final_vps/backend  # Caminho correto para o diretório da aplicação
-Environment="PATH=/var/www/northcromo_final_vps/backend/venv/bin"  # Caminho para o binário do Python no venv
+WorkingDirectory=/var/www/northcromo_final_vps/backend  # Adicione esta linha
 ExecStart=/var/www/northcromo_final_vps/backend/venv/bin/gunicorn --workers 3 --bind 127.0.0.1:8000 app.app:app
 
 [Install]
