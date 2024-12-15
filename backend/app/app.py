@@ -9,19 +9,18 @@ from flask import Flask, jsonify
 from flask_migrate import Migrate
 from dotenv import load_dotenv
 from app.models.db import db
-from database import init_db  # A função assíncrona que inicializa o banco de dados
-from frontend_blueprint import frontend_bp  # Importação absoluta
-
+from app.database import init_db  # A função assíncrona que inicializa o banco de dados
+from app.frontend_blueprint import frontend_bp  # Importação absoluta
 
 # Registra os blueprints
-from auth import auth_blueprint
-from users import users_blueprint
-from defeitos import defeito_blueprint
-from checklist_recebimento import checklist_recebimento_blueprint
-from foto_recebimento import foto_recebimento_blueprint
-from funcionario import funcionario_blueprint
-from cliente  import cliente_blueprint
-from componente  import componente_blueprint
+from app.auth import auth_blueprint
+from app.users import users_blueprint
+from app.defeitos import defeito_blueprint
+from app.checklist_recebimento import checklist_recebimento_blueprint
+from app.foto_recebimento import foto_recebimento_blueprint
+from app.funcionario import funcionario_blueprint
+from app.cliente  import cliente_blueprint
+from app.componente  import componente_blueprint
 #from grupo_produto  import grupo_produto_blueprint
 
 # Carregar as variáveis do arquivo .env
