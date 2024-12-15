@@ -1,5 +1,4 @@
 {
-<<<<<<< HEAD
   "compilerOptions": {
     "target": "esnext",                   // Garantir que o código seja transpilado para uma versão moderna
     "lib": ["dom", "esnext"],             // Incluir suporte para o DOM e as últimas funcionalidades do JS
@@ -15,9 +14,6 @@
   "include": [
     "src/**/*"                            // Incluir todos os arquivos dentro da pasta src
   ],
-=======
-  "files": [],
->>>>>>> 13b3e1f (Adicionando arquivos não rastreados)
   "references": [
     { "path": "./tsconfig.app.json" },
     { "path": "./tsconfig.node.json" }
