@@ -1,6 +1,8 @@
-// src/pages/Cliente.tsx
+// src/pages/ClientesPage.tsx
 import React, { useEffect, useState } from 'react';
-import { getClientes } from '../api/clientes';  // A importação correta
+import { getClientes, deleteCliente } from '../api/clientes';  // Funções para buscar e excluir clientes
+import ClienteForm from '../components/ClienteForm';  // Importando o formulário
+import ClienteList from '../components/ClienteList';  // Importando a lista de clientes
 
 interface Cliente {
   id: number;
@@ -8,15 +10,16 @@ interface Cliente {
   email: string;
 }
 
-export const Cliente: React.FC = () => {
+const ClientesPage: React.FC = () => {
   const [clientes, setClientes] = useState<Cliente[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
+  // Carregar clientes quando o componente for montado
   useEffect(() => {
     const fetchClientes = async () => {
       try {
-        const data = await getClientes();  // Chamando a função de clientes
+        const data = await getClientes();
         setClientes(data);
       } catch (error) {
         setError('Falha ao carregar os clientes.');
@@ -25,27 +28,42 @@ export const Cliente: React.FC = () => {
       }
     };
 
-    fetchClientes(); // Chama a função para carregar os clientes ao montar o componente
-  }, []);  // Executa apenas uma vez após a montagem do componente
+    fetchClientes();
+  }, []);
+
+  // Função para excluir um cliente
+  const handleDeleteCliente = async (id: number) => {
+    try {
+      await deleteCliente(id);
+      setClientes(clientes.filter(cliente => cliente.id !== id));  // Remove o cliente da lista
+    } catch (error) {
+      setError('Falha ao excluir o cliente.');
+    }
+  };
+
+  // Função para adicionar um cliente à lista local
+  const handleClienteAdicionado = (novoCliente: Cliente) => {
+    setClientes(prevClientes => [...prevClientes, novoCliente]);
+  };
 
   if (loading) {
-    return <div>Carregando...</div>;
-  }
-
-  if (error) {
-    return <div>{error}</div>;
+    return <div>Carregando clientes...</div>;
   }
 
   return (
     <div>
-      <h1>Lista de Clientes</h1>
-      <ul>
-        {clientes.map(cliente => (
-          <li key={cliente.id}>
-            <strong>{cliente.nome}</strong> - {cliente.email}
-          </li>
-        ))}
-      </ul>
+      <h1>Clientes</h1>
+
+      {/* Exibir mensagem de erro */}
+      {error && <div style={{ color: 'red' }}>{error}</div>}
+
+      {/* Componente de formulário para adicionar cliente */}
+      <ClienteForm onClienteAdicionado={handleClienteAdicionado} />
+
+      {/* Componente de lista de clientes */}
+      <ClienteList clientes={clientes} onDelete={handleDeleteCliente} />
     </div>
   );
 };
+
+export default ClientesPage;

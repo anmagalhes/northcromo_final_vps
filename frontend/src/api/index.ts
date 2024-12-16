@@ -1,11 +1,11 @@
 // src/api/index.ts
 
-const API_URL = '/api';  // Base URL, pode ser alterada se necessário
+const API_URL = process.env.NODE_ENV === 'development' 
+  ? 'http://localhost:5000/api'  // URL para desenvolvimento
+  : '/api';  // URL relativa para produção
 
-// Função genérica para fazer requisições HTTP
-export const fetchAPI = async (endpoint: string, method: string = 'GET', body?: any) => {
-    const url = `${API_URL}${endpoint}`;
-    
+// Função para realizar as requisições HTTP
+export const fetchAPI = async (endpoint: string, method: string = 'GET', data: any = null) => {
     const options: RequestInit = {
         method,
         headers: {
@@ -13,19 +13,20 @@ export const fetchAPI = async (endpoint: string, method: string = 'GET', body?: 
         },
     };
 
-    // Se houver corpo, adiciona ao corpo da requisição (usado em POST, PUT, etc.)
-    if (body) {
-        options.body = JSON.stringify(body);
+    if (data) {
+        options.body = JSON.stringify(data);  // Se houver dados, adiciona ao corpo da requisição
     }
 
     try {
-        const response = await fetch(url, options);
+        const response = await fetch(`${API_URL}${endpoint}`, options);
+        
         if (!response.ok) {
-            throw new Error(`Erro ao fazer requisição: ${response.statusText}`);
+            throw new Error('Erro na requisição');
         }
-        return await response.json();  // Retorna a resposta em JSON
+
+        return await response.json();  // Retorna o corpo da resposta JSON
     } catch (error) {
-        console.error('Erro ao fazer requisição:', error);
-        throw error;  // Lança o erro para ser tratado em outros lugares
+        console.error('Erro ao fazer a requisição:', error);
+        throw error;
     }
 };

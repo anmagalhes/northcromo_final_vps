@@ -18,28 +18,16 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
 
-    <!-- Estilos externos -->
+    <!-- Estilos externos (opcional) -->
     <link rel="stylesheet" href="/src/styles/styles.css" />
   </head>
+
   <body>
-    <!-- Menu Lateral -->
-    <div id="sidebar">
-      <h2>Northcromo</h2>
-      <ul>
-        <li><a href="/">Página Inicial</a></li>
-        <li><a href="/clientes">Clientes</a></li>
-        <li><a href="/produtos">Produtos</a></li>
-        <li><a href="/relatorios">Relatórios</a></li>
-        <li><a href="/configuracoes">Configurações</a></li>
-      </ul>
-    </div>
+    <!-- O conteúdo da aplicação será renderizado aqui -->
+    <div id="root"></div>
 
-    <!-- Conteúdo Principal da Página -->
-    <div id="main-content">
-      <div id="root"></div> <!-- Este é o container onde o React será montado -->
-    </div>
-
-    <!-- Vite irá automaticamente injetar o JS necessário para a aplicação -->
+    <!-- Script para carregar a aplicação React -->
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
+
