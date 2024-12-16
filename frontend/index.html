@@ -11,22 +11,14 @@
 
     <title>Northcromo - Sistema de Manutenção e Gestão</title>
 
-    <!-- Favicon (ícone do site) -->
+    <!-- Favicon -->
     <link rel="icon" href="/favicon.ico" type="image/x-icon" />
 
-    <!-- Fontes e Estilos personalizados -->
-    <link
-      href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      href="https://cdn.jsdelivr.net/npm/font-awesome/css/font-awesome.min.css"
-      rel="stylesheet"
-    />
+    <!-- Fontes e Estilos -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
 
-    <!-- Estilos do Menu Lateral e Layout -->
     <style>
-      /* Estilos básicos */
       body {
         font-family: 'Roboto', sans-serif;
         margin: 0;
@@ -83,16 +75,6 @@
         text-align: center;
       }
 
-      /* Estilo do rodapé */
-      footer {
-        text-align: center;
-        padding: 10px;
-        background-color: #343a40;
-        color: #fff;
-        position: fixed;
-        bottom: 0;
-        width: 100%;
-      }
     </style>
   </head>
   <body>
@@ -110,13 +92,8 @@
 
     <!-- Conteúdo Principal da Página -->
     <div id="main-content">
-      <div id="root"></div> <!-- Este é o container onde o React irá renderizar a aplicação -->
+      <div id="root"></div> <!-- Este é o container onde o React será montado -->
     </div>
-
-    <!-- Rodapé -->
-    <footer>
-      <p>&copy; 2024 Northcromo | Todos os direitos reservados.</p>
-    </footer>
 
     <!-- Vite irá automaticamente injetar o JS necessário para a aplicação -->
     <script type="module" src="/src/main.tsx"></script>
