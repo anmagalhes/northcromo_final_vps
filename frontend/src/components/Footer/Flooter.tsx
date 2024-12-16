@@ -1,10 +1,11 @@
 import React from 'react';
+import styles from "./Flooter.module.css";
 
 const Footer: React.FC = () => {
   return (
-    <footer>
+    <footer className={styles.footer}>
         <p>
-          <span>
+          <span className={styles.footer_span}>
             REACT
           </span>
         </p>
