@@ -1,50 +1,25 @@
 // src/components/ClienteList/ClienteList.tsx
 import React from 'react';
+import { Cliente } from '../../types/Cliente';  // Certifique-se de importar corretamente
 
-// Interface para o tipo de dados dos clientes
-interface Cliente {
-  id: number;
-  nome: string;
-  email: string;
-  telefone: string;
-}
-
-// Definindo os props que o componente espera
 interface ClienteListProps {
-  clientes: Cliente[];
+  clientes: Cliente[];  // Usando o tipo correto para o array de clientes
+  onDelete: (id: number) => void;
 }
 
-const ClienteList: React.FC<ClienteListProps> = ({ clientes }) => {
+const ClienteList: React.FC<ClienteListProps> = ({ clientes, onDelete }) => {
   return (
     <div>
-      <h2>Lista de Clientes</h2>
-      {clientes.length === 0 ? (
-        <p>Não há clientes cadastrados.</p>
-      ) : (
-        <table>
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Nome</th>
-              <th>Email</th>
-              <th>Telefone</th>
-            </tr>
-          </thead>
-          <tbody>
-            {clientes.map((cliente) => (
-              <tr key={cliente.id}>
-                <td>{cliente.id}</td>
-                <td>{cliente.nome}</td>
-                <td>{cliente.email}</td>
-                <td>{cliente.telefone}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
+      <ul>
+        {clientes.map(cliente => (
+          <li key={cliente.id}>
+            {cliente.nome} - {cliente.email} - {cliente.telefone}
+            <button onClick={() => onDelete(cliente.id)}>Excluir</button>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 };
 
 export default ClienteList;
-
