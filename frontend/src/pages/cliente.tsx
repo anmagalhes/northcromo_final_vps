@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { getClientes, deleteCliente } from '../api/clientes';  // Funções para buscar e excluir clientes
 import ClienteForm from '../components/ClienteForm/ClienteForm';  // Importando o formulário
 import ClienteList from '../components/ClienteList/ClienteList';  // Importando a lista de clientes
-import { Cliente } from '../types/Cliente';
+import { Cliente } from 'src/types/Cliente';
 
 interface Cliente {
   id: number;

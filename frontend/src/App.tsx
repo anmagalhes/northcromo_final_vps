@@ -3,9 +3,9 @@ import React from 'react';
 import { Routes, Route, BrowserRouter } from 'react-router-dom'; // React Router
 
 // Components
-import Header from './components/Header/Header';
-import Footer from './components/Footer/Footer';
-import Sidebar from './components/Sidebar';  // Componente Sidebar (Menu Lateral)
+import Header from  './components/Header/Header';
+import Footer from './components/Footer/Flooter';
+import Sidebar from './components/Sidebar/Sidebar'
 
 // Importando as rotas
 import AppRoutes from './routes/Routes';
