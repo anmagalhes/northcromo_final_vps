@@ -32,7 +32,7 @@ async def criar_tabelas():
 async def run():
     await criar_tabelas()  # Cria as tabelas
     # Agora roda o servidor Flask de forma síncrona
-    app.run(debug=True, host="0.0.0.0")  # Rodando Flask
+    app.run(debug=True, host="0.0.0.0", port=5000) # Rodando Flask
 
 # Ponto de entrada principal para rodar o código
 if __name__ == "__main__":

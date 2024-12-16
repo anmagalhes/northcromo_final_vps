@@ -1,7 +1,8 @@
+// src/pages/Home.tsx
 import React from 'react';
-import Button from '../components/Button/Button';
+import Button from '../components/Button/Button'; // Importando o componente Button
 
-const Home: React.FC = () => {
+export const Home: React.FC = () => {
   const handleClick = () => {
     alert('Botão clicado!');
   };
@@ -9,9 +10,8 @@ const Home: React.FC = () => {
   return (
     <div>
       <h2>Home Page</h2>
+      {/* Adicionando o botão que dispara a função handleClick */}
       <Button label="Clique aqui" onClick={handleClick} />
     </div>
   );
 };
-
-export default Home;
