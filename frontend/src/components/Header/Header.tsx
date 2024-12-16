@@ -3,7 +3,7 @@ import React from 'react';
 const Header: React.FC = () => {
   return (
     <header>
-      <h1>Bem-vindo ao projeto!</h1>
+      <h1>CRISTIANE</h1>
     </header>
   );
 };
