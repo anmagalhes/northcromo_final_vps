@@ -2,7 +2,11 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { Home } from 'pages/home';  // Certifique-se de que Home está corretamente importado
+<<<<<<< HEAD
 //import { Cliente } from 'pages/cliente'; // Da mesma forma, Cliente deve ser importado corretamente
+=======
+import { Cliente } from 'pages/Cliente'; // Da mesma forma, Cliente deve ser importado corretamente
+>>>>>>> c7cd49eff558732b6b8d14423a5c36ae63633d2c
 
 export const AppRoutes: React.FC = () => {
   return (

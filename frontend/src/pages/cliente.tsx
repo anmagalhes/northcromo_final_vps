@@ -1,6 +1,6 @@
-// src/pages/Clientes.tsx
+// src/pages/Cliente.tsx
 import React, { useEffect, useState } from 'react';
-import { getClientes } from '../api/clientes';  // Importa a função de clientes
+import { getClientes } from '../api/clientes';  // A importação correta
 
 interface Cliente {
   id: number;
@@ -8,38 +8,34 @@ interface Cliente {
   email: string;
 }
 
-const Clientes: React.FC = () => {
-  const [clientes, setClientes] = useState<Cliente[]>([]); // Estado para armazenar os clientes
-  const [loading, setLoading] = useState<boolean>(true);   // Estado para controlar o carregamento
-  const [error, setError] = useState<string | null>(null);  // Estado para mostrar erros
+export const Cliente: React.FC = () => {
+  const [clientes, setClientes] = useState<Cliente[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Função para carregar os clientes da API
     const fetchClientes = async () => {
       try {
-        const data = await getClientes();
-        setClientes(data); // Armazena os clientes no estado
+        const data = await getClientes();  // Chamando a função de clientes
+        setClientes(data);
       } catch (error) {
         setError('Falha ao carregar os clientes.');
       } finally {
-        setLoading(false); // Termina o carregamento
+        setLoading(false);
       }
     };
 
-    fetchClientes(); // Chama a função de requisição
-  }, []); // Executa apenas uma vez quando o componente é montado
+    fetchClientes(); // Chama a função para carregar os clientes ao montar o componente
+  }, []);  // Executa apenas uma vez após a montagem do componente
 
-  // Exibe uma mensagem de carregamento
   if (loading) {
     return <div>Carregando...</div>;
   }
 
-  // Exibe mensagem de erro se houver
   if (error) {
     return <div>{error}</div>;
   }
 
-  // Exibe a lista de clientes
   return (
     <div>
       <h1>Lista de Clientes</h1>
@@ -53,5 +49,3 @@ const Clientes: React.FC = () => {
     </div>
   );
 };
-
-export default Clientes;
