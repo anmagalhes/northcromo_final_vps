@@ -3,8 +3,8 @@ import styles from "./Header.module.css";
 
 const Header: React.FC = () => {
   return (
-    <header className={styles.header}>  {/* Remover as aspas ao redor de {styles.header} */}
-      <h1>COMO VAI AMOR ?</h1>
+    <header className={styles.header}>
+      <h1>AGORA TESTE COMO VAI</h1>
     </header>
   );
 };
