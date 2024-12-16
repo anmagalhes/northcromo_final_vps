@@ -1,8 +1,9 @@
 // src/App.tsx
 import React from 'react';
+
 // Components
-import Header from 'components/Header/Header';
-import Footer from 'components/Footer/Footer';
+import Header from './components/Header/Header';
+import Footer from './components/Footer/Footer';
 
 const App: React.FC = () => {
   return (
