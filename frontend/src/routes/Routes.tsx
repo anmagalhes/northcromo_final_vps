@@ -3,7 +3,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 
 import { Home } from '../pages/Home'
-import { ClientesPage } from '../pages/Cliente';
+import { Cliente } from '../pages/Cliente';
 
 export const AppRoutes: React.FC = () => {
   return (
@@ -16,7 +16,7 @@ export const AppRoutes: React.FC = () => {
         <Route path="/cliente" element={<Cliente />} />
 
         {/* Redirecionamento para /home caso a rota não exista */}
-        <Route path="*" element={<Navigate to="/home" />} />
+        <Route path="*" element={<Navigate to="/cliente" />} />
       </Routes>
     </Router>
   );
