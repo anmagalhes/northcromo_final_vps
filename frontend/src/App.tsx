@@ -7,8 +7,8 @@ import Footer from 'components/Footer/Footer';
 const App: React.FC = () => {
   return (
     <div>
-      <Header />
       <h1>Bem-vindo à aplicação!</h1>
+      <Header />
       <h2>TESTE!</h2>
       <Footer/>
     </div>
