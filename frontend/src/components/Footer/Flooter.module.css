@@ -1,12 +1,20 @@
-.footer{
-    height: 200px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+/* Rodapé */
+footer {
+    height: 40px; /* Altura pequena para o rodapé */
     background-color: #282c34;
     color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    bottom: 0;
+    width: 100%; /* Garantir que o rodapé ocupe toda a largura */
+    padding: 10px 0; /* Espaçamento interno */
+    text-align: center;
 }
-.footer span{
+
+/* Estilo do texto do rodapé */
+footer span {
     font-weight: bold;
     color: #61dafb;
 }
