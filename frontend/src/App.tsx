@@ -5,6 +5,7 @@ const App: React.FC = () => {
   return (
     <div>
       <h1>Bem-vindo à aplicação!</h1>
+      <h1>TESTE!</h1>
     </div>
   );
 }
