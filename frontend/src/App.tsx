@@ -3,7 +3,7 @@ import React from 'react';
 
 // Components
 import Header from './components/Header/Header';
-import Footer from './components/Footer/Footer';
+import Footer from './components/Footer/Flooter';
 
 const App: React.FC = () => {
   return (
