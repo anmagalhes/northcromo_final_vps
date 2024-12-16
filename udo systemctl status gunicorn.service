@@ -1,0 +1,20 @@
+[0;1;32m●[0m gunicorn.service - gunicorn daemon for Flask app
+     Loaded: loaded (]8;;file://srv668340/etc/systemd/system/gunicorn.service/etc/systemd/system/gunicorn.service]8;;; [0;1;32menabled[0m; preset: [0;1;32menabled[0m)
+     Active: [0;1;32mactive (running)[0m since Sun 2024-12-15 23:12:41 UTC; 6s ago
+   Main PID: 84668 (gunicorn)
+      Tasks: 4 (limit: 19149)
+     Memory: 138.6M (peak: 138.9M)
+        CPU: 1.238s
+     CGroup: /system.slice/gunicorn.service
+             ├─[0;38;5;245m84668 /var/www/northcromo_final_vps/backend/venv/bin/python3 /var/www/northcromo_final_vps/backend/venv/bin/gunicorn --workers 3 --bind 127.0.0.1:8000 app.app:app[0m
+             ├─[0;38;5;245m84671 /var/www/northcromo_final_vps/backend/venv/bin/python3 /var/www/northcromo_final_vps/backend/venv/bin/gunicorn --workers 3 --bind 127.0.0.1:8000 app.app:app[0m
+             ├─[0;38;5;245m84672 /var/www/northcromo_final_vps/backend/venv/bin/python3 /var/www/northcromo_final_vps/backend/venv/bin/gunicorn --workers 3 --bind 127.0.0.1:8000 app.app:app[0m
+             └─[0;38;5;245m84673 /var/www/northcromo_final_vps/backend/venv/bin/python3 /var/www/northcromo_final_vps/backend/venv/bin/gunicorn --workers 3 --bind 127.0.0.1:8000 app.app:app[0m
+
+Dec 15 23:12:41 srv668340 systemd[1]: Started gunicorn.service - gunicorn daemon for Flask app.
+Dec 15 23:12:41 srv668340 gunicorn[84668]: [2024-12-15 23:12:41 +0000] [84668] [INFO] Starting gunicorn 23.0.0
+Dec 15 23:12:41 srv668340 gunicorn[84668]: [2024-12-15 23:12:41 +0000] [84668] [INFO] Listening at: http://127.0.0.1:8000 (84668)
+Dec 15 23:12:41 srv668340 gunicorn[84668]: [2024-12-15 23:12:41 +0000] [84668] [INFO] Using worker: sync
+Dec 15 23:12:41 srv668340 gunicorn[84671]: [2024-12-15 23:12:41 +0000] [84671] [INFO] Booting worker with pid: 84671
+Dec 15 23:12:41 srv668340 gunicorn[84672]: [2024-12-15 23:12:41 +0000] [84672] [INFO] Booting worker with pid: 84672
+Dec 15 23:12:41 srv668340 gunicorn[84673]: [2024-12-15 23:12:41 +0000] [84673] [INFO] Booting worker with pid: 84673
