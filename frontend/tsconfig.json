@@ -10,12 +10,11 @@
     "skipLibCheck": true,             // Ignora verificação de tipo das bibliotecas
     "forceConsistentCasingInFileNames": true, // Garante consistência de casing nos nomes de arquivos
     "outDir": "./dist",               // Diretório para arquivos compilados
-    "baseUrl": "src",                 // Alterado para 'src' para facilitar resolução
+    "baseUrl": ".",                   // Base URL para resolução de módulos
     "paths": {
       "@components/*": ["src/components/*"],
       "@assets/*": ["src/assets/*"],
-      "@utils/*": ["src/utils/*"],
-      "@pages/*": ["src/pages/*"]    // Adicionado o alias para páginas
+      "@utils/*": ["src/utils/*"]
     },
     "jsx": "react-jsx"                // Usar JSX em React
   },
@@ -26,4 +25,3 @@
     "node_modules"                    // Excluir node_modules
   ]
 }
-

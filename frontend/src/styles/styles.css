@@ -1,0 +1,8 @@
+// Button.tsx
+import styles from './Button.module.css';
+
+const Button: React.FC = () => {
+    return <button className={styles.btn}>Clique Aqui</button>;
+};
+
+export default Button;
