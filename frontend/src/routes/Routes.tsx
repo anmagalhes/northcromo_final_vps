@@ -1,8 +1,8 @@
 // src/routes/Routes.tsx
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { Home } from '../pages/Home';  // Certifique-se de que Home está corretamente importado
-import { Cliente } from '../pages/cliente''; // Da mesma forma, Cliente deve ser importado corretamente
+import { Home } from 'pages/home';  // Certifique-se de que Home está corretamente importado
+import { Cliente } from 'pages/Cliente'; // Da mesma forma, Cliente deve ser importado corretamente
 
 export const AppRoutes: React.FC = () => {
   return (
@@ -22,3 +22,4 @@ export const AppRoutes: React.FC = () => {
 };
 
 export default AppRoutes;
+
