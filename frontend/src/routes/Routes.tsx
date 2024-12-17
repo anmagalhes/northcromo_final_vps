@@ -2,8 +2,8 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 
-import  Home  from '../pages/Home'
-import Cliente from '../pages/cliente';
+import Home from '../pages/Home';
+import Cliente from '../pages/Cliente';
 
 export const AppRoutes: React.FC = () => {
   return (
