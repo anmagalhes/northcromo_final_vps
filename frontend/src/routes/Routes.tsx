@@ -3,8 +3,8 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 
 //import Home from '../pages/Home';  // Usando o alias
-import Cliente from '../pages/Cliente';  // Usando o alias
-import Home from '../pages/Home';
+import Cliente from '../pages/cliente';  // Usando o alias
+import Home from '../pages/home';
 
 export const AppRoutes: React.FC = () => {
   return (
