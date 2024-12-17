@@ -1,20 +1,18 @@
 #!/bin/bash
 
-# Caminho do seu diretório de projeto
+# Caminho do seu diretório de backend (especificamente para o backend)
 PROJECT_DIR="/var/www/northcromo_final_vps"
+BACKEND_DIR="$PROJECT_DIR/backend"
 
-# Caminho do ambiente virtual (corrigido para o diretório correto)
-VENV_DIR="$PROJECT_DIR/backend/venv"
+# Caminho do ambiente virtual (corrigido para o diretório correto dentro do backend)
+VENV_DIR="$BACKEND_DIR/venv"
 
 # Caminho do Gunicorn
 GUNICORN_SERVICE="/etc/systemd/system/gunicorn.service"
 
-# Caminho do diretório do backend
-BACKEND_DIR="$PROJECT_DIR/backend"
-
-# Passo 1: Navegar até o diretório do projeto
-echo "Navegando até o diretório do projeto: $PROJECT_DIR"
-cd $PROJECT_DIR || { echo "Erro: Não foi possível acessar o diretório $PROJECT_DIR"; exit 1; }
+# Passo 1: Navegar até o diretório do backend
+echo "Navegando até o diretório do backend: $BACKEND_DIR"
+cd $BACKEND_DIR || { echo "Erro: Não foi possível acessar o diretório $BACKEND_DIR"; exit 1; }
 
 # Passo 2: Verificar se há alterações locais
 echo "Verificando alterações locais..."
