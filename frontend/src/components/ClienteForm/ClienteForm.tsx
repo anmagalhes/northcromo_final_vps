@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { Cliente } from 'src/types/Cliente'; // Importando o tipo correto
 
-// Definindo os tipos de props que o ClienteForm espera
+// Definindo os tiposs de props que o ClienteForm espera
 interface ClienteFormProps {
   onClienteAdicionado: (cliente: Cliente) => void; // Prop para enviar o cliente adicionado
 }
