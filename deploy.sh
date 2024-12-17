@@ -27,7 +27,7 @@ git clean -fd || { echo "Erro: Falha ao limpar arquivos não rastreados."; exit 
 
 # Passo 4: Puxar as últimas alterações do Git
 echo "Puxando as últimas alterações do Git..."
-git pull origin main || { echo "Erro: Falha ao puxar do Git. Verifique se o repositório remoto está configurado corretamente."; exit 1; }
+git pull || { echo "Erro: Falha ao puxar do Git. Verifique se o repositório remoto está configurado corretamente."; exit 1; }
 
 # Passo 5: Verificar e ativar o ambiente virtual
 echo "Verificando o ambiente virtual em: $VENV_DIR"
