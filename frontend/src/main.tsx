@@ -1,17 +1,21 @@
 // main.tsx
+import React from 'react';
 import { StrictMode } from 'react';
-import { createRoot } from 'react-dom/client';  // Usando a versão moderna da React 18+
+import { createRoot } from 'react-dom/client';
+import { BrowserRouter as Router } from 'react-router-dom';  // Aqui você coloca o Router
+
 import './index.css';
 import './styles/styles.css';  // Importe o CSS local
 
 import App from './App';
 
-// Criação da raiz para o React 18+
 const rootElement = document.getElementById('root') as HTMLElement;
-const root = createRoot(rootElement);  // Usando createRoot
+const root = createRoot(rootElement);  // Criação da raiz para o React 18+
 
 root.render(
   <StrictMode>
-    <App />
+    <Router>  {/* O Router é envolvido aqui */}
+      <App />
+    </Router>
   </StrictMode>
 );
