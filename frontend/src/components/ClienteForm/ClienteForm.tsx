@@ -1,9 +1,9 @@
 // src/components/ClienteForm/ClienteForm.tsx
 import React, { useState } from 'react';
+import { Cliente } from 'src/types/Cliente';
 
-// Definindo os tipos de props que o ClienteForm espera
 interface ClienteFormProps {
-  onClienteAdicionado: (cliente: Clientes) => void; // Prop para enviar o cliente adicionado
+  onClienteAdicionado: (cliente: Cliente) => void; // Prop para enviar o cliente adicionado
 }
 
 const ClienteForm: React.FC<ClienteFormProps> = ({ onClienteAdicionado }) => {
@@ -15,7 +15,7 @@ const ClienteForm: React.FC<ClienteFormProps> = ({ onClienteAdicionado }) => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    const novoCliente = {
+    const novoCliente: Cliente = {
       id: Date.now(), // Usando timestamp para id único
       nome,
       email,
@@ -51,4 +51,3 @@ const ClienteForm: React.FC<ClienteFormProps> = ({ onClienteAdicionado }) => {
 };
 
 export default ClienteForm;
-
