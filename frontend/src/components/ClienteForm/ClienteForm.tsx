@@ -1,14 +1,6 @@
 // src/components/ClienteForm/ClienteForm.tsx
 import React, { useState } from 'react';
 
-// Definindo o tipo de cliente
-interface Clientes {
-  id: number;
-  nome: string;
-  email: string;
-  telefone: string;
-}
-
 // Definindo os tipos de props que o ClienteForm espera
 interface ClienteFormProps {
   onClienteAdicionado: (cliente: Clientes) => void; // Prop para enviar o cliente adicionado

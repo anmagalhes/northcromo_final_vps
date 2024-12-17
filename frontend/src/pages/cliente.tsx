@@ -34,7 +34,7 @@ const Cliente: React.FC = () => {
     }
   };
 
-  const handleClienteAdicionado = (novoCliente: Cliente) => {
+  const handleClienteAdicionado = (novoCliente: ClienteType) => {
     setClientes(prevClientes => [...prevClientes, novoCliente]);
   };
 
