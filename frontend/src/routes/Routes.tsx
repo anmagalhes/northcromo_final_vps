@@ -1,7 +1,7 @@
 // src/routes/Routes.tsx
 import { Routes, Route, Navigate } from 'react-router-dom';
-import Home from '../pages/Home';  // Corrigido para o caminho correto do arquivo Home.tsx
-import Cliente from '../pages/Cliente';  // Corrigido para o caminho correto do arquivo Cliente.tsx
+import Home from '../pages/Home';
+import Cliente from '../pages/Cliente';
 
 export const AppRoutes: React.FC = () => {
   return (
