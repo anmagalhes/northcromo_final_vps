@@ -1,22 +1,22 @@
 {
   "compilerOptions": {
-    "target": "esnext",               // Usar a versão mais recente do JS
-    "module": "esnext",               // Usar módulos ES6
-    "moduleResolution": "node",       // Resolução de módulos como no Node.js
-    "esModuleInterop": true,          // Permitir interoperabilidade entre módulos ES6 e CommonJS
-    "declaration": true,              // Gerar arquivos .d.ts, opcional
-    "allowJs": true,                  // Permitir arquivos .js junto com TypeScript
-    "strict": true,                   // Habilitar verificações rigorosas de tipo
-    "skipLibCheck": true,             // Ignorar verificação de tipo das bibliotecas
-    "forceConsistentCasingInFileNames": true, // Garante consistência nos nomes de arquivos
-    "outDir": "./dist",               // Diretório para arquivos compilados
-    "baseUrl": ".",                   // Base URL para resolução de módulos
-    "jsx": "react-jsx"                // Usar JSX para React
+    "target": "esnext",                    // Usa a versão mais recente do JS
+    "module": "esnext",                    // Usa módulos ES6
+    "moduleResolution": "node",            // Como o Node.js resolve os módulos
+    "esModuleInterop": true,               // Interoperabilidade com módulos ES
+    "declaration": true,                   // Gera arquivos de declaração .d.ts
+    "allowJs": true,                       // Permite importar arquivos JS junto com TS
+    "strict": true,                        // Habilita verificações rigorosas
+    "skipLibCheck": true,                  // Ignora a verificação das bibliotecas
+    "forceConsistentCasingInFileNames": true, // Garante consistência nas letras maiúsculas/minúsculas dos arquivos
+    "outDir": "./dist",                    // Diretório de saída
+    "baseUrl": ".",                        // Base para resolução de módulos
+    "jsx": "react-jsx"                     // Configuração do JSX no React
   },
   "include": [
-    "src/**/*"                        // Incluir todos os arquivos da pasta src
+    "src/**/*"                             // Inclui todos os arquivos da pasta src
   ],
   "exclude": [
-    "node_modules"                    // Excluir node_modules
+    "node_modules"                         // Exclui a pasta node_modules
   ]
 }
