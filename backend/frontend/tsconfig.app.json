@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "composite": true,                      // Permite a construção de projetos compostos
+    "declaration": true,                    // Gera arquivos .d.ts
+    "declarationDir": "./types",            // Diretório onde os arquivos .d.ts serão armazenados
+    "target": "ES2020",                     // Define o alvo para ES2020
+    "module": "ESNext",                     // Usando módulos ESNext
+    "strict": true,                         // Ativa verificações rigorosas
+    "skipLibCheck": true,                   // Ignora a verificação de tipos em bibliotecas
+    "esModuleInterop": true,                // Permite importação de módulos CommonJS
+    "moduleResolution": "bundler",          // Resolução de módulos compatível com bundlers como Vite
+    "jsx": "react-jsx",                     // Tipo JSX para React 17+
+    "noUnusedLocals": true,                 // Marca locais não utilizados como erro
+    "noUnusedParameters": true,             // Marca parâmetros não utilizados como erro
+    "noFallthroughCasesInSwitch": true,     // Marca fallthrough em switch como erro
+    "noUncheckedSideEffectImports": true,   // Marca importações com efeitos colaterais não verificados como erro
+    "outDir": "./dist",                     // Define o diretório de saída para os arquivos compilados
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo", // Local do arquivo de informações de compilação
+    "allowImportingTsExtensions": true,     // Permite importar arquivos .ts diretamente
+    "isolatedModules": true,                // Modo de compilação isolado
+    "moduleDetection": "force"              // Força a detecção de módulos
+  },
+  "include": ["src/**/*"],                  // Inclui todos os arquivos dentro da pasta src
+  "exclude": ["node_modules", "dist"]       // Exclui node_modules e dist da compilação
+}
