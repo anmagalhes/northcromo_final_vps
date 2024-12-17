@@ -1,27 +1,27 @@
 {
   "compilerOptions": {
-    "target": "esnext",               // Alvo para a versão mais recente do JS
-    "module": "esnext",               // Usar módulos ES6
-    "moduleResolution": "node",       // Resolução de módulos como no Node.js
-    "esModuleInterop": true,          // Permitir interoperação entre módulos ES6 e CommonJS
-    "declaration": true,              // Gera os arquivos .d.ts (opcional, caso precise de declarações de tipos)
-    "allowJs": true,                  // Permite arquivos .js junto com TypeScript
-    "strict": true,                   // Habilita verificações rigorosas de tipo
-    "skipLibCheck": true,             // Ignora verificação de tipo das bibliotecas
-    "forceConsistentCasingInFileNames": true, // Garante consistência de casing nos nomes de arquivos
-    "outDir": "./dist",               // Diretório para arquivos compilados
-    "baseUrl": ".",                   // Base URL para resolução de módulos
+    "target": "esnext",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "declaration": true,
+    "allowJs": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "outDir": "./dist",
+    "baseUrl": ".", 
     "paths": {
       "@components/*": ["src/components/*"],
       "@assets/*": ["src/assets/*"],
-      "@utils/*": ["src/utils/*"]
+      "@pages/*": ["src/pages/*"]  // Aqui está o alias que você precisa garantir que está correto
     },
-    "jsx": "react-jsx"                // Usar JSX em React
+    "jsx": "react-jsx"
   },
   "include": [
-    "src/**/*"                        // Incluir todos os arquivos da pasta src
+    "src/**/*"
   ],
   "exclude": [
-    "node_modules"                    // Excluir node_modules
+    "node_modules"
   ]
 }
