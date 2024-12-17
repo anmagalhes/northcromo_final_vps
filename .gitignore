@@ -26,6 +26,5 @@ venv
 *.pyc
 __pycache__/
 *.pyc
-deploy.sh
 
 
