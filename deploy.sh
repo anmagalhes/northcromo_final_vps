@@ -22,7 +22,7 @@ git reset --hard HEAD || { echo "Erro: Falha ao descartar alterações locais"; 
 
 # Passo 3: Puxar as últimas alterações do Git
 echo "Puxando as últimas alterações do Git..."
-git pull origin || { echo "Erro: Falha ao puxar do Git. Verifique se o repositório remoto está configurado corretamente."; exit 1; }
+git pull || { echo "Erro: Falha ao puxar do Git. Verifique se o repositório remoto está configurado corretamente."; exit 1; }
 
 # Passo 4: Verificar e ativar o ambiente virtual
 echo "Verificando o ambiente virtual em: $VENV_DIR"
