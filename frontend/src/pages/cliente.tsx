@@ -3,10 +3,10 @@ import React, { useEffect, useState } from 'react';
 import { getClientes, deleteCliente } from '../api/clientes';  // Funções para buscar e excluir clientes
 import ClienteForm from '../components/ClienteForm/ClienteForm';  // Importando o formulário
 import ClienteList from '../components/ClienteList/ClienteList';  // Importando a lista de clientes
-import { Cliente } from '../types/Cliente';  // Importando o tipo Cliente do arquivo de tipos
+import { Cliente as ClienteType } from '../types/Cliente';  // Importando o tipo Cliente do arquivo de tipos
 
 const Cliente: React.FC = () => {
-  const [clientes, setClientes] = useState<Cliente[]>([]);
+  const [clientes, setClientes] = useState<ClienteType[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
