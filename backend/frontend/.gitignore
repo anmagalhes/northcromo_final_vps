@@ -25,10 +25,4 @@ dist-ssr
 venv
 *.pyc
 __pycache__/
-*.pyc
 
-<<<<<<< HEAD
-=======
-
-
->>>>>>> 2ae4f32921b5c184e7d33bb47deab5b05b1b03f3

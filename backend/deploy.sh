@@ -20,16 +20,9 @@ cd $PROJECT_DIR || { echo "Erro: Não foi possível acessar o diretório $PROJEC
 echo "Descartando alterações locais (se houver)..."
 git reset --hard HEAD || { echo "Erro: Falha ao descartar alterações locais"; exit 1; }
 
-<<<<<<< HEAD
 # Passo 3: Puxar as últimas alterações do Git
 echo "Puxando as últimas alterações do Git..."
 git pull || { echo "Erro: Falha ao puxar do Git. Verifique se o repositório remoto está configurado corretamente."; exit 1; }
-=======
-# Passo 4: Garantir que o repositório está atualizado com o remoto
-echo "Puxando as últimas alterações do Git..."
-git fetch origin || { echo "Erro: Falha ao buscar atualizações do repositório."; exit 1; }
-git reset --hard origin/main || { echo "Erro: Não foi possível alinhar o repositório com o remoto."; exit 1; }
->>>>>>> 2ae4f32921b5c184e7d33bb47deab5b05b1b03f3
 
 # Passo 4: Verificar e ativar o ambiente virtual
 echo "Verificando o ambiente virtual em: $VENV_DIR"
