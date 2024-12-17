@@ -1,10 +1,9 @@
 // src/components/ClienteForm/ClienteForm.tsx
 import React, { useState } from 'react';
-import { Cliente } from 'src/types/Cliente';  // Garantindo o tipo correto
+import { Cliente } from 'src/types/Cliente';  // Garantindo que o tipo correto seja importado
 
-// Tipo de props
 interface ClienteFormProps {
-  onClienteAdicionado: (cliente: Cliente) => void; // Espera um tipo 'Cliente'
+  onClienteAdicionado: (cliente: Cliente) => void; // Espera um objeto 'Cliente'
 }
 
 const ClienteForm: React.FC<ClienteFormProps> = ({ onClienteAdicionado }) => {
@@ -15,7 +14,7 @@ const ClienteForm: React.FC<ClienteFormProps> = ({ onClienteAdicionado }) => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Garantindo que o novo cliente tenha o tipo 'Cliente'
+    // Criando um novo cliente com o tipo correto 'Cliente'
     const novoCliente: Cliente = {
       id: Date.now(),
       nome,
@@ -23,7 +22,7 @@ const ClienteForm: React.FC<ClienteFormProps> = ({ onClienteAdicionado }) => {
       telefone,
     };
 
-    onClienteAdicionado(novoCliente); // Passando o cliente com o tipo correto
+    onClienteAdicionado(novoCliente);  // Chamando a função com o cliente correto
   };
 
   return (
