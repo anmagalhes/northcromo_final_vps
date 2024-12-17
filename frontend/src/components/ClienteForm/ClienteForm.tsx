@@ -1,4 +1,5 @@
 // src/components/ClienteForm/ClienteForm.tsx
+//teste
 import React, { useState } from 'react';
 import { Cliente } from 'src/types/Cliente';
 
