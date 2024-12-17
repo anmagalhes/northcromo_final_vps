@@ -1,0 +1,12 @@
+[Unit]
+Description=gunicorn daemon for Flask app
+After=network.target
+
+[Service]
+User=www-data
+Group=www-data
+WorkingDirectory=/var/www/northcromo_final_vps/backend
+ExecStart=/var/www/northcromo_final_vps/backend/venv/bin/gunicorn --workers 3 --bind 0.0.0.0:5000 app.app:app --log-level debug --access-logfile /var/log/gunicorn_access.log --error-logfile /var/log/gunicorn_error.log
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "target": "esnext",                    // Usa a versão mais recente do JS
+    "module": "esnext",                    // Usa módulos ES6
+    "moduleResolution": "node",            // Como o Node.js resolve os módulos
+    "esModuleInterop": true,               // Interoperabilidade com módulos ES
+    "declaration": true,                   // Gera arquivos de declaração .d.ts
+    "allowJs": true,                       // Permite importar arquivos JS junto com TS
+    "strict": true,                        // Habilita verificações rigorosas
+    "skipLibCheck": true,                  // Ignora a verificação das bibliotecas
+    "forceConsistentCasingInFileNames": true, // Garante consistência nas letras maiúsculas/minúsculas dos arquivos
+    "outDir": "./dist",                    // Diretório de saída
+    "baseUrl": ".",                        // Base para resolução de módulos
+    "jsx": "react-jsx"                     // Configuração do JSX no React
+  },
+  "include": [
+    "src/**/*"                             // Inclui todos os arquivos da pasta src
+  ],
+  "exclude": [
+    "node_modules"                         // Exclui a pasta node_modules
+  ]
+}
