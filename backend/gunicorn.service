@@ -1,5 +1,5 @@
 [Unit]
-Description=Gunicorn daemon for Flask app
+Description=gunicorn daemon for Flask app
 After=network.target
 
 [Service]
