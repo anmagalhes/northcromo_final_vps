@@ -3,7 +3,7 @@
 # Caminho do seu diretório de projeto
 PROJECT_DIR="/var/www/northcromo_final_vps"
 
-# Caminho do ambiente virtual
+# Caminho do ambiente virtual (corrigido para o diretório correto)
 VENV_DIR="$PROJECT_DIR/backend/venv"
 
 # Caminho do Gunicorn
