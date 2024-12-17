@@ -27,9 +27,10 @@ fi
 echo "Descartando alterações locais (se houver)..."
 git reset --hard HEAD || { echo "Erro: Falha ao descartar alterações locais"; exit 1; }
 
-# Passo 4: Puxar as últimas alterações do Git
+# Passo 4: Garantir que o repositório está atualizado com o remoto
 echo "Puxando as últimas alterações do Git..."
-git pull origin main || { echo "Erro: Falha ao puxar do Git. Verifique se o repositório remoto está configurado corretamente."; exit 1; }
+git fetch origin || { echo "Erro: Falha ao buscar atualizações do repositório."; exit 1; }
+git reset --hard origin/main || { echo "Erro: Não foi possível alinhar o repositório com o remoto."; exit 1; }
 
 # Passo 5: Verificar e ativar o ambiente virtual
 echo "Verificando o ambiente virtual em: $VENV_DIR"
@@ -54,4 +55,3 @@ echo "Verificando o status do Gunicorn..."
 systemctl status gunicorn --no-pager || { echo "Erro: Gunicorn não está funcionando corretamente."; exit 1; }
 
 echo "Deploy realizado com sucesso!"
-
