@@ -1,12 +1,12 @@
 // src/pages/Cliente.tsx
 import React, { useEffect, useState } from 'react';
-import { getClientes, deleteCliente } from '../api/clientes';  // Funções para buscar e excluir clientes
-import ClienteForm from '../components/ClienteForm/ClienteForm';  // Importando o formulário
-import ClienteList from '../components/ClienteList/ClienteList';  // Importando a lista de clientes
-import { Cliente as ClienteType } from '../types/Cliente';  // Importando o tipo Cliente do arquivo de tipos
+import { getClientes, deleteCliente } from '../api/clientes';
+import ClienteForm from '../components/ClienteForm/ClienteForm';
+import ClienteList from '../components/ClienteList/ClienteList';
+import { Cliente } from '../types/Cliente';  // Importando corretamente o tipo 'Cliente'
 
-const Cliente: React.FC = () => {
-  const [clientes, setClientes] = useState<ClienteType[]>([]);
+const ClientePage: React.FC = () => {
+  const [clientes, setClientes] = useState<Cliente[]>([]);  // Usando o tipo correto
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -34,7 +34,8 @@ const Cliente: React.FC = () => {
     }
   };
 
-  const handleClienteAdicionado = (novoCliente: ClienteType) => {
+  // A função handleClienteAdicionado recebe um 'Cliente' corretamente
+  const handleClienteAdicionado = (novoCliente: Cliente) => {
     setClientes(prevClientes => [...prevClientes, novoCliente]);
   };
 
@@ -52,5 +53,4 @@ const Cliente: React.FC = () => {
   );
 };
 
-// Exportando o componente usando export default
-export default Cliente;  // Exportação padrão
+export default ClientePage;
