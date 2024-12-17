@@ -5,7 +5,7 @@ import os
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 import asyncio
-from flask import Flask, jsonify
+from flask import Flask, jsonify, g
 from flask_migrate import Migrate
 from dotenv import load_dotenv
 from app.models import some_function
@@ -20,8 +20,8 @@ from app.defeitos import defeito_blueprint
 from app.checklist_recebimento import checklist_recebimento_blueprint
 from app.foto_recebimento import foto_recebimento_blueprint
 from app.funcionario import funcionario_blueprint
-from app.cliente  import cliente_blueprint
-from app.componente  import componente_blueprint
+from app.cliente import cliente_blueprint
+from app.componente import componente_blueprint
 #from grupo_produto  import grupo_produto_blueprint
 
 # Carregar as variáveis do arquivo .env
@@ -58,7 +58,7 @@ async def create_app():
     app.register_blueprint(componente_blueprint, url_prefix='/componente')
     #app.register_blueprint(grupo_produto_blueprint, url_prefix='/grupo_produto')
 
-     # Exemplo de rota da API
+    # Exemplo de rota da API
     @app.route('/api')
     def api_home():
         return jsonify({
@@ -90,10 +90,10 @@ def run():
     # Usamos asyncio.run para inicializar o app de forma assíncrona
     asyncio.run(start_app())  # Inicia a aplicação assíncrona
 
+# Função para inicializar o app com Flask
 async def start_app():
     app = await create_app()  # Cria a aplicação Flask com configuração assíncrona
     app.run(debug=True, host="0.0.0.0")  # Rodando Flask de maneira síncrona, mas com setup assíncrono
-
 
 if __name__ == "__main__":
     run()  # Inicia o processo de execução
