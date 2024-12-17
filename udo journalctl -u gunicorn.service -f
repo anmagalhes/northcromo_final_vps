@@ -1,0 +1,20 @@
+[0;1;32m●[0m gunicorn.service - gunicorn daemon for Flask app
+     Loaded: loaded (]8;;file://srv668340/etc/systemd/system/gunicorn.service/etc/systemd/system/gunicorn.service]8;;; [0;1;32menabled[0m; preset: [0;1;32menabled[0m)
+     Active: [0;1;32mactive (running)[0m since Sun 2024-12-15 21:12:35 UTC; 4s ago
+   Main PID: 78420 (gunicorn)
+      Tasks: 1 (limit: 19149)
+     Memory: 14.0M (peak: 144.7M)
+        CPU: 1.433s
+     CGroup: /system.slice/gunicorn.service
+             └─[0;38;5;245m78420 /var/www/northcromo_final_vps/backend/venv/bin/python3 /var/www/northcromo_final_vps/backend/venv/bin/gunicorn --workers 3 --bind 127.0.0.1:8000 app.app:app[0m
+
+Dec 15 21:12:36 srv668340 gunicorn[78420]:   File "/var/www/northcromo_final_vps/backend/venv/lib/python3.12/site-packages/gunicorn/arbiter.py", line 395, in stop
+Dec 15 21:12:36 srv668340 gunicorn[78420]:     time.sleep(0.1)
+Dec 15 21:12:36 srv668340 gunicorn[78420]:   File "/var/www/northcromo_final_vps/backend/venv/lib/python3.12/site-packages/gunicorn/arbiter.py", line 241, in handle_chld
+Dec 15 21:12:36 srv668340 gunicorn[78420]:     self.reap_workers()
+Dec 15 21:12:36 srv668340 gunicorn[78420]:   File "/var/www/northcromo_final_vps/backend/venv/lib/python3.12/site-packages/gunicorn/arbiter.py", line 553, in reap_workers
+Dec 15 21:12:36 srv668340 gunicorn[78420]:     self.log.error(msg)
+Dec 15 21:12:36 srv668340 gunicorn[78420]:   File "/var/www/northcromo_final_vps/backend/venv/lib/python3.12/site-packages/gunicorn/glogging.py", line 271, in error
+Dec 15 21:12:36 srv668340 gunicorn[78420]:     self.error_log.error(msg, *args, **kwargs)
+Dec 15 21:12:36 srv668340 gunicorn[78420]: Message: 'Worker (pid:78424) was sent SIGTERM!'
+Dec 15 21:12:36 srv668340 gunicorn[78420]: Arguments: ()
