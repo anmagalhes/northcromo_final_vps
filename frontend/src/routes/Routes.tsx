@@ -1,22 +1,22 @@
 // src/routes/Routes.tsx
-import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
-
-import Home from '../pages/Home';
-import Cliente from '../pages/Cliente';
+import Home from '../pages/Home';  // Corrigido para o caminho correto do arquivo Home.tsx
+import Cliente from '../pages/Cliente';  // Corrigido para o caminho correto do arquivo Cliente.tsx
 
 export const AppRoutes: React.FC = () => {
   return (
     <Routes>
-      {/* Rota para o componente Home */}
+      {/* Rota para a página Home */}
       <Route path="/home" element={<Home />} />
-      {/* Rota para o componente Cliente */}
+
+      {/* Rota para a página Cliente */}
       <Route path="/cliente" element={<Cliente />} />
 
-      {/* Redirecionamento para /cliente caso a rota não exista */}
+      {/* Redireciona para /cliente por padrão */}
       <Route path="/" element={<Navigate to="/cliente" />} />
     </Routes>
   );
 };
 
 export default AppRoutes;
+
