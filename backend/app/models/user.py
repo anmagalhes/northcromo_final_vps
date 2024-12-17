@@ -1,6 +1,7 @@
 from datetime import datetime  # Importando o datetime
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Boolean
 from sqlalchemy.orm import validates, relationship  # Corrigido 'Relationship' para 'relationship'
+from werkzeug.security import generate_password_hash, check_password_hash  #
 from .db import db  # Importa a instância do db
 
 class User(db.Model):  # A classe está correta com 'Usuarios' e não 'Usuario'
@@ -9,7 +10,7 @@ class User(db.Model):  # A classe está correta com 'Usuarios' e não 'Usuario'
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
     email = db.Column(db.String(120), index=True, unique=True, nullable=False)
-    password = db.Column(db.String(20), nullable=False)
+    password = db.Column(db.String(128), nullable=False)
     en_admin = db.Column(db.Boolean, default=False)  # Corrigido 'Columm' para 'Column'
     created_at = db.Column(db.DateTime, default=datetime.utcnow)  # Data de criação
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)  # Data de última atualização
@@ -107,6 +108,16 @@ class User(db.Model):  # A classe está correta com 'Usuarios' e não 'Usuario'
         uselist=True,  # Indica que é uma relação de um-para-muitos
         lazy='joined'
         )
+    
+    # Método para definir a senha (transforma em hash)
+    def set_password(self, password):
+        """Transforma a senha fornecida em um hash e armazena"""
+        self.password = generate_password_hash(password)  # Gera o hash da senha
+    
+    # Método para verificar a senha durante o login
+    def check_password(self, password):
+        """Verifica a senha fornecida com o hash armazenado"""
+        return check_password_hash(self.password, password)  # Verifica se o hash da senha bate
     
     def __repr__(self):
         return f'<User {self.username}>'
