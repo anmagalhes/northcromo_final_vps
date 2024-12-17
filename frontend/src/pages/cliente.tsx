@@ -1,9 +1,9 @@
 // src/pages/Cliente.tsx
 import React, { useEffect, useState } from 'react';
-import { getClientes, deleteCliente } from '../api/clientes';
-import ClienteForm from '../components/ClienteForm/ClienteForm';
-import ClienteList from '../components/ClienteList/ClienteList';
-import { Cliente } from '../types/Cliente';  // Importando corretamente o tipo 'Cliente'
+import { getClientes, deleteCliente } from '../api/clientes';  // Funções de API
+import ClienteForm from '../components/ClienteForm/ClienteForm';  // Formulário de Cliente
+import ClienteList from '../components/ClienteList/ClienteList';  // Lista de Clientes
+import { Cliente } from '../types/Cliente';  // Certificando-se de usar o tipo correto
 
 const ClientePage: React.FC = () => {
   const [clientes, setClientes] = useState<Cliente[]>([]);  // Usando o tipo correto
@@ -34,8 +34,7 @@ const ClientePage: React.FC = () => {
     }
   };
 
-  // A função handleClienteAdicionado recebe um 'Cliente' corretamente
-  const handleClienteAdicionado = (novoCliente: Cliente) => {
+  const handleClienteAdicionado = (novoCliente: Cliente) => {  // Tipo corrigido aqui
     setClientes(prevClientes => [...prevClientes, novoCliente]);
   };
 
@@ -54,3 +53,4 @@ const ClientePage: React.FC = () => {
 };
 
 export default ClientePage;
+
