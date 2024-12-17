@@ -6,11 +6,10 @@ import ClienteList from '../components/ClienteList/ClienteList';  // Importando 
 import { Cliente } from '../types/Cliente';  // Importando o tipo Cliente do arquivo de tipos
 
 const Cliente: React.FC = () => {
-  const [clientes, setClientes] = useState<Cliente[]>([]);  // Usando o tipo Cliente importado
+  const [clientes, setClientes] = useState<Cliente[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Carregar clientes quando o componente for montado
   useEffect(() => {
     const fetchClientes = async () => {
       try {
@@ -26,17 +25,15 @@ const Cliente: React.FC = () => {
     fetchClientes();
   }, []);
 
-  // Função para excluir um cliente
   const handleDeleteCliente = async (id: number) => {
     try {
       await deleteCliente(id);
-      setClientes(clientes.filter(cliente => cliente.id !== id));  // Remove o cliente da lista
+      setClientes(clientes.filter(cliente => cliente.id !== id));
     } catch (error) {
       setError('Falha ao excluir o cliente.');
     }
   };
 
-  // Função para adicionar um cliente à lista local
   const handleClienteAdicionado = (novoCliente: Cliente) => {
     setClientes(prevClientes => [...prevClientes, novoCliente]);
   };
@@ -48,17 +45,12 @@ const Cliente: React.FC = () => {
   return (
     <div>
       <h1>Clientes</h1>
-
-      {/* Exibir mensagem de erro */}
       {error && <div style={{ color: 'red' }}>{error}</div>}
-
-      {/* Componente de formulário para adicionar cliente */}
       <ClienteForm onClienteAdicionado={handleClienteAdicionado} />
-
-      {/* Componente de lista de clientes */}
       <ClienteList clientes={clientes} onDelete={handleDeleteCliente} />
     </div>
   );
 };
 
+// Exportando o componente usando export default
 export default Cliente;  // Exportação padrão
