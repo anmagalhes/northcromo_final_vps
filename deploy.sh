@@ -1,34 +1,35 @@
 #!/bin/bash
 
-# Caminho do seu diretório de backend
+# Caminho do seu diretório de projeto
 PROJECT_DIR="/var/www/northcromo_final_vps"
-BACKEND_DIR="$PROJECT_DIR/backend"
 
-# Caminho do ambiente virtual (corrigido para o diretório correto dentro do backend)
-VENV_DIR="$BACKEND_DIR/venv"
+# Caminho do ambiente virtual (corrigido para o diretório correto)
+VENV_DIR="$PROJECT_DIR/backend/venv"
 
 # Caminho do Gunicorn
 GUNICORN_SERVICE="/etc/systemd/system/gunicorn.service"
 
-# Passo 1: Navegar até o diretório do backend
+# Caminho do diretório do backend
+BACKEND_DIR="$PROJECT_DIR/backend"
+
+# Passo 1: Navegar até o diretório do projeto
+echo "Navegando até o diretório do projeto: $PROJECT_DIR"
+cd $PROJECT_DIR || { echo "Erro: Não foi possível acessar o diretório $PROJECT_DIR"; exit 1; }
+
+# Passo 2: Navegar até o diretório do backend
 echo "Navegando até o diretório do backend: $BACKEND_DIR"
 cd $BACKEND_DIR || { echo "Erro: Não foi possível acessar o diretório $BACKEND_DIR"; exit 1; }
 
-# Passo 2: Verificar se há alterações locais
-echo "Verificando alterações locais..."
-git status --porcelain | grep '^[^?]' > /dev/null
-if [ $? -eq 0 ]; then
-  echo "Alterações locais detectadas. Realizando stash das mudanças..."
-  git stash || { echo "Erro: Falha ao fazer o stash das mudanças locais."; exit 1; }
-else
-  echo "Nenhuma alteração local detectada."
-fi
+# Passo 3: Descartar todas as alterações locais e limpar arquivos não rastreados
+echo "Descartando alterações locais e limpando arquivos não rastreados..."
+git checkout -- . || { echo "Erro: Falha ao descartar as alterações locais."; exit 1; }
+git clean -fd || { echo "Erro: Falha ao limpar arquivos não rastreados."; exit 1; }
 
-# Passo 3: Puxar as últimas alterações do Git
+# Passo 4: Puxar as últimas alterações do Git
 echo "Puxando as últimas alterações do Git..."
 git pull origin main || { echo "Erro: Falha ao puxar do Git. Verifique se o repositório remoto está configurado corretamente."; exit 1; }
 
-# Passo 4: Verificar e ativar o ambiente virtual
+# Passo 5: Verificar e ativar o ambiente virtual
 echo "Verificando o ambiente virtual em: $VENV_DIR"
 if [ -f "$VENV_DIR/bin/activate" ]; then
     echo "Ambiente virtual encontrado. Ativando..."
@@ -38,17 +39,16 @@ else
     exit 1
 fi
 
-# Passo 5: Instalar as dependências
+# Passo 6: Instalar as dependências
 echo "Instalando as dependências do projeto..."
 pip install -r $BACKEND_DIR/requirements.txt || { echo "Erro: Falha ao instalar as dependências."; exit 1; }
 
-# Passo 6: Reiniciar o Gunicorn
+# Passo 7: Reiniciar o Gunicorn
 echo "Reiniciando o Gunicorn..."
 systemctl restart gunicorn || { echo "Erro: Falha ao reiniciar o Gunicorn."; exit 1; }
 
-# Passo 7: Confirmar se o Gunicorn foi reiniciado corretamente
+# Passo 8: Confirmar se o Gunicorn foi reiniciado corretamente
 echo "Verificando o status do Gunicorn..."
 systemctl status gunicorn --no-pager || { echo "Erro: Gunicorn não está funcionando corretamente."; exit 1; }
 
 echo "Deploy realizado com sucesso!"
-
