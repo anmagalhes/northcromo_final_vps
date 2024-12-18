@@ -42,4 +42,17 @@ systemctl restart gunicorn || { echo "Erro: Falha ao reiniciar o Gunicorn."; exi
 echo "Verificando o status do Gunicorn..."
 systemctl status gunicorn --no-pager || { echo "Erro: Gunicorn não está funcionando corretamente."; exit 1; }
 
-echo "Deploy realizado com sucesso otimo!"
+# Passo 7: Reiniciar o Nginx
+echo "Reiniciando o Nginx..."
+systemctl restart nginx || { echo "Erro: Falha ao reiniciar o Nginx."; exit 1; }
+
+# Passo 8: Verificar se o Nginx está funcionando corretamente
+echo "Verificando o status do Nginx..."
+systemctl status nginx --no-pager || { echo "Erro: Nginx não está funcionando corretamente."; exit 1; }
+
+# Passo 9: Monitorar os logs do Gunicorn
+echo "Monitorando os logs do Gunicorn..."
+tail -f $GUNICORN_LOG &  # Rodar o monitoramento em segundo plano
+
+# Passo 10: Concluir
+echo "Deploy realizado com sucesso! A aplicação está rodando. O monitoramento dos logs do Gunicorn está ativo."
