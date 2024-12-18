@@ -49,7 +49,7 @@ async def create_app():
     app.register_blueprint(frontend_bp)  # Registra o blueprint do frontend
     # Registra os blueprints
     app.register_blueprint(auth_blueprint, url_prefix='/auth')  # Rotas de autenticação
-    app.register_blueprint(users_blueprint, url_prefix='/user')  # Rotas de usuários
+    app.register_blueprint(users_blueprint, url_prefix='/users')  # Rotas de usuários
     app.register_blueprint(defeito_blueprint, url_prefix='/api/defeitos')  # Rotas de defeitos
     app.register_blueprint(checklist_recebimento_blueprint, url_prefix='/checklist')
     app.register_blueprint(foto_recebimento_blueprint, url_prefix='/foto_recebimento')
