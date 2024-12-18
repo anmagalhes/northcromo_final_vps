@@ -50,14 +50,14 @@ async def create_app():
     # Registra o blueprint do frontend
     app.register_blueprint(frontend_bp)  # Registra o blueprint do frontend
     # Registra os blueprints
-    app.register_blueprint(auth_blueprint, url_prefix='/auth')  # Rotas de autenticação
-    app.register_blueprint(users_blueprint, url_prefix='/users')  # Rotas de usuários
+    app.register_blueprint(auth_blueprint, url_prefix='/api/auth')  # Rotas de autenticação
+    app.register_blueprint(users_blueprint, url_prefix='/api/users')  # Rotas de usuários
     app.register_blueprint(defeito_blueprint, url_prefix='/api/defeitos')  # Rotas de defeitos
-    app.register_blueprint(checklist_recebimento_blueprint, url_prefix='/checklist')
-    app.register_blueprint(foto_recebimento_blueprint, url_prefix='/foto_recebimento')
-    app.register_blueprint(funcionario_blueprint, url_prefix='/funcionario')
-    app.register_blueprint(cliente_blueprint, url_prefix='/cliente')
-    app.register_blueprint(componente_blueprint, url_prefix='/componente')
+    app.register_blueprint(checklist_recebimento_blueprint, url_prefix='/api/checklist')
+    app.register_blueprint(foto_recebimento_blueprint, url_prefix='/api/foto_recebimento')
+    app.register_blueprint(funcionario_blueprint, url_prefix='/api/funcionario')
+    app.register_blueprint(cliente_blueprint, url_prefix='/api/clientes')
+    app.register_blueprint(componente_blueprint, url_prefix='/api/componente')
     #app.register_blueprint(grupo_produto_blueprint, url_prefix='/grupo_produto')
 
     # Exemplo de rota da API
