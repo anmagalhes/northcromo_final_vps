@@ -1,12 +1,14 @@
-import React, { useEffect, useState } from 'react';
+// src/components/ClienteList/ClienteList.tsx
+import React from 'react';
 import axios from 'axios';
-import { Cliente } from '../../types/Cliente';
+import { Cliente } from '../../types/Cliente';  // Certifique-se de importar corretamente
 
 interface ClienteListProps {
+  clientes: Cliente[];  // Usando o tipo correto para o array de clientes
   onDelete: (id: number) => void;
 }
 
-const ClienteList: React.FC<ClienteListProps> = ({ onDelete }) => {
+const ClienteList: React.FC<ClienteListProps> = ({ clientes, onDelete }) => {
   const [clientes, setClientes] = useState<Cliente[]>([]);
 
   useEffect(() => {
@@ -19,6 +21,7 @@ const ClienteList: React.FC<ClienteListProps> = ({ onDelete }) => {
         console.error('Erro ao buscar clientes:', error);
       });
   }, []); // O array vazio [] garante que a requisição seja feita apenas uma vez ao carregar o componente.
+
 
   return (
     <div>

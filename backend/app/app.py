@@ -6,6 +6,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 
 import asyncio
 from flask import Flask, jsonify, g
+from flask_cors import CORS
 from flask_migrate import Migrate
 from dotenv import load_dotenv
 from app.models import some_function
@@ -29,6 +30,7 @@ load_dotenv()
 
 # Inicializa o Flask app
 app = Flask(__name__)
+CORS(app)
 
 # Função para inicializar o banco de dados de forma assíncrona
 async def initialize_database():
