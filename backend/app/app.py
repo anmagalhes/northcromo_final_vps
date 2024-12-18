@@ -99,15 +99,53 @@ def after_request(response):
         g.db_session.close()  # Fecha a sessão do banco de dados
     return response
 
-# Função para rodar a aplicação
-def run():
+
+# RODA EM PRODUÇÃO 
+
+# Função principal para rodar a aplicação
+if __name__ == "__main__":
+    # Rodar o app com Gunicorn no ambiente de produção (não use `app.run()`)
+    from gunicorn.app.base import BaseApplication
+
+    class GunicornApp(BaseApplication):
+        def __init__(self, app, options=None):
+            self.options = options or {}
+            self.application = app
+            super().__init__()
+
+        def load(self):
+            return self.application
+
+        def load_config(self):
+            config = {
+                'bind': '0.0.0.0:5000',
+                'workers': 4,  # Ajuste o número de workers conforme necessário
+                'worker_class': 'gevent',  # Usando worker assíncrono gevent
+                'loglevel': 'info',  # Defina o nível de log
+            }
+            for key, value in config.items():
+                self.cfg.set(key, value)
+
+    # Criação do app Flask
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(create_app())  # Cria o app assíncrono
+
+    # Inicializa o Gunicorn
+    gunicorn_app = GunicornApp(app)
+    gunicorn_app.run()
+
+
+# RODA EM DEV
+
+# Função para rodar a aplicação - DEV
+#def run():
     # Usamos asyncio.run para inicializar o app de forma assíncrona
-    asyncio.run(start_app())  # Inicia a aplicação assíncrona
+#    asyncio.run(start_app())  # Inicia a aplicação assíncrona
 
 # Função para inicializar o app com Flask
-async def start_app():
-    app = await create_app()  # Cria a aplicação Flask com configuração assíncrona
-   # app.run(host="0.0.0.0", port=5000, debug=False) # Rodando Flask de maneira síncrona, mas com setup assíncrono
+#async def start_app():
+#    app = await create_app()  # Cria a aplicação Flask com configuração assíncrona
+#    app.run(host="0.0.0.0", port=5000, debug=False) # Rodando Flask de maneira síncrona, mas com setup assíncrono
 
-if __name__ == "__main__":
-    run()  # Inicia o processo de execução
+#if __name__ == "__main__":
+#     run()  # Inicia o processo de execução
