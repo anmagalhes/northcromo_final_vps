@@ -25,4 +25,7 @@ dist-ssr
 venv
 *.pyc
 __pycache__/
+*__pycache__/
+deploy.sh
+*deploy.sh
 
