@@ -13,7 +13,7 @@ export const AppRoutes: React.FC = () => {
       <Route path="/cliente" element={<Cliente />} />
 
       {/* Redireciona para /cliente por padrão */}
-      <Route path="/" element={<Navigate to="/cliente" />} />
+      <Route path="*" element={<Navigate to="/home" />} />
     </Routes>
   );
 };
