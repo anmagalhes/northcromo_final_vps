@@ -42,4 +42,4 @@ systemctl restart gunicorn || { echo "Erro: Falha ao reiniciar o Gunicorn."; exi
 echo "Verificando o status do Gunicorn..."
 systemctl status gunicorn --no-pager || { echo "Erro: Gunicorn não está funcionando corretamente."; exit 1; }
 
-echo "Deploy realizado com sucesso!"
+echo "Deploy realizado com sucesso otimo!"
