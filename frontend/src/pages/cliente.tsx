@@ -44,7 +44,7 @@ const ClientePage: React.FC = () => {
 
   return (
     <div>
-      <h1>Clientes</h1>
+      <h1>Clientes CRISTIANE</h1>
       {error && <div style={{ color: 'red' }}>{error}</div>}
       <ClienteForm onClienteAdicionado={handleClienteAdicionado} />
       <ClienteList clientes={clientes} onDelete={handleDeleteCliente} />
