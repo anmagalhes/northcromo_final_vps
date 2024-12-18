@@ -1,5 +1,4 @@
-// src/components/ClienteList/ClienteList.tsx
-import React from 'react';
+import React, { useState, useEffect } from 'react';  // Importando useState e useEffect
 import axios from 'axios';
 import { Cliente } from '../../types/Cliente';  // Certifique-se de importar corretamente
 
@@ -9,24 +8,23 @@ interface ClienteListProps {
 }
 
 const ClienteList: React.FC<ClienteListProps> = ({ clientes, onDelete }) => {
-  const [clientes, setClientes] = useState<Cliente[]>([]);
+  const [clientesState, setClientesState] = useState<Cliente[]>([]);  // Renomeei a variável para evitar duplicação
 
   useEffect(() => {
     // Fazer a requisição para buscar os clientes do backend Flask
     axios.get('https://northcromocontrole.com.br/api/clientes')  // Usando o endpoint de produção
       .then(response => {
-        setClientes(response.data);
+        setClientesState(response.data);  // Atualizando o estado com os dados recebidos
       })
       .catch(error => {
         console.error('Erro ao buscar clientes:', error);
       });
   }, []); // O array vazio [] garante que a requisição seja feita apenas uma vez ao carregar o componente.
 
-
   return (
     <div>
       <ul>
-        {clientes.map(cliente => (
+        {clientesState.map(cliente => (  // Agora estamos utilizando clientesState
           <li key={cliente.id}>
             {cliente.nome} - {cliente.email} - {cliente.telefone}
             <button onClick={() => onDelete(cliente.id)}>Excluir</button>
