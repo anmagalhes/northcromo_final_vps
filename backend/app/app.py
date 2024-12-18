@@ -67,6 +67,18 @@ async def create_app():
             "status": "API is running",
             "message": "Welcome to the API endpoint!"
         })
+    
+     # Adiciona um tratamento de erro global
+    @app.errorhandler(Exception)
+    def handle_error(e):
+        # Loga o erro (pode ser ajustado para salvar os logs em um arquivo ou sistema de logs)
+        print(f"Error: {str(e)}")
+        
+        # Retorna uma resposta amigável ao usuário
+        return jsonify({
+            "status": "error",
+            "message": "An unexpected error occurred. Please try again later."
+        }), 500  # Retorna código de erro 500 (erro interno do servidor)
 
     return app
 
