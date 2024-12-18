@@ -1,39 +1,56 @@
+// src/pages/Cliente.tsx
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import ClienteList from '../../components/ClienteList/ClienteList';  // Ajuste o caminho conforme necessário
-import { Cliente } from '../../types/Cliente';
+import { getClientes, deleteCliente } from '../api/clientes';  // Funções de API
+import ClienteForm from '../components/ClienteForm/ClienteForm';  // Formulário de Cliente
+import ClienteList from '../components/ClienteList/ClienteList';  // Lista de Clientes
+import { Cliente } from '../types/Cliente';  // Certificando-se de usar o tipo correto
 
 const ClientePage: React.FC = () => {
-  const [clientes, setClientes] = useState<Cliente[]>([]);  // Estado para armazenar a lista de clientes
+  const [clientes, setClientes] = useState<Cliente[]>([]);  // Usando o tipo correto
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Requisição GET para buscar os clientes do backend Flask
-    axios.get('http://localhost:5000/api/clientes')  // Ajuste a URL conforme necessário
-      .then(response => {
-        setClientes(response.data);  // Atualiza o estado com a resposta da API
-      })
-      .catch(error => {
-        console.error('Erro ao buscar clientes:', error);  // Tratar erro caso falhe
-      });
-  }, []);  // O array vazio garante que a requisição seja feita apenas uma vez ao carregar o componente
+    const fetchClientes = async () => {
+      try {
+        const data = await getClientes();
+        setClientes(data);
+      } catch (error) {
+        setError('Falha ao carregar os clientes.');
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  // Função para excluir um cliente
+    fetchClientes();
+  }, []);
+
   const handleDeleteCliente = async (id: number) => {
     try {
-      await axios.delete(`http://localhost:5000/api/clientes/${id}`);  // Requisição DELETE para excluir o cliente
-      setClientes(clientes.filter(cliente => cliente.id !== id));  // Atualiza o estado removendo o cliente excluído
+      await deleteCliente(id);
+      setClientes(clientes.filter(cliente => cliente.id !== id));
     } catch (error) {
-      console.error('Erro ao excluir cliente:', error);  // Tratar erro caso falhe
+      setError('Falha ao excluir o cliente.');
     }
   };
 
+  const handleClienteAdicionado = (novoCliente: Cliente) => {  // Tipo corrigido aqui
+    setClientes(prevClientes => [...prevClientes, novoCliente]);
+  };
+
+  if (loading) {
+    return <div>Carregando clientes...</div>;
+  }
+
   return (
     <div>
-      <h1>Lista de Clientes</h1>
-      {/* Passando as propriedades para o ClienteList */}
+      <h1>Clientes CRISTIANE</h1>
+      {error && <div style={{ color: 'red' }}>{error}</div>}
+      <ClienteForm onClienteAdicionado={handleClienteAdicionado} />
       <ClienteList clientes={clientes} onDelete={handleDeleteCliente} />
     </div>
   );
 };
 
 export default ClientePage;
+
