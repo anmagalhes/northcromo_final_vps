@@ -1,17 +1,12 @@
 import sys
 import os
-
-# Ajuste do Python Path para garantir que o diretório correto seja encontrado
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-
 from flask import Flask, jsonify, g
 from flask_cors import CORS
 from flask_migrate import Migrate
 from dotenv import load_dotenv
-from app.models import some_function
 from app.models.db import db
 from app.database import init_db  # A função assíncrona que inicializa o banco de dados
-from app.frontend_blueprint import frontend_bp  # Importação absoluta
+from app.frontend_blueprint import frontend_bp
 
 # Registra os blueprints
 from app.auth import auth_blueprint
@@ -22,7 +17,6 @@ from app.foto_recebimento import foto_recebimento_blueprint
 from app.funcionario import funcionario_blueprint
 from app.cliente import cliente_blueprint
 from app.componente import componente_blueprint
-#from grupo_produto  import grupo_produto_blueprint
 
 # Carregar as variáveis do arquivo .env
 load_dotenv()
@@ -108,7 +102,7 @@ if __name__ == "__main__":
 
         def load_config(self):
             config = {
-                'bind': '0.0.0.0:5000',
+                'bind': '0.0.0.0:5000',  # Configuração para ouvir na porta 5000
                 'workers': 4,  # Ajuste o número de workers conforme necessário
                 'worker_class': 'gevent',  # Usando worker assíncrono gevent
                 'loglevel': 'info',  # Defina o nível de log
@@ -126,3 +120,4 @@ if __name__ == "__main__":
     # Inicializa o Gunicorn
     gunicorn_app = GunicornApp(app)
     gunicorn_app.run()
+
