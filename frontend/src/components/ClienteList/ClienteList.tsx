@@ -12,7 +12,7 @@ const ClienteList: React.FC<ClienteListProps> = ({ clientes, onDelete }) => {
 
   useEffect(() => {
     // Fazer a requisição para buscar os clientes do backend Flask
-    axios.get('https://northcromocontrole.com.br/api/clientes')  // Usando o endpoint de produção
+    axios.get('https://northcromocontrole.com.br/api/cliente')  // Usando o endpoint de produção
       .then(response => {
         setClientesState(response.data);  // Atualizando o estado com os dados recebidos
       })
