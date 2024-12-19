@@ -1,38 +1,59 @@
-import React, { useState, useEffect } from 'react';  // Importando useState e useEffect
+// src/components/ClienteList/ClienteList.tsx
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Cliente } from '../../types/Cliente';  // Certifique-se de importar corretamente
+import { Cliente } from 'src/types/Cliente';  // Certifique-se de importar o tipo corretamente
 
 interface ClienteListProps {
   clientes: Cliente[];  // Usando o tipo correto para o array de clientes
-  onDelete: (id: number) => void;
+  onDelete: (id: number) => void;  // Função para excluir cliente
 }
 
 const ClienteList: React.FC<ClienteListProps> = ({ clientes, onDelete }) => {
-  const [clientesState, setClientesState] = useState<Cliente[]>([]);  // Renomeei a variável para evitar duplicação
+  const [clientesState, setClientesState] = useState<Cliente[]>(clientes);  // Inicia com a lista passada como props
 
+  // Carregar clientes do backend ao montar o componente
   useEffect(() => {
-    // Fazer a requisição para buscar os clientes do backend Flask
-    axios.get('https://northcromocontrole.com.br/api/cliente')  // Usando o endpoint de produção
-      .then(response => {
-        setClientesState(response.data);  // Atualizando o estado com os dados recebidos
+    // Se clientes estiver vazio (ex.: ao montar), fazer a requisição
+    if (clientesState.length === 0) {
+      axios.get('https://northcromocontrole.com.br/api/cliente')  // URL da API para buscar os clientes
+        .then(response => {
+          setClientesState(response.data);  // Atualiza o estado com os dados recebidos
+        })
+        .catch(error => {
+          console.error('Erro ao buscar clientes:', error);
+        });
+    }
+  }, [clientesState.length]);  // A dependência garante que a requisição seja feita uma vez
+
+  // Função para excluir cliente
+  const handleDelete = (id: number) => {
+    axios.delete(`https://northcromocontrole.com.br/api/cliente/${id}`)  // Excluindo cliente via API
+      .then(() => {
+        setClientesState((prevState) => prevState.filter(cliente => cliente.id !== id));  // Atualiza o estado removendo o cliente
       })
-      .catch(error => {
-        console.error('Erro ao buscar clientes:', error);
+      .catch((error) => {
+        console.error('Erro ao excluir cliente:', error);
       });
-  }, []); // O array vazio [] garante que a requisição seja feita apenas uma vez ao carregar o componente.
+  };
 
   return (
     <div>
+      <h2>Lista de Clientes</h2>
       <ul>
-        {clientesState.map(cliente => (  // Agora estamos utilizando clientesState
-          <li key={cliente.id}>
-            {cliente.nome} - {cliente.email} - {cliente.telefone}
-            <button onClick={() => onDelete(cliente.id)}>Excluir</button>
-          </li>
-        ))}
+        {clientesState.length === 0 ? (
+          <p>Não há clientes cadastrados.</p>
+        ) : (
+          clientesState.map((cliente) => (
+            <li key={cliente.id}>
+              {cliente.nome} - {cliente.email} - {cliente.telefone}
+              <button onClick={() => handleDelete(cliente.id)}>Excluir</button>
+            </li>
+          ))
+        )}
       </ul>
     </div>
   );
 };
 
 export default ClienteList;
+
