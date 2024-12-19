@@ -45,6 +45,7 @@ def create_app():
     
     # Registra o blueprint do frontend
     app.register_blueprint(frontend_bp)  
+    
     # Registra os blueprints
     app.register_blueprint(auth_blueprint, url_prefix='/api/auth')  
     app.register_blueprint(users_blueprint, url_prefix='/api/users')  
@@ -102,6 +103,7 @@ def run():
     return app
 
 if __name__ == "__main__":
-    # Não chame app.run() diretamente em produção!
+    # NÃO use app.run() em produção! Use Gunicorn ou outro servidor WSGI.
     app = create_app()
+
 
