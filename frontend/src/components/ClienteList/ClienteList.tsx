@@ -1,54 +1,43 @@
 // src/components/ClienteList/ClienteList.tsx
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Cliente } from 'src/types/Cliente';  // Certifique-se de importar o tipo corretamente
+import { Cliente } from 'src/types/Cliente'; // Importando o tipo Cliente
 
+// Definindo o tipo das props do componente ClienteList
 interface ClienteListProps {
-  clientes: Cliente[];  // Usando o tipo correto para o array de clientes
-  onDelete: (id: number) => void;  // Função para excluir cliente
+  clientes: Cliente[];  // Array de clientes, que será passado como prop
+  onDelete: (id: number) => void;  // Função para excluir cliente, passada como prop
 }
 
 const ClienteList: React.FC<ClienteListProps> = ({ clientes, onDelete }) => {
-  const [clientesState, setClientesState] = useState<Cliente[]>(clientes);  // Inicia com a lista passada como props
+  const [clientesState, setClientesState] = useState<Cliente[]>([]);  // Estado interno para armazenar clientes
 
-  // Carregar clientes do backend ao montar o componente
+  // Carregar a lista de clientes da API quando o componente for montado
   useEffect(() => {
-    // Se clientes estiver vazio (ex.: ao montar), fazer a requisição
-    if (clientesState.length === 0) {
-      axios.get('https://northcromocontrole.com.br/api/cliente')  // URL da API para buscar os clientes
-        .then(response => {
-          setClientesState(response.data);  // Atualiza o estado com os dados recebidos
-        })
-        .catch(error => {
-          console.error('Erro ao buscar clientes:', error);
-        });
-    }
-  }, [clientesState.length]);  // A dependência garante que a requisição seja feita uma vez
-
-  // Função para excluir cliente
-  const handleDelete = (id: number) => {
-    axios.delete(`https://northcromocontrole.com.br/api/cliente/${id}`)  // Excluindo cliente via API
-      .then(() => {
-        setClientesState((prevState) => prevState.filter(cliente => cliente.id !== id));  // Atualiza o estado removendo o cliente
+    // Chamando a API para buscar os dados dos clientes
+    axios.get('https://northcromocontrole.com.br/api/cliente') // Endpoint para pegar os dados dos clientes
+      .then((response) => {
+        setClientesState(response.data);  // Atualizando o estado com os dados recebidos
       })
       .catch((error) => {
-        console.error('Erro ao excluir cliente:', error);
+        console.error('Erro ao buscar clientes:', error);  // Tratando erro na requisição
       });
-  };
+  }, []);  // O array vazio garante que a requisição aconteça apenas uma vez
 
   return (
     <div>
       <h2>Lista de Clientes</h2>
       <ul>
-        {clientesState.length === 0 ? (
-          <p>Não há clientes cadastrados.</p>
-        ) : (
-          clientesState.map((cliente) => (
+        {clientesState.length > 0 ? (
+          // Renderizando a lista de clientes
+          clientesState.map(cliente => (
             <li key={cliente.id}>
               {cliente.nome} - {cliente.email} - {cliente.telefone}
-              <button onClick={() => handleDelete(cliente.id)}>Excluir</button>
+              <button onClick={() => onDelete(cliente.id)}>Excluir</button>
             </li>
           ))
+        ) : (
+          <p>Não há clientes cadastrados.</p>  // Caso não haja clientes
         )}
       </ul>
     </div>
