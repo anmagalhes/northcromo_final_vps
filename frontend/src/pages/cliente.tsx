@@ -1,65 +1,51 @@
-// src/components/ClienteForm/ClienteForm.tsx
-import React, { useState } from 'react';
-import { Cliente } from 'src/types/Cliente';  // Certifique-se de que o tipo Cliente está correto
-import { salva_component } from 'src/utils';  // Certifique-se de que o tipo Cliente está correto
+// src/pages/ClientePage.tsx
+import React, { useState, useEffect } from 'react';
+import { Cliente } from 'src/types/Cliente';  // O tipo Cliente
+import ClienteForm from 'src/components/ClienteForm/ClienteForm';  // Importando o formulário
+import ClienteList from 'src/components/ClienteList/ClienteList';  // Componente para listar os clientes
+import { salva_component } from 'src/utils';  // Função de salvar cliente
 
-interface ClienteFormProps {
-  onClienteAdicionado: (cliente: Cliente) => void;  // Definindo o tipo da prop
-}
+const ClientePage: React.FC = () => {
+  const [clientes, setClientes] = useState<Cliente[]>([]);  // Lista de clientes
 
-const ClienteForm: React.FC<ClienteFormProps> = ({ onClienteAdicionado }) => {
-  const [nome, setNome] = useState('');
-  const [email, setEmail] = useState('');
-  const [telefone, setTelefone] = useState('');
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-
-    const novoCliente: Cliente = {
-      id: Date.now(),  // Você pode gerar o ID de forma diferente dependendo do seu backend
-      nome,
-      email,
-      telefone,
-    };
-
-    // Chama a função onClienteAdicionado passando o novo cliente
-    onClienteAdicionado(novoCliente);
-
-    // Limpa os campos do formulário após o envio
-    setNome('');
-    setEmail('');
-    setTelefone('');
+  // Função chamada quando um novo cliente é adicionado
+  const handleClienteAdicionado = (novoCliente: Cliente) => {
+    setClientes((prevClientes) => {
+      const updatedClientes = [...prevClientes, novoCliente];
+      salva_component('clientes', updatedClientes);  // Salva a lista de clientes atualizada
+      return updatedClientes;
+    });
   };
 
+  // Carregar os clientes do localStorage ao iniciar
+  useEffect(() => {
+    const clientesSalvos = JSON.parse(localStorage.getItem('clientes') || '[]');
+    setClientes(clientesSalvos);
+  }, []);
+
   return (
-    <form onSubmit={handleSubmit}>
-      <input
-        type="text"
-        id="nome"  // Definindo o ID para cada input
-        className="my-input"  // Adicionando a classe 'my-input' para selecionar os inputs na função salva_component
-        placeholder="Nome"
-        value={nome}
-        onChange={(e) => setNome(e.target.value)}
-      />
-      <input
-        type="email"
-        id="email"  // Definindo o ID para cada input
-        className="my-input"  // Adicionando a classe 'my-input' para selecionar os inputs na função salva_component
-        placeholder="Email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-      />
-      <input
-        type="text"
-        id="telefone"  // Definindo o ID para cada input
-        className="my-input"  // Adicionando a classe 'my-input' para selecionar os inputs na função salva_component
-        placeholder="Telefone"
-        value={telefone}
-        onChange={(e) => setTelefone(e.target.value)}
-      />
-      <button type="submit">Adicionar Cliente</button>
-    </form>
+    <div>
+      <header>
+        <h1>Bem-vindo à página de Clientes</h1>
+        <p>Aqui você pode ver todos os seus clientes e adicionar novos.</p>
+      </header>
+
+      {/* Formulário para adicionar um novo cliente */}
+      <ClienteForm onClienteAdicionado={handleClienteAdicionado} />
+
+      <hr />
+
+      {/* Exibindo a lista de clientes */}
+      <ClienteList clientes={clientes} />
+
+      {/* Outras informações extras */}
+      <section>
+        <h2>Outras informações</h2>
+        <p>Você pode adicionar mais funcionalidades aqui, como editar ou remover clientes.</p>
+      </section>
+    </div>
   );
 };
 
-export default ClienteForm;
+export default ClientePage;
+
