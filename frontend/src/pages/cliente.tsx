@@ -1,51 +1,31 @@
-// src/pages/ClientePage.tsx
-import React, { useState, useEffect } from 'react';
-import { Cliente } from 'src/types/Cliente';  // O tipo Cliente
-import ClienteForm from 'src/components/ClienteForm/ClienteForm';  // Importando o formulário
-import ClienteList from 'src/components/ClienteList/ClienteList';  // Componente para listar os clientes
-import { salva_component } from 'src/utils';  // Função de salvar cliente
+// src/pages/cliente.tsx
+import React, { useState } from 'react';
+import { Cliente } from 'src/types/Cliente';
+import ClienteList from 'src/components/ClienteList/ClienteList';
+import { salva_component } from 'src/utils';
 
 const ClientePage: React.FC = () => {
-  const [clientes, setClientes] = useState<Cliente[]>([]);  // Lista de clientes
+  const [clientes, setClientes] = useState<Cliente[]>([]);
 
-  // Função chamada quando um novo cliente é adicionado
-  const handleClienteAdicionado = (novoCliente: Cliente) => {
-    setClientes((prevClientes) => {
-      const updatedClientes = [...prevClientes, novoCliente];
-      salva_component('clientes', updatedClientes);  // Salva a lista de clientes atualizada
-      return updatedClientes;
-    });
+  // Função para excluir um cliente
+  const handleDeleteCliente = (id: number) => {
+    // Atualiza a lista de clientes após excluir um cliente
+    setClientes((prevState) => prevState.filter((cliente) => cliente.id !== id));
+    salva_component('clientes', clientes);  // Salva a lista de clientes atualizada (adapte conforme sua lógica)
   };
 
-  // Carregar os clientes do localStorage ao iniciar
-  useEffect(() => {
-    const clientesSalvos = JSON.parse(localStorage.getItem('clientes') || '[]');
-    setClientes(clientesSalvos);
-  }, []);
+  // Simulação de adição de cliente para o exemplo
+  const handleClienteAdicionado = (novoCliente: Cliente) => {
+    setClientes([...clientes, novoCliente]);
+    salva_component('clientes', [...clientes, novoCliente]);  // Salva a lista após adicionar um novo cliente
+  };
 
   return (
     <div>
-      <header>
-        <h1>Bem-vindo à página de Clientes</h1>
-        <p>Aqui você pode ver todos os seus clientes e adicionar novos.</p>
-      </header>
-
-      {/* Formulário para adicionar um novo cliente */}
-      <ClienteForm onClienteAdicionado={handleClienteAdicionado} />
-
-      <hr />
-
-      {/* Exibindo a lista de clientes */}
-      <ClienteList clientes={clientes} />
-
-      {/* Outras informações extras */}
-      <section>
-        <h2>Outras informações</h2>
-        <p>Você pode adicionar mais funcionalidades aqui, como editar ou remover clientes.</p>
-      </section>
+      <h1>Gestão de Clientes</h1>
+      <ClienteList clientes={clientes} onDelete={handleDeleteCliente} />
     </div>
   );
 };
 
 export default ClientePage;
-
