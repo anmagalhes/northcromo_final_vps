@@ -1,10 +1,10 @@
 // src/pages/cliente.tsx
 import React, { useState, useEffect } from 'react';
-import { Cliente } from 'src/types/Cliente';  // Tipo Cliente
-import ClienteForm from 'src/components/ClienteForm/ClienteForm';  // Formulário de Cliente
-import ClienteList from 'src/components/ClienteList/ClienteList';  // Lista de Clientes
+import { Cliente } from '../types/Cliente';  // Tipo Cliente
+import ClienteForm from '../components/ClienteForm/ClienteForm';  // Formulário de Cliente
+import ClienteList from '../components/ClienteList/ClienteList';  // Lista de Clientes
 import Button from '../components/Button/Button';  // Componente de Botão
-import { salva_component } from 'src/utils';  // Função de Salvamento
+import { salva_component } from '../utils';  // Função de Salvamento
 
 const Cliente: React.FC = () => {
   const [clientes, setClientes] = useState<Cliente[]>([]);  // Estado para armazenar a lista de clientes
