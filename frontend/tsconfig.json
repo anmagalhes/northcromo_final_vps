@@ -11,7 +11,12 @@
     "forceConsistentCasingInFileNames": true, // Garante consistência nas letras maiúsculas/minúsculas dos arquivos
     "outDir": "./dist",                    // Diretório de saída
     "baseUrl": ".",                        // Base para resolução de módulos
-    "jsx": "react-jsx"                     // Configuração do JSX no React
+    "jsx": "react-jsx",                    // Configuração do JSX no React
+    "paths": {
+      "@utils/*": ["src/utils/*"],         // Define o alias para @utils
+      "@components/*": ["src/components/*"], // Adicionando alias para @components também (opcional)
+      "@assets/*": ["src/assets/*"]        // Adicionando alias para @assets (opcional)
+    }
   },
   "include": [
     "src/**/*"                             // Inclui todos os arquivos da pasta src
