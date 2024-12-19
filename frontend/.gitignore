@@ -31,5 +31,7 @@ deploy.sh
 venv/
 ../venv/
 ../deploy.sh
+*.pyc
+__pycache__/
 
 
