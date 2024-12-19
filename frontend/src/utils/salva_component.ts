@@ -1,4 +1,5 @@
-export const salva_component = (formType: string) => {
+// src/utils/Fornecedor.ts
+export const Salva_component = (formType: string) => {
   // Seleciona o formulário com base no tipo informado (cliente ou fornecedor)
   const form = document.querySelector(`#${formType}-form`) as HTMLFormElement;
 

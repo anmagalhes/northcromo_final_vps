@@ -35,18 +35,24 @@ const ClienteForm: React.FC<ClienteFormProps> = ({ onClienteAdicionado }) => {
     <form onSubmit={handleSubmit}>
       <input
         type="text"
+        id="nome"  // Definindo o ID para cada input
+        className="my-input"  // Adicionando a classe 'my-input' para selecionar os inputs na função salva_component
         placeholder="Nome"
         value={nome}
         onChange={(e) => setNome(e.target.value)}
       />
       <input
         type="email"
+        id="email"  // Definindo o ID para cada input
+        className="my-input"  // Adicionando a classe 'my-input' para selecionar os inputs na função salva_component
         placeholder="Email"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
       />
       <input
         type="text"
+        id="telefone"  // Definindo o ID para cada input
+        className="my-input"  // Adicionando a classe 'my-input' para selecionar os inputs na função salva_component
         placeholder="Telefone"
         value={telefone}
         onChange={(e) => setTelefone(e.target.value)}
