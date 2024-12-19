@@ -23,4 +23,6 @@ def create_app():
     # Inicializando o Migrate
     migrate = Migrate(app, db)
 
+
     return app
+
