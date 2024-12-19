@@ -22,8 +22,10 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
-venv
+.venv
+*pyc
 *.pyc
+*.pyo
 __pycache__/
 *__pycache__/
 *deploy.sh

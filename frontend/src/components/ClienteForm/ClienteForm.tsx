@@ -1,9 +1,9 @@
 // src/components/ClienteForm/ClienteForm.tsx
 import React, { useState } from 'react';
-import { Cliente } from 'src/types/Cliente';  // Garantindo que o tipo correto seja importado
+import { Cliente } from 'src/types';  // Importando Cliente do index.ts
 
 interface ClienteFormProps {
-  onClienteAdicionado: (cliente: Cliente) => void; // Espera um objeto 'Cliente'
+  onClienteAdicionado: (cliente: Cliente) => void;
 }
 
 const ClienteForm: React.FC<ClienteFormProps> = ({ onClienteAdicionado }) => {
@@ -14,7 +14,6 @@ const ClienteForm: React.FC<ClienteFormProps> = ({ onClienteAdicionado }) => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Criando um novo cliente com o tipo correto 'Cliente'
     const novoCliente: Cliente = {
       id: Date.now(),
       nome,
@@ -22,7 +21,10 @@ const ClienteForm: React.FC<ClienteFormProps> = ({ onClienteAdicionado }) => {
       telefone,
     };
 
-    onClienteAdicionado(novoCliente);  // Chamando a função com o cliente correto
+    onClienteAdicionado(novoCliente);
+    setNome('');
+    setEmail('');
+    setTelefone('');
   };
 
   return (

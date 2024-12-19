@@ -29,6 +29,7 @@ load_dotenv()
 # Inicializa o Flask app
 app = Flask(__name__)
 
+
 # Função para inicializar o banco de dados
 def initialize_database():
     # Inicializa o banco de dados de forma síncrona
@@ -90,7 +91,6 @@ application = create_app()  # Gunicorn vai procurar por 'application'
 
 # DEV
 # Função para rodar a aplicação
-# if __name__ == "__main__":
-  #   create_app()  # Cria o app
- #    app.run()  # Rodando o Flask de forma síncrona
-# 
+#if __name__ == "__main__":
+#    create_app()  # Cria o app
+#    app.run()  # Rodando o Flask de forma síncrona
