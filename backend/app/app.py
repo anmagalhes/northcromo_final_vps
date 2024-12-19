@@ -84,6 +84,10 @@ def after_request(response):
         g.db_session.close()  # Fecha a sessão do banco de dados
     return response
 
+
+# Definindo a variável 'application' que o Gunicorn precisa para rodar a aplicação
+application = create_app()  # Gunicorn vai procurar por 'application'
+
 # DEV
 # Função para rodar a aplicação
 # if __name__ == "__main__":
