@@ -1,73 +1,81 @@
-// src/pages/Cliente.tsx
-import React, { useEffect, useState } from 'react';
-import { getClientes, deleteCliente } from '../api/clientes';  // Funções de API
-import ClienteForm from '../components/ClienteForm/ClienteForm';  // Formulário de Cliente
-import ClienteList from '../components/ClienteList/ClienteList';  // Lista de Clientes
-import { Cliente } from '../types/Cliente';  // Certificando-se de usar o tipo correto
+import React, { useState } from 'react';
+import { Cliente } from 'src/types';  // Importando Cliente do index.ts
+import { salva_component } from 'src/utils/salva_component';  // Importando a função salva_component
 
-// Tipos para melhorar a tipagem de erro e estados
-type ErrorMessage = string | null;
-type LoadingState = boolean;
+interface ClienteFormProps {
+  onClienteAdicionado: (cliente: Cliente) => void;
+}
 
-const ClientePage: React.FC = () => {
-  const [clientes, setClientes] = useState<Cliente[]>([]);
-  const [loading, setLoading] = useState<LoadingState>(true);
-  const [error, setError] = useState<ErrorMessage>(null);
+const ClienteForm: React.FC<ClienteFormProps> = ({ onClienteAdicionado }) => {
+  const [nome, setNome] = useState('');
+  const [email, setEmail] = useState('');
+  const [telefone, setTelefone] = useState('');
 
-  // Função para carregar os clientes, com tratamento de erros e loading
-  useEffect(() => {
-    const fetchClientes = async () => {
-      setLoading(true);
-      try {
-        const data = await getClientes();  // Função de API para obter clientes
-        setClientes(data);
-      } catch (err) {
-        setError('Falha ao carregar os clientes.');
-      } finally {
-        setLoading(false);
-      }
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const novoCliente: Cliente = {
+      id: Date.now(),
+      nome,
+      email,
+      telefone,
     };
 
-    fetchClientes();
-  }, []);  // O array vazio faz com que isso seja executado apenas uma vez, quando o componente for montado
+    // Chama a função salva_component, passando o tipo do formulário
+    salva_component('cliente');  // Passando 'cliente' como tipo de formulário
 
-  // Função para excluir um cliente
-  const handleDeleteCliente = async (id: number) => {
-    setLoading(true); // Mudar para loading true durante a requisição
-    try {
-      await deleteCliente(id);  // Exclui o cliente usando a API
-      // Filtra o cliente removido da lista
-      setClientes((prevClientes) => prevClientes.filter(cliente => cliente.id !== id));
-    } catch (err) {
-      setError('Falha ao excluir o cliente.');
-    } finally {
-      setLoading(false);  // Desativa o loading quando a requisição for completada
-    }
+    onClienteAdicionado(novoCliente);
+    setNome('');
+    setEmail('');
+    setTelefone('');
   };
 
-  // Função para adicionar um novo cliente
-  const handleClienteAdicionado = (novoCliente: Cliente) => {
-    setClientes((prevClientes) => [...prevClientes, novoCliente]); // Atualiza a lista de clientes
+  // Função para exibir no console os dados digitados em tempo real
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { id, value } = e.target;
+    console.log(`${id} digitado: ${value}`);
   };
-
-  if (loading) {
-    return <div>Carregando clientes...</div>;  // Mensagem de loading
-  }
 
   return (
-    <div>
-      <h1>Clientes CRISTIANE</h1>
-      
-      {/* Exibição de erro, se houver */}
-      {error && <div style={{ color: 'red' }}>{error}</div>}
-
-      {/* Formulário de cliente */}
-      <ClienteForm onClienteAdicionado={handleClienteAdicionado} />
-
-      {/* Lista de clientes com botão de deletar */}
-      <ClienteList clientes={clientes} onDelete={handleDeleteCliente} />
-    </div>
+    <form id="cliente-form" onSubmit={handleSubmit}>
+      <input
+        type="text"
+        className="my-input"
+        id="nome"
+        placeholder="Nome"
+        value={nome}
+        onChange={(e) => {
+          setNome(e.target.value);
+          handleInputChange(e);  // Exibe os dados digitados no console em tempo real
+        }}
+      />
+      <input
+        type="email"
+        className="my-input"
+        id="email"
+        placeholder="Email"
+        value={email}
+        onChange={(e) => {
+          setEmail(e.target.value);
+          handleInputChange(e);  // Exibe os dados digitados no console em tempo real
+        }}
+      />
+      <input
+        type="text"
+        className="my-input"
+        id="telefone"
+        placeholder="Telefone"
+        value={telefone}
+        onChange={(e) => {
+          setTelefone(e.target.value);
+          handleInputChange(e);  // Exibe os dados digitados no console em tempo real
+        }}
+      />
+      <button type="submit">Adicionar Cliente</button>
+    </form>
   );
 };
 
-export default ClientePage;
+export default ClienteForm;
+
+
