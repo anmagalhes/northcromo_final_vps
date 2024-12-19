@@ -50,43 +50,43 @@ fi
 echo "Instalando as dependências do projeto..."
 pip install -r $BACKEND_DIR/requirements.txt || { echo "Erro: Falha ao instalar as dependências."; exit 1; }
 
-# Passo 5: Liberar permissões para todos os usuários (para o projeto e arquivos Nginx)
-echo "Liberando permissões para todos os usuários..."
+# Passo 5: Criar o diretório de logs do Gunicorn e ajustar permissões
+echo "Configurando os diretórios e permissões de log..."
+sudo mkdir -p /var/log/gunicorn  # Cria o diretório caso não exista
+sudo chown -R www-data:www-data /var/log/gunicorn  # Ajusta a propriedade do diretório
+sudo chmod -R 755 /var/log/gunicorn  # Permite que o Gunicorn possa gravar nos logs
 
-# Garantir que o diretório do projeto tenha permissões adequadas para todos os usuários
-sudo chmod -R 777 $PROJECT_DIR
+# Garantir que o arquivo de log de acesso existe
+sudo touch /var/log/gunicorn/gunicorn_access.log
+sudo chown www-data:www-data /var/log/gunicorn/gunicorn_access.log
+sudo chmod 664 /var/log/gunicorn/gunicorn_access.log
 
-# Garantir que o socket do Gunicorn tenha permissões adequadas
-if [ -f "$SOCKET_FILE" ]; then
-    sudo chmod 777 $SOCKET_FILE
-fi
-
-# Liberar permissões para os arquivos de configuração do Nginx
+# Passo 6: Liberar permissões para os arquivos de configuração do Nginx
 echo "Liberando permissões para os arquivos de configuração do Nginx..."
 sudo chmod 777 $NGINX_NORTHCROMO
 sudo chmod 777 $NGINX_NORTHCROMOCONTROLE
 
-# Passo 6: Reiniciar o Gunicorn
+# Passo 7: Reiniciar o Gunicorn
 echo "Reiniciando o Gunicorn..."
 systemctl restart gunicorn || { echo "Erro: Falha ao reiniciar o Gunicorn."; exit 1; }
 
-# Passo 7: Confirmar se o Gunicorn foi reiniciado corretamente
+# Passo 8: Confirmar se o Gunicorn foi reiniciado corretamente
 echo "Verificando o status do Gunicorn..."
 systemctl status gunicorn --no-pager || { echo "Erro: Gunicorn não está funcionando corretamente."; exit 1; }
 
-# Passo 8: Reiniciar o Nginx
+# Passo 9: Reiniciar o Nginx
 echo "Reiniciando o Nginx..."
 systemctl restart nginx || { echo "Erro: Falha ao reiniciar o Nginx."; exit 1; }
 
-# Passo 9: Verificar se o Nginx está funcionando corretamente
+# Passo 10: Verificar se o Nginx está funcionando corretamente
 echo "Verificando o status do Nginx..."
 systemctl status nginx --no-pager || { echo "Erro: Nginx não está funcionando corretamente."; exit 1; }
 
-# Passo 10: Monitorar os logs do Gunicorn
+# Passo 11: Monitorar os logs do Gunicorn
 echo "Monitorando os logs do Gunicorn..."
 tail -f $GUNICORN_LOG &  # Rodar o monitoramento em segundo plano
 
-# Passo 11: Concluir
+# Passo 12: Concluir
 echo "Deploy realizado com sucesso! A aplicação está rodando. O monitoramento dos logs do Gunicorn está ativo."
 
 # Reiniciar o Gunicorn e Habilitar para Iniciar no Boot
@@ -95,4 +95,3 @@ sudo systemctl start gunicorn
 sudo systemctl enable gunicorn
 
 echo "Habilitado amém!"
-
