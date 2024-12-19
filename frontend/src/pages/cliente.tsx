@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Cliente } from 'src/types';  // Importando Cliente do index.ts
-//import { salva_component } from 'src/utils/salva_component';  // Importando a função salva_component
+import { salva_component } from '@utils/salva_component';  // Importando a função salva_component
 
 interface ClienteFormProps {
   onClienteAdicionado: (cliente: Cliente) => void;
@@ -21,55 +21,45 @@ const ClienteForm: React.FC<ClienteFormProps> = ({ onClienteAdicionado }) => {
       telefone,
     };
 
-    // Chama a função salva_component, passando o tipo do formulário
+    // Exibindo os dados no console antes de chamar a função de adicionar
+    console.log("Cliente a ser adicionado:", novoCliente);  // Exibe o objeto de cliente no console
+
+    // Chama a função salva_component passando o tipo do formulário
     salva_component('cliente');  // Passando 'cliente' como tipo de formulário
 
+    // Adicionando o novo cliente
     onClienteAdicionado(novoCliente);
+
     setNome('');
     setEmail('');
     setTelefone('');
   };
 
-  // Função para exibir no console os dados digitados em tempo real
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { id, value } = e.target;
-    console.log(`${id} digitado: ${value}`);
-  };
-
   return (
-    <form id="cliente-form" onSubmit={handleSubmit}>
+    <form id="cliente-form" onSubmit={handleSubmit}>  {/* Adicionando o id ao formulário */}
       <input
         type="text"
-        className="my-input"
         id="nome"
+        className="my-input"  // Adicionando a classe
         placeholder="Nome"
         value={nome}
-        onChange={(e) => {
-          setNome(e.target.value);
-          handleInputChange(e);  // Exibe os dados digitados no console em tempo real
-        }}
+        onChange={(e) => setNome(e.target.value)}
       />
       <input
         type="email"
-        className="my-input"
         id="email"
+        className="my-input"  // Adicionando a classe
         placeholder="Email"
         value={email}
-        onChange={(e) => {
-          setEmail(e.target.value);
-          handleInputChange(e);  // Exibe os dados digitados no console em tempo real
-        }}
+        onChange={(e) => setEmail(e.target.value)}
       />
       <input
         type="text"
-        className="my-input"
         id="telefone"
+        className="my-input"  // Adicionando a classe
         placeholder="Telefone"
         value={telefone}
-        onChange={(e) => {
-          setTelefone(e.target.value);
-          handleInputChange(e);  // Exibe os dados digitados no console em tempo real
-        }}
+        onChange={(e) => setTelefone(e.target.value)}
       />
       <button type="submit">Adicionar Cliente</button>
     </form>

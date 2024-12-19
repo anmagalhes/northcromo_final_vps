@@ -1,4 +1,3 @@
-// src/utils/salva_component.ts
 export const salva_component = (formType: string) => {
   // Seleciona o formulário com base no tipo informado (cliente ou fornecedor)
   const form = document.querySelector(`#${formType}-form`) as HTMLFormElement;
@@ -16,7 +15,7 @@ export const salva_component = (formType: string) => {
 
   // Iterando sobre cada item encontrado e preenchendo o objeto
   myInput.forEach((item) => {
-    obj_para_lancar[item.id] = item.value;  // Usando o 'id' do input como chave
+    obj_para_lancar[item.id] = item.value;  // Usando o 'id' do input para chave
   });
 
   // Exibindo o objeto no console para teste
