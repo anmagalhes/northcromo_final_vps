@@ -21,6 +21,11 @@ GUNICORN_LOG="/var/log/gunicorn/gunicorn.log"
 # Caminho dos logs do Nginx
 NGINX_LOG="/var/log/nginx/access.log"
 
+# Caminho dos arquivos de configuração do Nginx
+NGINX_SITES_AVAILABLE="/etc/nginx/sites-available"
+NGINX_NORTHCROMO="$NGINX_SITES_AVAILABLE/northcromo"
+NGINX_NORTHCROMOCONTROLE="$NGINX_SITES_AVAILABLE/northcromocontrole"
+
 # Passo 1: Navegar até o diretório do projeto
 echo "Navegando até o diretório do projeto: $PROJECT_DIR"
 cd $PROJECT_DIR || { echo "Erro: Não foi possível acessar o diretório $PROJECT_DIR"; exit 1; }
@@ -45,18 +50,21 @@ fi
 echo "Instalando as dependências do projeto..."
 pip install -r $BACKEND_DIR/requirements.txt || { echo "Erro: Falha ao instalar as dependências."; exit 1; }
 
-# Passo 5: Garantir permissões para o Gunicorn e Nginx
-echo "Ajustando permissões para Gunicorn e Nginx..."
+# Passo 5: Liberar permissões para todos os usuários (para o projeto e arquivos Nginx)
+echo "Liberando permissões para todos os usuários..."
 
-# Garantir que o diretório do projeto tenha permissões adequadas para o www-data
-sudo chown -R www-data:www-data $PROJECT_DIR
-sudo chmod -R 755 $PROJECT_DIR
+# Garantir que o diretório do projeto tenha permissões adequadas para todos os usuários
+sudo chmod -R 777 $PROJECT_DIR
 
 # Garantir que o socket do Gunicorn tenha permissões adequadas
 if [ -f "$SOCKET_FILE" ]; then
-    sudo chown www-data:www-data $SOCKET_FILE
-    sudo chmod 775 $SOCKET_FILE
+    sudo chmod 777 $SOCKET_FILE
 fi
+
+# Liberar permissões para os arquivos de configuração do Nginx
+echo "Liberando permissões para os arquivos de configuração do Nginx..."
+sudo chmod 777 $NGINX_NORTHCROMO
+sudo chmod 777 $NGINX_NORTHCROMOCONTROLE
 
 # Passo 6: Reiniciar o Gunicorn
 echo "Reiniciando o Gunicorn..."
@@ -87,3 +95,4 @@ sudo systemctl start gunicorn
 sudo systemctl enable gunicorn
 
 echo "Habilitado amém!"
+
