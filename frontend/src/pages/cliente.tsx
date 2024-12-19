@@ -1,73 +1,58 @@
-// src/pages/Cliente.tsx
-import React, { useEffect, useState } from 'react';
-import { getClientes, deleteCliente } from '../api/clientes';  // Funções de API
-import ClienteForm from '../components/ClienteForm/ClienteForm';  // Formulário de Cliente
-import ClienteList from '../components/ClienteList/ClienteList';  // Lista de Clientes
-import { Cliente } from '../types/Cliente';  // Certificando-se de usar o tipo correto
+// src/components/ClienteForm/ClienteForm.tsx
+import React, { useState } from 'react';
+import { Cliente } from 'src/types/Cliente';  // Certifique-se de que o tipo Cliente está correto
 
-// Tipos para melhorar a tipagem de erro e estados
-type ErrorMessage = string | null;
-type LoadingState = boolean;
+interface ClienteFormProps {
+  onClienteAdicionado: (cliente: Cliente) => void;  // Definindo o tipo da prop
+}
 
-const ClientePage: React.FC = () => {
-  const [clientes, setClientes] = useState<Cliente[]>([]);
-  const [loading, setLoading] = useState<LoadingState>(true);
-  const [error, setError] = useState<ErrorMessage>(null);
+const ClienteForm: React.FC<ClienteFormProps> = ({ onClienteAdicionado }) => {
+  const [nome, setNome] = useState('');
+  const [email, setEmail] = useState('');
+  const [telefone, setTelefone] = useState('');
 
-  // Função para carregar os clientes, com tratamento de erros e loading
-  useEffect(() => {
-    const fetchClientes = async () => {
-      setLoading(true);
-      try {
-        const data = await getClientes();  // Função de API para obter clientes
-        setClientes(data);
-      } catch (err) {
-        setError('Falha ao carregar os clientes.');
-      } finally {
-        setLoading(false);
-      }
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const novoCliente: Cliente = {
+      id: Date.now(),  // Você pode gerar o ID de forma diferente dependendo do seu backend
+      nome,
+      email,
+      telefone,
     };
 
-    fetchClientes();
-  }, []);  // O array vazio faz com que isso seja executado apenas uma vez, quando o componente for montado
+    // Chama a função onClienteAdicionado passando o novo cliente
+    onClienteAdicionado(novoCliente);
 
-  // Função para excluir um cliente
-  const handleDeleteCliente = async (id: number) => {
-    setLoading(true); // Mudar para loading true durante a requisição
-    try {
-      await deleteCliente(id);  // Exclui o cliente usando a API
-      // Filtra o cliente removido da lista
-      setClientes((prevClientes) => prevClientes.filter(cliente => cliente.id !== id));
-    } catch (err) {
-      setError('Falha ao excluir o cliente.');
-    } finally {
-      setLoading(false);  // Desativa o loading quando a requisição for completada
-    }
+    // Limpa os campos do formulário após o envio
+    setNome('');
+    setEmail('');
+    setTelefone('');
   };
-
-  // Função para adicionar um novo cliente
-  const handleClienteAdicionado = (novoCliente: Cliente) => {
-    setClientes((prevClientes) => [...prevClientes, novoCliente]); // Atualiza a lista de clientes
-  };
-
-  if (loading) {
-    return <div>Carregando clientes...</div>;  // Mensagem de loading
-  }
 
   return (
-    <div>
-      <h1>Clientes CRISTIANE</h1>
-      
-      {/* Exibição de erro, se houver */}
-      {error && <div style={{ color: 'red' }}>{error}</div>}
-
-      {/* Formulário de cliente */}
-      <ClienteForm onClienteAdicionado={handleClienteAdicionado} />
-
-      {/* Lista de clientes com botão de deletar */}
-      <ClienteList clientes={clientes} onDelete={handleDeleteCliente} />
-    </div>
+    <form onSubmit={handleSubmit}>
+      <input
+        type="text"
+        placeholder="Nome"
+        value={nome}
+        onChange={(e) => setNome(e.target.value)}
+      />
+      <input
+        type="email"
+        placeholder="Email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+      />
+      <input
+        type="text"
+        placeholder="Telefone"
+        value={telefone}
+        onChange={(e) => setTelefone(e.target.value)}
+      />
+      <button type="submit">Adicionar Cliente</button>
+    </form>
   );
 };
 
-export default ClientePage;
+export default ClienteForm;
