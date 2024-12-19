@@ -1,7 +1,6 @@
 // src/utils/salva_component.ts
 export const salva_component = (formType: string, data: any) => {
-
-  // Seleciona o formulário com base no tipo informado
+  // Seleciona o formulário com base no tipo informado (Ajustado para garantir que o id correto seja passado)
   const form = document.querySelector(`#${formType}-form`) as HTMLFormElement;
 
   if (!form) {
@@ -17,13 +16,13 @@ export const salva_component = (formType: string, data: any) => {
 
   // Iterando sobre cada item encontrado e preenchendo o objeto
   myInput.forEach((item) => {
-    obj_para_lancar[item.id] = item.value;  // Usando o 'id' do input para chave
+    obj_para_lancar[item.id] = item.value;  // Usando o 'id' do input como chave
   });
 
   // Exibindo os dados coletados no formulário para teste
   console.log("Dados do formulário:", obj_para_lancar);
 
-  // Se você deseja salvar os dados do formulário coletados:
+  // Salvando os dados no localStorage
   localStorage.setItem(`${formType}-form`, JSON.stringify(obj_para_lancar));
   console.log(`${formType}-form salvo no localStorage:`, obj_para_lancar);
 
