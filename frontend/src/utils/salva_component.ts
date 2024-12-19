@@ -18,6 +18,6 @@ export const salva_component = (formType: string) => {
     obj_para_lancar[item.id] = item.value;  // Usando o 'id' do input para chave
   });
 
-  // Exibindo o objeto no console para teste
+  // Exibindo o objeto no console para teste a
   console.log("Dados do formulário:", obj_para_lancar);
 }
