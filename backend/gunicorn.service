@@ -12,13 +12,14 @@ ExecStart=/var/www/northcromo_final_vps/backend/venv/bin/gunicorn \
     --workers 4 \
     --worker-class gevent \
     --bind unix:/var/www/northcromo_final_vps/backend/northcromo.sock \
-    wsgi:app \  # Aponte para o wsgi.py agora, e não mais para app.app:app
+    app.app:application \
     --log-level debug \
     --access-logfile /var/log/gunicorn_access.log \
     --error-logfile /var/log/gunicorn_error.log
 
 [Install]
 WantedBy=multi-user.target
+
 
 
 
