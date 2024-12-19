@@ -1,6 +1,5 @@
 import os
-from sqlalchemy import text
-from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
+from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
 from dotenv import load_dotenv
 
@@ -19,33 +18,28 @@ def get_database_uri():
         raise ValueError("Uma ou mais variáveis de ambiente do banco de dados não foram configuradas corretamente.")
     
     if os.environ.get('FLASK_ENV') == 'production':
-        return f'postgresql+asyncpg://{DATABASE_USER}:{DATABASE_PASSWORD}@{DATABASE_HOST}:{DATABASE_PORT}/{DATABASE_NAME}'  # PostgreSQL assíncrono
+        return f'postgresql://{DATABASE_USER}:{DATABASE_PASSWORD}@{DATABASE_HOST}:{DATABASE_PORT}/{DATABASE_NAME}'  # PostgreSQL síncrono
     else:
-        return 'sqlite+aiosqlite:///northcromo.db'  # Para SQLite assíncrono
+        return 'sqlite:///northcromo.db'  # SQLite síncrono
 
-# Função assíncrona para inicializar o banco de dados
-async def init_db(app):
+# Função para inicializar o banco de dados
+def init_db(app):
     # Obtenha a URI do banco de dados
     app.config['SQLALCHEMY_DATABASE_URI'] = get_database_uri()
 
     # Inicializa o engine e o sessionmaker
-    engine = create_async_engine(app.config['SQLALCHEMY_DATABASE_URI'], echo=True)
+    engine = create_engine(app.config['SQLALCHEMY_DATABASE_URI'], echo=True)
 
-    Session: AsyncSession = sessionmaker(
-        autocommit = False,
-        autoflush= False,
-        expire_on_commit = False,
-        class_= AsyncSession,
+    Session = sessionmaker(
+        autocommit=False,
+        autoflush=False,
         bind=engine
     )
-    
-    # Session = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
 
     # Testando a conexão com o banco de dados
     try:
-        # Usando 'async with' dentro de uma função assíncrona
-        async with engine.begin() as conn:
-            await conn.execute(text('SELECT 1'))  # Query simples para testar a conexão
+        with engine.connect() as conn:
+            conn.execute(text('SELECT 1'))  # Query simples para testar a conexão
         print("Conexão com o banco de dados bem-sucedida!")
     except Exception as e:
         print(f"Erro ao conectar com o banco de dados: {e}")
@@ -53,10 +47,10 @@ async def init_db(app):
 
     return engine, Session
 
-    # Função para obter a sessão do banco
+# Função para obter a sessão do banco
 def get_db_session(engine, Session):
     return Session()  # Retorna a sessão do banco de dados
 
 # Função para fechar a sessão do banco
-async def close_db_session(session):
-    await session.close()  # Fecha a sessão após a requisição
+def close_db_session(session):
+    session.close()  # Fecha a sessão após a requisição
