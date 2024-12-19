@@ -8,6 +8,7 @@ export const Salva_component = (formType: string) => {
     return;
   }
 
+  //
   // Seleciona todos os inputs dentro do formulário com a classe 'my-input'
   const myInput = form.querySelectorAll('.my-input') as NodeListOf<HTMLInputElement>;
 
