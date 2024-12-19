@@ -1,69 +1,55 @@
-import React, { useState } from 'react';
-import { Cliente } from 'src/types';  // Importando Cliente do index.ts
-import { salva_component } from 'src/utils';  // Importando a função salva_component
+// src/pages/Cliente.tsx
+import React, { useEffect, useState } from 'react';
+import { getClientes, deleteCliente } from '../api/clientes';  // Funções de API
+import ClienteForm from '../components/ClienteForm/ClienteForm';  // Formulário de Cliente
+import ClienteList from '../components/ClienteList/ClienteList';  // Lista de Clientes
+import { Cliente } from '../types/Cliente';  // Certificando-se de usar o tipo correto
 
-interface ClienteFormProps {
-  onClienteAdicionado: (cliente: Cliente) => void;
-}
+const ClientePage: React.FC = () => {
+  const [clientes, setClientes] = useState<Cliente[]>([]);  // Usando o tipo correto
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
-const ClienteForm: React.FC<ClienteFormProps> = ({ onClienteAdicionado }) => {
-  const [nome, setNome] = useState('');
-  const [email, setEmail] = useState('');
-  const [telefone, setTelefone] = useState('');
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-
-    const novoCliente: Cliente = {
-      id: Date.now(),
-      nome,
-      email,
-      telefone,
+  useEffect(() => {
+    const fetchClientes = async () => {
+      try {
+        const data = await getClientes();
+        setClientes(data);
+      } catch (error) {
+        setError('Falha ao carregar os clientes.');
+      } finally {
+        setLoading(false);
+      }
     };
 
-    // Exibindo os dados no console antes de chamar a função de adicionar
-    console.log("Cliente a ser adicionado:", novoCliente);  // Exibe o objeto de cliente no console
+    fetchClientes();
+  }, []);
 
-    // Chama a função salva_component passando o tipo do formulário
-    salva_component('cliente');  // Passando 'cliente' como tipo de formulário
-
-    // Adicionando o novo cliente
-    onClienteAdicionado(novoCliente);
-
-    setNome('');
-    setEmail('');
-    setTelefone('');
+  const handleDeleteCliente = async (id: number) => {
+    try {
+      await deleteCliente(id);
+      setClientes(clientes.filter(cliente => cliente.id !== id));
+    } catch (error) {
+      setError('Falha ao excluir o cliente.');
+    }
   };
 
+  const handleClienteAdicionado = (novoCliente: Cliente) => {  // Tipo corrigido aqui
+    setClientes(prevClientes => [...prevClientes, novoCliente]);
+  };
+
+  if (loading) {
+    return <div>Carregando clientes...</div>;
+  }
+
   return (
-    <form id="cliente-form" onSubmit={handleSubmit}>  {/* Adicionando o id ao formulário */}
-      <input
-        type="text"
-        id="nome"
-        className="my-input"  // Adicionando a classe
-        placeholder="Nome"
-        value={nome}
-        onChange={(e) => setNome(e.target.value)}
-      />
-      <input
-        type="email"
-        id="email"
-        className="my-input"  // Adicionando a classe
-        placeholder="Email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-      />
-      <input
-        type="text"
-        id="telefone"
-        className="my-input"  // Adicionando a classe
-        placeholder="Telefone"
-        value={telefone}
-        onChange={(e) => setTelefone(e.target.value)}
-      />
-      <button type="submit">Adicionar Cliente</button>
-    </form>
+    <div>
+      <h1>Clientes CRISTIANE</h1>
+      {error && <div style={{ color: 'red' }}>{error}</div>}
+      <ClienteForm onClienteAdicionado={handleClienteAdicionado} />
+      <ClienteList clientes={clientes} onDelete={handleDeleteCliente} />
+    </div>
   );
 };
 
-export default ClienteForm;
+export default ClientePage;
