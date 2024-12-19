@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Cliente } from 'src/types';  // Importando Cliente do index.ts
-import { salva_component } from '@utils/salva_component';  // Importando a função salva_component
+import { salva_component } from 'src/utils/salva_component';  // Importando a função salva_component
 
 interface ClienteFormProps {
   onClienteAdicionado: (cliente: Cliente) => void;
