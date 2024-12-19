@@ -63,3 +63,5 @@ echo "Deploy realizado com sucesso! A aplicação está rodando. O monitoramento
 sudo systemctl daemon-reload
 sudo systemctl start gunicorn
 sudo systemctl enable gunicorn
+
+echo "Habilitado tudo ! ."
