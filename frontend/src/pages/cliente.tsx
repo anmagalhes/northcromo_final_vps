@@ -23,15 +23,15 @@ const Cliente: React.FC = () => {
     const updatedClientes = [...clientes, novoCliente];
     setClientes(updatedClientes);
     
-    // Salva os clientes no localStorage
-    //salva_component('clientes', updatedClientes);
+    // Salva a lista de clientes no localStorage
+    salva_component('clientes', updatedClientes);  // Salvando no localStorage
   };
 
   // Função para excluir um cliente
   const handleDeleteCliente = (id: number) => {
     const updatedClientes = clientes.filter((cliente) => cliente.id !== id);
     setClientes(updatedClientes);
-    salva_component('clientes', updatedClientes);
+    salva_component('clientes', updatedClientes);  // Salvando no localStorage após exclusão
   };
 
   return (
