@@ -10,7 +10,7 @@ const Home: React.FC = () => {
 
   return (
     <div>
-      <h2>Home Page</h2>
+      <h2>Home Page TONY</h2>
       <Button label="Clique aqui" onClick={handleClick} />
     </div>
   );
