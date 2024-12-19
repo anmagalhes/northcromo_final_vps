@@ -86,6 +86,6 @@ def after_request(response):
 
 # DEV
 # Função para rodar a aplicação
-#if __name__ == "__main__":
-#    create_app()  # Cria o app
-    # app.run(host="0.0.0.0", port=5000, debug=False)  # Rodando o Flask de forma síncrona
+if __name__ == "__main__":
+    create_app()  # Cria o app
+    app.run()  # Rodando o Flask de forma síncrona

@@ -5,20 +5,22 @@ After=network.target
 [Service]
 User=www-data
 Group=www-data
+Environment="PYTHONPATH=/var/www/northcromo_final_vps/backend"
+Environment="PATH=/var/www/northcromo_final_vps/backend/venv/bin:$PATH"
 WorkingDirectory=/var/www/northcromo_final_vps/backend
 ExecStart=/var/www/northcromo_final_vps/backend/venv/bin/gunicorn \
     --workers 4 \
     --worker-class gevent \
     --bind unix:/var/www/northcromo_final_vps/backend/northcromo.sock \
-    app.app:app \
+    wsgi:app \  # Aponte para o wsgi.py agora, e não mais para app.app:app
     --log-level debug \
     --access-logfile /var/log/gunicorn_access.log \
     --error-logfile /var/log/gunicorn_error.log
-Environment="PYTHONPATH=/var/www/northcromo_final_vps/backend"
-Environment="PATH=/var/www/northcromo_final_vps/backend/venv/bin:$PATH"
 
 [Install]
 WantedBy=multi-user.target
+
+
 
 
 
