@@ -14,16 +14,22 @@ export const AppRoutes: React.FC = () => {
   return (
     <Routes>
       {/* Rota para a página Home */}
-      <Route path="/home" element={<Home />} />
+      <Route 
+        path="/home" 
+        element={<Home />} 
+        />
 
       {/* Rota para a página Cliente */}
       <Route
         path="/cliente"
-        element={<Cliente onClienteAdicionado={handleClienteAdicionado} />}
+        element={<Cliente />} 
       />
 
       {/* Redireciona para /home por padrão */}
-      <Route path="*" element={<Navigate to="/home" />} />
+      <Route 
+        path="*" 
+        element={<Navigate to="/home" />} 
+        />
     </Routes>
   );
 };

@@ -1,7 +1,13 @@
 // src/utils/salva_component.ts
-export const salva_component = (formType: string) => {
+export const salva_component = (formType: string, data?: any) => {
+  // Se os dados forem passados, salva no localStorage
+  if (data) {
+    localStorage.setItem(formType, JSON.stringify(data));
+    console.log(`${formType} salvo no localStorage:`, data);
+    return;
+  }
 
-  // Seleciona o formulário com base no tipo informado (geral)
+  // Caso contrário, coleta os dados do formulário
   const form = document.querySelector(`#${formType}-form`) as HTMLFormElement;
 
   if (!form) {
@@ -9,7 +15,6 @@ export const salva_component = (formType: string) => {
     return;
   }
 
-  //
   // Seleciona todos os inputs dentro do formulário com a classe 'my-input'
   const myInput = form.querySelectorAll('.my-input') as NodeListOf<HTMLInputElement>;
 
@@ -23,4 +28,8 @@ export const salva_component = (formType: string) => {
 
   // Exibindo o objeto no console para teste
   console.log("Dados do formulário:", obj_para_lancar);
-}
+
+  // Salvando os dados no localStorage
+  localStorage.setItem(formType, JSON.stringify(obj_para_lancar));
+  console.log(`${formType} salvo no localStorage:`, obj_para_lancar);
+};
