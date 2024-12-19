@@ -58,3 +58,8 @@ tail -f /var/log/gunicorn/gunicorn.log &  # Rodar o monitoramento em segundo pla
 
 # Passo 10: Concluir
 echo "Deploy realizado com sucesso! A aplicação está rodando. O monitoramento dos logs do Gunicorn está ativo."
+
+# Reiniciar o Gunicorn e Habilitar para Iniciar no Boot
+sudo systemctl daemon-reload
+sudo systemctl start gunicorn
+sudo systemctl enable gunicorn
