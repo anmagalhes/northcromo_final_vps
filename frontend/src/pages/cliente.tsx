@@ -107,7 +107,7 @@ const Cliente: React.FC = () => {
   
       // Envia os dados para o backend
       const response = await enviarParaBackend(novoCliente);
-  
+   
       // Se a resposta do backend for bem-sucedida, marca o cliente como enviado
       if (response.success) {
         novoCliente.enviado = true;
@@ -121,7 +121,7 @@ const Cliente: React.FC = () => {
     }
   };
   
-  // Função para excluir um cliente
+  // Função para excluir um cliente Analisar
   const handleDeleteCliente = (id: number) => {
     try {
       const updatedClientes = clientes.filter((cliente) => cliente.id !== id);

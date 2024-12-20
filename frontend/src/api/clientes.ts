@@ -35,3 +35,27 @@ export const deleteCliente = async (clienteId: number) => {
     return fetchAPI(`/api/cliente/${clienteId}`, 'DELETE');
 };
 
+// src/api/clientes.ts
+export const enviarParaBackend = async (cliente: Cliente) => {
+    try {
+      const response = await fetch('/api/cliente', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(cliente),
+      });
+  
+      if (!response.ok) {
+        throw new Error('Erro ao enviar cliente para o backend');
+      }
+  
+      const result = await response.json();
+      return result;
+    } catch (error) {
+      console.error('Erro ao enviar para o backend:', error);
+      return { success: false };
+    }
+  };
+  
+
