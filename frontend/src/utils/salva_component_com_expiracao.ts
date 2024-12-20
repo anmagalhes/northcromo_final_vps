@@ -19,7 +19,6 @@ export const salvarComExpiracao = (key: string, data: any, expirarEmMs: number) 
 export const carregarComVerificacaoDeExpiracao = (key: string, tempoExpiracao: number) => {
   const dados = localStorage.getItem(key);
 
-  // Se não houver dados no localStorage, retorna null
   if (!dados) {
     console.log(`${key} não encontrado no localStorage`);
     return null;
@@ -28,7 +27,7 @@ export const carregarComVerificacaoDeExpiracao = (key: string, tempoExpiracao: n
   try {
     const dadosComExpiracao = JSON.parse(dados);
 
-    // Verifica se os dados possuem a estrutura correta
+    // Verifica se a estrutura está correta
     if (!dadosComExpiracao.data || !dadosComExpiracao.expiracao) {
       console.error(`Formato inválido dos dados no ${key}`);
       return null;
@@ -36,9 +35,8 @@ export const carregarComVerificacaoDeExpiracao = (key: string, tempoExpiracao: n
 
     const { data, expiracao } = dadosComExpiracao;
 
-    // Verifica se os dados não expiraram
     if (Date.now() < expiracao) {
-      return data; // Retorna os dados se não expiraram
+      return data;  // Retorna os dados se não expiraram
     } else {
       console.log(`${key} expirou e foi removido.`);
       localStorage.removeItem(key); // Remove o item caso tenha expirado
