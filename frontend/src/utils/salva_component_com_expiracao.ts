@@ -1,34 +1,51 @@
-// src/utils/salva_component_com_expiracao.ts
+// Função para salvar dados com expiração
 export const salvarComExpiracao = (key: string, data: any, expirarEmMs: number) => {
-  const expiracao = Date.now() + expirarEmMs; // Define a expiração
+  const expiracao = Date.now() + expirarEmMs; // Calcula a data de expiração
   const dadosComExpiracao = {
     data,
     expiracao,
   };
 
-  localStorage.setItem(key, JSON.stringify(dadosComExpiracao)); // Salva com expiração no localStorage
-  console.log(`${key} salvo com expiração no localStorage:`, dadosComExpiracao);
+  try {
+    // Salva no localStorage
+    localStorage.setItem(key, JSON.stringify(dadosComExpiracao));
+    console.log(`${key} salvo com expiração no localStorage:`, dadosComExpiracao);
+  } catch (error) {
+    console.error(`Erro ao salvar dados de ${key} no localStorage:`, error);
+  }
 };
 
+// Função para carregar dados com verificação de expiração
 export const carregarComVerificacaoDeExpiracao = (key: string, tempoExpiracao: number) => {
   const dados = localStorage.getItem(key);
 
-  if (dados) {
-    try {
-      const dadosComExpiracao = JSON.parse(dados);
-      const { data, expiracao } = dadosComExpiracao;
-
-      if (Date.now() < expiracao) {
-        return data; // Retorna os dados se não expiraram
-      } else {
-        console.log(`${key} expirou e foi removido.`);
-        localStorage.removeItem(key); // Remove o item caso tenha expirado
-      }
-    } catch (error) {
-      console.error(`Erro ao carregar ou analisar os dados de ${key}:`, error);
-      return null;
-    }
+  // Se não houver dados no localStorage, retorna null
+  if (!dados) {
+    console.log(`${key} não encontrado no localStorage`);
+    return null;
   }
 
-  return null; // Retorna null se não houver dados ou se tiver expirado
+  try {
+    const dadosComExpiracao = JSON.parse(dados);
+
+    // Verifica se os dados possuem a estrutura correta
+    if (!dadosComExpiracao.data || !dadosComExpiracao.expiracao) {
+      console.error(`Formato inválido dos dados no ${key}`);
+      return null;
+    }
+
+    const { data, expiracao } = dadosComExpiracao;
+
+    // Verifica se os dados não expiraram
+    if (Date.now() < expiracao) {
+      return data; // Retorna os dados se não expiraram
+    } else {
+      console.log(`${key} expirou e foi removido.`);
+      localStorage.removeItem(key); // Remove o item caso tenha expirado
+      return null;
+    }
+  } catch (error) {
+    console.error(`Erro ao carregar ou analisar os dados de ${key}:`, error);
+    return null;
+  }
 };
