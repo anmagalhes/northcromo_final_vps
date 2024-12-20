@@ -14,7 +14,12 @@ const Cliente: React.FC = () => {
     const clientesSalvos = localStorage.getItem('clientes');
     if (clientesSalvos) {
       try {
-        setClientes(JSON.parse(clientesSalvos));  // Carrega os dados para o estado
+        const parsedClientes = JSON.parse(clientesSalvos);
+        if (Array.isArray(parsedClientes)) {
+          setClientes(parsedClientes);  // Carrega os dados para o estado
+        } else {
+          console.error("Os dados carregados não são um array:", parsedClientes);
+        }
       } catch (error) {
         console.error("Erro ao carregar os clientes do localStorage:", error);
       }
