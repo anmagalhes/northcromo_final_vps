@@ -8,6 +8,9 @@ import { salvarComExpiracao } from '../utils/salva_component_com_expiracao'; // 
 
 // API 
 import { enviarParaBackend } from '../api/clientes';
+// import { updateCliente } from '../api/clientes'; 
+import { editarClienteNoBackend } from '../api/clientes'; 
+
 
 // Função para obter a data atual
 const getCurrentTime = (): number => {
@@ -120,19 +123,54 @@ const Cliente: React.FC = () => {
       console.error("Erro ao adicionar cliente:", error);
     }
   };
-  
-  // Função para excluir um cliente Analisar
-  const handleDeleteCliente = (id: number) => {
-    try {
-      const updatedClientes = clientes.filter((cliente) => cliente.id !== id);
-      setClientes(updatedClientes);  // Atualiza a lista de clientes no estado
 
-      // Salva o array atualizado no localStorage com expiração (24h)
-      salvarComExpiracao('clientes', updatedClientes, 24 * 60 * 60 * 1000);  // Salvando com expiração de 24 horas
+  // Função para editar um cliente
+  const handleEditCliente = async (clienteEditado: Cliente) => {
+    try {
+      // Primeiro, envia os dados do cliente editado para o backend
+      const response = await editarClienteNoBackend(clienteEditado.id, clienteEditado);
+  
+      // Verifica se a resposta foi bem-sucedida
+      if (response.success) {
+        // Atualiza a lista de clientes no estado com os dados modificados
+        const updatedClientes = clientes.map((cliente) =>
+          cliente.id === clienteEditado.id ? clienteEditado : cliente
+        );
+        setClientes(updatedClientes);  // Atualiza a lista de clientes no estado
+  
+        // Atualiza o localStorage com os clientes modificados (com expiração)
+        salvarComExpiracao('clientes', updatedClientes, 24 * 60 * 60 * 1000);  // Salvando com expiração de 24 horas
+      } else {
+        console.error("Erro ao editar cliente no backend:", response.message);
+      }
+    } catch (error) {
+      console.error("Erro ao editar cliente:", error);
+    }
+  };
+
+
+  // Função para excluir um cliente
+  const handleDeleteCliente = async (id: number) => {
+    try {
+      // Primeiro, envia a requisição para excluir o cliente no backend
+      const response = await deleteCliente(id);
+  
+      // Verifica se a exclusão foi bem-sucedida no backend
+      if (response.success) {
+        // Caso a exclusão tenha sido bem-sucedida, remove o cliente da lista no estado
+        const updatedClientes = clientes.filter((cliente) => cliente.id !== id);
+        setClientes(updatedClientes);  // Atualiza o estado com a lista de clientes
+  
+        // Salva o array atualizado no localStorage com expiração (24h)
+        salvarComExpiracao('clientes', updatedClientes, 24 * 60 * 60 * 1000);  // Salvando com expiração de 24 horas
+      } else {
+        console.error("Erro ao excluir cliente no backend:", response.message);
+      }
     } catch (error) {
       console.error("Erro ao excluir cliente:", error);
     }
   };
+
 
   return (
     <div>
