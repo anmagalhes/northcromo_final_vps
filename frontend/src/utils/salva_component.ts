@@ -1,4 +1,5 @@
 // src/utils/salva_component.ts
+
 export const salva_component = (formType: string, data: any) => {
   // Seleciona o formulário com base no tipo informado (Ajustado para garantir que o id correto seja passado)
   const form = document.querySelector(`#${formType}-form`) as HTMLFormElement;
