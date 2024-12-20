@@ -153,7 +153,6 @@ const Cliente: React.FC = () => {
     }
   };
   
-  
   const response = await editarClienteNoBackend
   // Função para excluir um cliente
   const handleDeleteCliente = async (id: number) => {
