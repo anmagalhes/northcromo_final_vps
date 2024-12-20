@@ -127,7 +127,7 @@ const Cliente: React.FC = () => {
   // Função para editar um cliente
   const handleEditCliente = async (clienteEditado: Cliente) => {
     try {
-      // Primeiro, verifica se o ID do cliente está definido
+      // Verifica se o ID do cliente está definido
       if (clienteEditado.id !== undefined) {
         // Envia os dados do cliente editado para o backend
         const response = await editarClienteNoBackend(clienteEditado.id, clienteEditado);
@@ -152,6 +152,7 @@ const Cliente: React.FC = () => {
       console.error("Erro ao editar cliente:", error);
     }
   };
+  
   
   const response = await editarClienteNoBackend
   // Função para excluir um cliente
