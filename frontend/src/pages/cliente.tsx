@@ -4,7 +4,7 @@ import { Cliente } from '../types/Cliente';  // Tipo Cliente
 import ClienteForm from '../components/ClienteForm/ClienteForm';  // Formulário de Cliente
 import ClienteList from '../components/ClienteList/ClienteList';  // Lista de Clientes
 import Button from '../components/Button/Button';  // Componente de Botão
-import { salva_component } from '../utils/salva_component';  // Função de Salvamento
+import { salva_component } from '../utils';  // Função de Salvamento
 
 const Cliente: React.FC = () => {
   const [clientes, setClientes] = useState<Cliente[]>([]);  // Estado para armazenar a lista de clientes
@@ -15,23 +15,34 @@ const Cliente: React.FC = () => {
     if (clientesSalvos) {
       try {
         const parsedClientes = JSON.parse(clientesSalvos);
+        // Verifique se os dados são um array, caso contrário inicialize como um array vazio
         if (Array.isArray(parsedClientes)) {
           setClientes(parsedClientes);  // Carrega os dados para o estado
         } else {
           console.error("Os dados carregados não são um array:", parsedClientes);
+          setClientes([]);  // Inicializa como um array vazio caso os dados sejam inválidos
         }
       } catch (error) {
         console.error("Erro ao carregar os clientes do localStorage:", error);
+        setClientes([]);  // Inicializa como um array vazio caso ocorra algum erro
       }
+    } else {
+      setClientes([]);  // Se não houver dados, inicializa como um array vazio
     }
   }, []);
 
   // Função para adicionar um cliente
   const handleClienteAdicionado = (novoCliente: Cliente) => {
-    const updatedClientes = [...clientes, novoCliente];
+    // Recupera os clientes existentes do localStorage
+    const clientesExistentes = JSON.parse(localStorage.getItem('clientes') || '[]');
+
+    // Adiciona o novo cliente ao array de clientes existentes
+    const updatedClientes = [...clientesExistentes, novoCliente];
+
+    // Atualiza o estado com o novo array de clientes
     setClientes(updatedClientes);
-    
-    // Salva a lista de clientes no localStorage apenas se houver alteração
+
+    // Salva o array atualizado no localStorage
     salva_component('clientes', updatedClientes);  // Salvando no localStorage
   };
 
@@ -39,8 +50,6 @@ const Cliente: React.FC = () => {
   const handleDeleteCliente = (id: number) => {
     const updatedClientes = clientes.filter((cliente) => cliente.id !== id);
     setClientes(updatedClientes);
-    
-    // Salva a lista de clientes no localStorage após exclusão
     salva_component('clientes', updatedClientes);  // Salvando no localStorage após exclusão
   };
 
