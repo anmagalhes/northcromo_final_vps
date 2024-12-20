@@ -1,7 +1,7 @@
 // src/components/ClienteForm/ClienteForm.tsx
 import React, { useState } from 'react';
-import { Cliente } from 'src/types/Cliente'
-import { salva_component } from 'src/utils/salva_component';
+import { Cliente } from '@/types/Cliente'
+import { salva_component } from '@utils/salva_component';
 
 interface ClienteFormProps {
   onClienteAdicionado: (cliente: Cliente) => void;  // Definindo o tipo da prop
