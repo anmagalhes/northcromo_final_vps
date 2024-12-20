@@ -3,8 +3,9 @@ import React, { useState } from 'react';
 import { Cliente } from 'src/types/Cliente';
 import { salva_component } from '@utils/salva_component';
 
+
 interface ClienteFormProps {
-  onClienteAdicionado: (cliente: Cliente) => void;  // Definindo o tipo da prop
+  onClienteAdicionado: (cliente: Cliente) => void;
 }
 
 const ClienteForm: React.FC<ClienteFormProps> = ({ onClienteAdicionado }) => {
@@ -15,53 +16,47 @@ const ClienteForm: React.FC<ClienteFormProps> = ({ onClienteAdicionado }) => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-  // Exibir os valores digitados pelo usuário
-  console.log("Dados digitados:", { nome, email, telefone });
-
     const novoCliente: Cliente = {
-      id: Date.now(),  // Você pode gerar o ID de forma diferente dependendo do seu backend
+      id: Date.now(),
       nome,
       email,
       telefone,
     };
 
     // Chama a função onClienteAdicionado passando o novo cliente
-      onClienteAdicionado(novoCliente);
-
-      // Salva os dados no localStorage
-      salva_component('cliente', [novoCliente]);
+    onClienteAdicionado(novoCliente);
 
     // Limpa os campos do formulário após o envio
     setNome('');
     setEmail('');
     setTelefone('');
 
-    // Chama a função salva_component passando o tipo do formulário
-    salva_component('clientes', novoCliente);  // 'clientes' é o nome genérico para o formulário
+    // Chama a função salva_component passando o nome do formulário correto ('clientes')
+    salva_component('clientes', novoCliente);  // Usar 'clientes' aqui
   };
 
   return (
-    <form id="clientes-form" onSubmit={handleSubmit}>
+    <form id="clientes-form" onSubmit={handleSubmit}> {/* Certifique-se de que o ID seja 'clientes-form' */}
       <input
         type="text"
-        id="nome"  // Definindo o ID para cada input
-        className="my-input"  // Adicionando a classe 'my-input' para selecionar os inputs na função salva_component
+        id="nome"
+        className="my-input"
         placeholder="Nome"
         value={nome}
         onChange={(e) => setNome(e.target.value)}
       />
       <input
         type="email"
-        id="email"  // Definindo o ID para cada input
-        className="my-input"  // Adicionando a classe 'my-input' para selecionar os inputs na função salva_component
+        id="email"
+        className="my-input"
         placeholder="Email"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
       />
       <input
         type="text"
-        id="telefone"  // Definindo o ID para cada input
-        className="my-input"  // Adicionando a classe 'my-input' para selecionar os inputs na função salva_component
+        id="telefone"
+        className="my-input"
         placeholder="Telefone"
         value={telefone}
         onChange={(e) => setTelefone(e.target.value)}
