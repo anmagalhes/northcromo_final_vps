@@ -5,7 +5,7 @@ from app import db
 def list_clientes():
   #  clientes = Cliente.query.all()  # Consulta todos os clientes
 # return [cliente.to_dict() for cliente in clientes]
- return [{"id": 1, "name": "John Doe"}, {"id": 2, "name": "Jane Doe"}]
+ return [{"id": 1, "nome": "John Doe"}, {"id": 2, "nome": "Jane Doe"}]
 
 # Obter um cliente específico
 def get_cliente(id):
