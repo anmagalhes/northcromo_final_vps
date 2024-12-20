@@ -6,33 +6,28 @@ export const getClientes = async () => {
     return fetchAPI('/api/cliente');
 };
 
-// Função para criar um novo cliente
-export const createCliente = async (clienteData: any) => {
+// Função para atualizar os dados de um cliente
+export const updateCliente = async (clienteId: number, clienteData: any) => {
     try {
-        const response = await fetch('/api/cliente', {
-            method: 'POST',
+        const response = await fetch(`/api/cliente/${clienteId}`, {
+            method: 'PUT', // Usando o método PUT para atualizar
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(clienteData),
+            body: JSON.stringify(clienteData), // Envia os dados atualizados do cliente
         });
 
         // Verifica se a resposta foi bem-sucedida
         if (!response.ok) {
-            throw new Error('Erro ao criar o cliente');
+            throw new Error('Erro ao atualizar o cliente');
         }
 
         const result = await response.json();
-        return result; // { success: true } ou o que for retornado pelo seu backend
+        return result; // Retorna a resposta do backend (geralmente os dados atualizados ou uma confirmação)
     } catch (error) {
-        console.error('Erro ao enviar cliente para o backend:', error);
-        return { success: false };
+        console.error('Erro ao atualizar cliente no backend:', error);
+        return { success: false }; // Caso haja erro, retorna um objeto com sucesso falso
     }
-};
-
-// Função para atualizar os dados de um cliente
-export const updateCliente = async (clienteId: number, clienteData: any) => {
-    return fetchAPI(`/api/cliente/${clienteId}`, 'PUT', clienteData);
 };
 
 // Função para deletar um cliente

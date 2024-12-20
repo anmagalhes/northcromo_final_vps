@@ -6,6 +6,9 @@ import ClienteList from '../components/ClienteList/ClienteList'; // Lista de Cli
 import Button from '../components/Button/Button'; // Componente de Botão
 import { salvarComExpiracao } from '../utils/salva_component_com_expiracao'; // Funções de expiração
 
+// API 
+import { enviarParaBackend } from '../api/clientes';
+
 // Função para obter a data atual
 const getCurrentTime = (): number => {
   return new Date().getTime();
@@ -109,7 +112,7 @@ const Cliente: React.FC = () => {
       if (response.success) {
         novoCliente.enviado = true;
         // Atualiza o localStorage com a marcação de enviado
-        atualizarClienteNoLocalStorage(novoCliente);
+        adicionarClienteAoLocalStorage(novoCliente);
       } else {
         console.error("Falha ao enviar cliente para o backend");
       }
