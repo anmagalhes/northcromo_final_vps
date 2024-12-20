@@ -8,7 +8,7 @@ import { salvarComExpiracao, carregarComVerificacaoDeExpiracao } from '../utils/
 
 const Cliente: React.FC = () => {
   const [clientes, setClientes] = useState<Cliente[]>([]);  // Estado para armazenar a lista de clientes
-
+//
   // Carregar os clientes do localStorage com expiração de 24 horas
   useEffect(() => {
     try {
