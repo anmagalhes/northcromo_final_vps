@@ -125,57 +125,53 @@ const Cliente: React.FC = () => {
   };
 
   // Função para editar um cliente
-  const handleEditCliente = async (clienteEditado: Cliente) => {
-    try {
-      // Verifica se o ID do cliente está definido
-      if (clienteEditado.id !== undefined) {
-        // Envia os dados do cliente editado para o backend
-        const response = await editarClienteNoBackend(clienteEditado.id, clienteEditado);
-  
-        // Verifica se a resposta foi bem-sucedida
-        if (response && response.success) {
-          // Atualiza a lista de clientes no estado com os dados modificados
-          const updatedClientes = clientes.map((cliente) =>
-            cliente.id === clienteEditado.id ? clienteEditado : cliente
-          );
-          setClientes(updatedClientes);  // Atualiza a lista de clientes no estado
-  
-          // Atualiza o localStorage com os clientes modificados (com expiração)
-          salvarComExpiracao('clientes', updatedClientes, 24 * 60 * 60 * 1000);  // Salvando com expiração de 24 horas
-        } else {
-          console.error("Erro ao editar cliente no backend:", response ? response.message : "Resposta inválida");
-        }
-      } else {
-        console.error("ID do cliente não encontrado");
-      }
-    } catch (error) {
-      console.error("Erro ao editar cliente:", error);
-    }
-  };
-  
-  const response = await editarClienteNoBackend
-  // Função para excluir um cliente
-  const handleDeleteCliente = async (id: number) => {
-    try {
-      // Primeiro, envia a requisição para excluir o cliente no backend
-      const response = await deleteCliente(id);
-  
-      // Verifica se a exclusão foi bem-sucedida no backend
-      if (response.success) {
-        // Caso a exclusão tenha sido bem-sucedida, remove o cliente da lista no estado
-        const updatedClientes = clientes.filter((cliente) => cliente.id !== id);
+  // Função para editar um cliente
+const handleEditCliente = async (clienteEditado: Cliente) => {
+  try {
+    if (clienteEditado.id !== undefined) {
+      // Envia os dados do cliente editado para o backend
+      const response = await editarClienteNoBackend(clienteEditado.id, clienteEditado);
+
+      if (response && response.success) {
+        // Atualiza a lista de clientes no estado com os dados modificados
+        const updatedClientes = clientes.map((cliente) =>
+          cliente.id === clienteEditado.id ? clienteEditado : cliente
+        );
         setClientes(updatedClientes);  // Atualiza o estado com a lista de clientes
-  
-        // Salva o array atualizado no localStorage com expiração (24h)
+
+        // Atualiza o localStorage com os clientes modificados (com expiração)
         salvarComExpiracao('clientes', updatedClientes, 24 * 60 * 60 * 1000);  // Salvando com expiração de 24 horas
       } else {
-        console.error("Erro ao excluir cliente no backend:", response.message);
+        console.error("Erro ao editar cliente no backend:", response?.message || "Resposta inválida");
       }
-    } catch (error) {
-      console.error("Erro ao excluir cliente:", error);
+    } else {
+      console.error("ID do cliente não encontrado");
     }
-  };
+  } catch (error) {
+    console.error("Erro ao editar cliente:", error);
+  }
+};
 
+  // Função para excluir um cliente
+const handleDeleteCliente = async (id: number) => {
+  try {
+    // Envia a requisição para excluir o cliente no backend
+    const response = await deleteCliente(id);
+
+    if (response && response.success) {
+      // Se a exclusão for bem-sucedida, remove o cliente da lista no estado
+      const updatedClientes = clientes.filter((cliente) => cliente.id !== id);
+      setClientes(updatedClientes);  // Atualiza o estado com a lista de clientes
+
+      // Salva o array atualizado no localStorage com expiração de 24 horas
+      salvarComExpiracao('clientes', updatedClientes, 24 * 60 * 60 * 1000);  // Salvando com expiração de 24 horas
+    } else {
+      console.error("Erro ao excluir cliente no backend:", response?.message || "Resposta inválida");
+    }
+  } catch (error) {
+    console.error("Erro ao excluir cliente:", error);
+  }
+};
 
   return (
     <div>
