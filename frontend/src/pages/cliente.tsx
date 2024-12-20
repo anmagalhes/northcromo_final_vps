@@ -94,18 +94,30 @@ const Cliente: React.FC = () => {
   }, []);  // O useEffect será executado uma única vez no carregamento da página
 
   // Função para adicionar um cliente
-  const handleClienteAdicionado = (novoCliente: Cliente) => {
+  const handleClienteAdicionado = async (novoCliente: Cliente) => {
     try {
-      // Adiciona o novo cliente ao localStorage
+      // Marca o cliente como "não enviado" inicialmente
+      novoCliente.enviado = false;
+  
+      // Adiciona o cliente ao localStorage
       adicionarClienteAoLocalStorage(novoCliente);
-
-      // Atualiza o estado com o novo array de clientes
-      setClientes((prevClientes) => [...prevClientes, novoCliente]);
+  
+      // Envia os dados para o backend
+      const response = await enviarParaBackend(novoCliente);
+  
+      // Se a resposta do backend for bem-sucedida, marca o cliente como enviado
+      if (response.success) {
+        novoCliente.enviado = true;
+        // Atualiza o localStorage com a marcação de enviado
+        atualizarClienteNoLocalStorage(novoCliente);
+      } else {
+        console.error("Falha ao enviar cliente para o backend");
+      }
     } catch (error) {
       console.error("Erro ao adicionar cliente:", error);
     }
   };
-
+  
   // Função para excluir um cliente
   const handleDeleteCliente = (id: number) => {
     try {
