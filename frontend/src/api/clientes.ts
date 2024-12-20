@@ -39,9 +39,9 @@ export const deleteCliente = async (clienteId: number) => {
 // Função para enviar cliente para o backend
 export const enviarParaBackend = async (cliente: Cliente) => {
   try {
-    console.log('Enviando cliente para o backend:', cliente); // Log para ver o que está sendo enviado
+    console.log('Enviando cliente para o backend:', cliente); // Log para ver os dados enviados
 
-    const response = await fetch('/api/cliente', {
+    const response = await fetch('https://northcromocontrole.com.br/api/cliente', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -49,19 +49,17 @@ export const enviarParaBackend = async (cliente: Cliente) => {
       body: JSON.stringify(cliente),
     });
 
-    // Verifica se a resposta foi bem-sucedida
     if (!response.ok) {
-      const errorText = await response.text(); // Pega o erro do servidor, caso exista
-      console.error('Erro ao enviar cliente para o backend:', errorText); // Log do erro
+      const errorText = await response.text(); // Pegue a resposta de erro do backend
+      console.error('Erro ao enviar para o backend:', errorText);
       throw new Error(`Erro ao enviar cliente para o backend: ${errorText}`);
     }
 
     const result = await response.json();
-    console.log('Resposta do servidor:', result); // Log para ver o que o servidor retornou
-    return result; // Retorna a resposta do backend
+    console.log('Resposta do servidor:', result);
+    return result;
   } catch (error) {
-    console.error('Erro ao enviar cliente para o backend:', error); // Log do erro
-    return { success: false }; // Caso haja erro, retorna um objeto com sucesso falso
+    console.error('Falha ao enviar cliente para o backend:', error);
   }
 };
   
