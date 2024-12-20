@@ -22,11 +22,11 @@ export const salva_component = (formType: string, data: any) => {
   // Exibindo os dados coletados no formulário para teste
   console.log("Dados do formulário:", obj_para_lancar);
 
-  // Salvando os dados no localStorage
+  // Salvando os dados no localStorage (dados do formulário)
   localStorage.setItem(`${formType}-form`, JSON.stringify(obj_para_lancar));
   console.log(`${formType}-form salvo no localStorage:`, obj_para_lancar);
 
-  // Caso queira salvar dados gerais (como uma lista de clientes, por exemplo):
+  // Salvando dados gerais (como uma lista de clientes, por exemplo), se fornecido
   if (data) {
     localStorage.setItem(formType, JSON.stringify(data));
     console.log(`${formType} salvo no localStorage:`, data);
