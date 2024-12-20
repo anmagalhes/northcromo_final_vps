@@ -18,20 +18,24 @@ const Cliente: React.FC = () => {
   const carregarClientes = (): Cliente[] => {
     try {
       const clientesCarregadosStr = localStorage.getItem('clientes');
-      const expiraçãoStr = localStorage.getItem('clientes_expiracao');
-
-      if (clientesCarregadosStr && expiraçãoStr) {
+      console.log("clientes carregados:", clientesCarregadosStr); // Verifique aqui
+      if (clientesCarregadosStr) {
         const clientesCarregados = JSON.parse(clientesCarregadosStr);
-        const dataDeExpiracao = parseInt(expiraçãoStr, 10);
-        
-        // Verifica se os dados expiraram
-        if (getCurrentTime() > dataDeExpiracao) {
-          console.warn("Dados expiraram. Limpando os dados.");
-          localStorage.removeItem('clientes');
-          localStorage.removeItem('clientes_expiracao');
+        console.log("clientes após parse:", clientesCarregados); // Verifique após parse
+        if (Array.isArray(clientesCarregados) && clientesCarregados.every((item: any) => item.id && item.nome && item.email && item.telefone)) {
+          return clientesCarregados;
+        } else {
+          console.warn("Dados inválidos no localStorage.");
           return [];
         }
-
+      }
+      return [];
+    } catch (error) {
+      console.error("Erro ao carregar os dados do localStorage", error);
+      return [];
+    }
+  };
+  
         // Verifica se os dados são um array de clientes válidos
         if (Array.isArray(clientesCarregados) && clientesCarregados.every((item: any) => item.id && item.nome && item.email && item.telefone)) {
           return clientesCarregados;
