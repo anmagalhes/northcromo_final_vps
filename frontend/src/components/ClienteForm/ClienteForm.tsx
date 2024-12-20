@@ -35,10 +35,13 @@ const ClienteForm: React.FC<ClienteFormProps> = ({ onClienteAdicionado }) => {
     setNome('');
     setEmail('');
     setTelefone('');
+
+    // Chama a função salva_component passando o tipo do formulário
+    salva_component('clientes', novoCliente);  // 'clientes' é o nome genérico para o formulário
   };
 
   return (
-    <form id="cliente-form" onSubmit={handleSubmit}>
+    <form id="clientes-form" onSubmit={handleSubmit}>
       <input
         type="text"
         id="nome"  // Definindo o ID para cada input
