@@ -8,63 +8,45 @@ import { salvarComExpiracao, carregarComVerificacaoDeExpiracao } from '../utils/
 
 const Cliente: React.FC = () => {
   const [clientes, setClientes] = useState<Cliente[]>([]);  // Estado para armazenar a lista de clientes
-//
+
   // Carregar os clientes do localStorage com expiração de 24 horas
   useEffect(() => {
-    try {
-      // Carrega os dados dos clientes e verifica a expiração (24h)
-      const clientesCarregados = carregarComVerificacaoDeExpiracao('clientes', 24 * 60 * 60 * 1000); // 24 horas em ms
-  
-      // Garantir que o tipo dos dados é um array de Cliente
-    if (Array.isArray(clientesCarregados)) {
-      setClientes(clientesCarregados);  // Já é um array, então apenas define
+    const clientesCarregados = carregarClientes();  // Recupera os clientes do localStorage
+
+    if (clientesCarregados.length > 0) {
+      setClientes(clientesCarregados);  // Carrega os dados para o estado
     } else {
-      setClientes([]);  // Caso não seja um array, inicialize com um array vazio
-    }
-    } catch (error) {
-      console.error("Erro ao carregar os clientes do localStorage:", error);
-      setClientes([]);  // Em caso de erro, inicializa como um array vazio
+      setClientes([]);  // Caso não haja dados ou os dados estejam expirados
     }
   }, []);  // O useEffect será executado uma única vez no carregamento da página
-  
-  
+
   // Função para adicionar um cliente
   const handleClienteAdicionado = (novoCliente: Cliente) => {
     try {
-      // Recupera os clientes existentes do localStorage (se houver)
-      const clientesExistentes = JSON.parse(localStorage.getItem('clientes') || '[]');
-      
-      // Adiciona o novo cliente ao array de clientes existentes
-      const updatedClientes = [...clientesExistentes, novoCliente];
-  
+      // Adiciona o novo cliente ao localStorage
+      adicionarClienteAoLocalStorage(novoCliente);
+
       // Atualiza o estado com o novo array de clientes
-      setClientes(updatedClientes);
-  
-      // Salva o array atualizado no localStorage com expiração (24h)
-      salvarComExpiracao('clientes', updatedClientes, 24 * 60 * 60 * 1000);  // Salvando com expiração de 24 horas
+      setClientes((prevClientes) => [...prevClientes, novoCliente]);
     } catch (error) {
-      console.error("Erro ao adicionar cliente ao localStorage:", error);
-      alert("Ocorreu um erro ao adicionar o cliente.");  // Feedback ao usuário em caso de erro
+      console.error("Erro ao adicionar cliente:", error);
     }
   };
-  
+
   // Função para excluir um cliente
   const handleDeleteCliente = (id: number) => {
     try {
       // Filtra o cliente a ser excluído
       const updatedClientes = clientes.filter((cliente) => cliente.id !== id);
-      
-      // Atualiza a lista de clientes no estado
-      setClientes(updatedClientes);
-  
-      // Salva o array atualizado no localStorage com expiração (24h)
+      setClientes(updatedClientes);  // Atualiza a lista de clientes no estado
+
+      // Salva o array atualizado no localStorage
       salvarComExpiracao('clientes', updatedClientes, 24 * 60 * 60 * 1000);  // Salvando com expiração de 24 horas
     } catch (error) {
       console.error("Erro ao excluir cliente:", error);
-      alert("Ocorreu um erro ao excluir o cliente.");  // Feedback ao usuário em caso de erro
     }
   };
-  
+
   return (
     <div>
       <h2>Gestão de Clientes</h2>
