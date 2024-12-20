@@ -1,22 +1,32 @@
 // src/utils/salva_component_com_expiracao.ts
-export const salvarComExpiracao = (key: string, data: any, expirarEmMs: number) => {
+import { Cliente }from 'src/types/Cliente'; // Importa a interface
+
+// Função para salvar dados com expiração
+export const salvarComExpiracao = (key: string, data: Cliente, expirarEmMs: number): void => {
+  // Normaliza os dados para garantir que campos vazios se tornem null
+  const dadosNormalizados: Cliente = {
+    nome: data.nome || null,  // Se nome estiver vazio, salva como null
+    email: data.email || null,  // Se email estiver vazio, salva como null
+    telefone: data.telefone || null,  // Se telefone estiver vazio, salva como null
+  };
+
   const expiracao = Date.now() + expirarEmMs; // Calcula o tempo de expiração
   const dadosComExpiracao = {
-    data,        // Dados reais
-    expiracao,   // Tempo de expiração
+    data: dadosNormalizados,  // Dados reais normalizados
+    expiracao,                // Tempo de expiração
   };
 
   try {
     // Serializa o objeto e armazena no localStorage
-    const dadosSerializados = JSON.stringify(dadosComExpiracao);
-    localStorage.setItem(key, dadosSerializados);
+    localStorage.setItem(key, JSON.stringify(dadosComExpiracao));
     console.log(`${key} salvo com expiração no localStorage:`, dadosComExpiracao);
   } catch (error) {
     console.error(`Erro ao salvar dados de ${key} no localStorage:`, error);
   }
 };
 
-export const carregarComVerificacaoDeExpiracao = (key: string, tempoExpiracao: number) => {
+// Função para carregar dados com verificação de expiração
+export const carregarComVerificacaoDeExpiracao = (key: string, tempoExpiracao: number): Cliente | null => {
   const dados = localStorage.getItem(key);
 
   if (!dados) {
@@ -25,7 +35,7 @@ export const carregarComVerificacaoDeExpiracao = (key: string, tempoExpiracao: n
   }
 
   try {
-    // Tenta fazer o parse do JSON
+    // Verifica se os dados são um JSON válido
     const dadosComExpiracao = JSON.parse(dados);
 
     // Verifique se a estrutura dos dados é a esperada
@@ -45,7 +55,10 @@ export const carregarComVerificacaoDeExpiracao = (key: string, tempoExpiracao: n
       return null;
     }
   } catch (error) {
+    // Se ocorrer um erro de parse, provavelmente os dados não são válidos
     console.error(`Erro ao carregar ou analisar os dados de ${key}:`, error);
+    // Remover o item corrompido para evitar problemas futuros
+    localStorage.removeItem(key);
     return null;
   }
 };
