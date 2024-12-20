@@ -9,8 +9,8 @@ import { salvarComExpiracao } from '../utils/salva_component_com_expiracao'; // 
 // API 
 import { enviarParaBackend } from '../api/clientes';
 // import { updateCliente } from '../api/clientes'; 
-import { editarClienteNoBackend } from '../api/clientes'; 
-
+import { editarClienteNoBackend } from '../api/clientes';
+import { deleteCliente } from '../api/clientes'; 
 
 // Função para obter a data atual
 const getCurrentTime = (): number => {
@@ -127,28 +127,33 @@ const Cliente: React.FC = () => {
   // Função para editar um cliente
   const handleEditCliente = async (clienteEditado: Cliente) => {
     try {
-      // Primeiro, envia os dados do cliente editado para o backend
-      const response = await editarClienteNoBackend(clienteEditado.id, clienteEditado);
+      // Primeiro, verifica se o ID do cliente está definido
+      if (clienteEditado.id !== undefined) {
+        // Envia os dados do cliente editado para o backend
+        const response = await editarClienteNoBackend(clienteEditado.id, clienteEditado);
   
-      // Verifica se a resposta foi bem-sucedida
-      if (response.success) {
-        // Atualiza a lista de clientes no estado com os dados modificados
-        const updatedClientes = clientes.map((cliente) =>
-          cliente.id === clienteEditado.id ? clienteEditado : cliente
-        );
-        setClientes(updatedClientes);  // Atualiza a lista de clientes no estado
+        // Verifica se a resposta foi bem-sucedida
+        if (response && response.success) {
+          // Atualiza a lista de clientes no estado com os dados modificados
+          const updatedClientes = clientes.map((cliente) =>
+            cliente.id === clienteEditado.id ? clienteEditado : cliente
+          );
+          setClientes(updatedClientes);  // Atualiza a lista de clientes no estado
   
-        // Atualiza o localStorage com os clientes modificados (com expiração)
-        salvarComExpiracao('clientes', updatedClientes, 24 * 60 * 60 * 1000);  // Salvando com expiração de 24 horas
+          // Atualiza o localStorage com os clientes modificados (com expiração)
+          salvarComExpiracao('clientes', updatedClientes, 24 * 60 * 60 * 1000);  // Salvando com expiração de 24 horas
+        } else {
+          console.error("Erro ao editar cliente no backend:", response ? response.message : "Resposta inválida");
+        }
       } else {
-        console.error("Erro ao editar cliente no backend:", response.message);
+        console.error("ID do cliente não encontrado");
       }
     } catch (error) {
       console.error("Erro ao editar cliente:", error);
     }
   };
-
-
+  
+  const response = await editarClienteNoBackend
   // Função para excluir um cliente
   const handleDeleteCliente = async (id: number) => {
     try {
