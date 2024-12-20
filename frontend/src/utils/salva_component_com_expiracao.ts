@@ -1,13 +1,13 @@
-// Função para salvar dados com expiração
+// src/utils/salva_component_com_expiracao.ts
 export const salvarComExpiracao = (key: string, data: any, expirarEmMs: number) => {
-  const expiracao = Date.now() + expirarEmMs; // Calcula a data de expiração
+  const expiracao = Date.now() + expirarEmMs; // Calcula o timestamp de expiração
   const dadosComExpiracao = {
     data,
-    expiracao,
+    expiracao,  // Adiciona a expiração
   };
 
   try {
-    // Salva no localStorage
+    // Serializa o objeto e armazena no localStorage
     localStorage.setItem(key, JSON.stringify(dadosComExpiracao));
     console.log(`${key} salvo com expiração no localStorage:`, dadosComExpiracao);
   } catch (error) {
@@ -15,7 +15,7 @@ export const salvarComExpiracao = (key: string, data: any, expirarEmMs: number) 
   }
 };
 
-// Função para carregar dados com verificação de expiração
+
 export const carregarComVerificacaoDeExpiracao = (key: string, tempoExpiracao: number) => {
   const dados = localStorage.getItem(key);
 
