@@ -37,26 +37,33 @@ export const deleteCliente = async (clienteId: number) => {
 };
 
 // src/api/clientes.ts
+// Função para enviar cliente para o backend
 export const enviarParaBackend = async (cliente: Cliente) => {
-    try {
-      const response = await fetch('/api/cliente', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(cliente),
-      });
-  
-      if (!response.ok) {
-        throw new Error('Erro ao enviar cliente para o backend');
-      }
-  
-      const result = await response.json();
-      return result;
-    } catch (error) {
-      console.error('Erro ao enviar para o backend:', error);
-      return { success: false };
+  try {
+    console.log('Enviando cliente para o backend:', cliente); // Log para verificar os dados enviados
+
+    const response = await fetch('/api/cliente', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(cliente), // Envia os dados como JSON
+    });
+
+    // Verifica se a resposta foi bem-sucedida
+    if (!response.ok) {
+      const errorText = await response.text(); // Pega o erro do servidor, caso exista
+      console.error('Erro ao enviar cliente para o backend:', errorText);
+      throw new Error(`Erro ao enviar cliente para o backend: ${errorText}`);
     }
-  };
+
+    const result = await response.json();
+    console.log('Resposta do servidor:', result); // Log para verificar o resultado
+    return result; // Retorna a resposta do backend
+  } catch (error) {
+    console.error('Erro ao enviar cliente para o backend:', error);
+    return { success: false }; // Caso haja erro, retorna um objeto com sucesso falso
+  }
+};
   
 
