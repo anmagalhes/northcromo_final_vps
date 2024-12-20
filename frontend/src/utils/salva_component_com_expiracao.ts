@@ -8,7 +8,8 @@ export const salvarComExpiracao = (key: string, data: any, expirarEmMs: number) 
 
   try {
     // Serializa o objeto e armazena no localStorage
-    localStorage.setItem(key, JSON.stringify(dadosComExpiracao));
+    const dadosSerializados = JSON.stringify(dadosComExpiracao);
+    localStorage.setItem(key, dadosSerializados);
     console.log(`${key} salvo com expiração no localStorage:`, dadosComExpiracao);
   } catch (error) {
     console.error(`Erro ao salvar dados de ${key} no localStorage:`, error);
@@ -17,14 +18,14 @@ export const salvarComExpiracao = (key: string, data: any, expirarEmMs: number) 
 
 export const carregarComVerificacaoDeExpiracao = (key: string, tempoExpiracao: number) => {
   const dados = localStorage.getItem(key);
-  
+
   if (!dados) {
     console.log(`${key} não encontrado no localStorage`);
     return null;
   }
 
   try {
-    // Verifica se os dados são um JSON válido
+    // Tenta fazer o parse do JSON
     const dadosComExpiracao = JSON.parse(dados);
 
     // Verifique se a estrutura dos dados é a esperada
@@ -35,6 +36,7 @@ export const carregarComVerificacaoDeExpiracao = (key: string, tempoExpiracao: n
 
     const { data, expiracao } = dadosComExpiracao;
 
+    // Verifica se os dados ainda não expiraram
     if (Date.now() < expiracao) {
       return data; // Retorna os dados se não expiraram
     } else {
