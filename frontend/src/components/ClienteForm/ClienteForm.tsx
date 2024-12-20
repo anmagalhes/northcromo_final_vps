@@ -1,6 +1,6 @@
 // src/components/ClienteForm/ClienteForm.tsx
 import React, { useState } from 'react';
-import { Cliente } from '@/types/Cliente'
+import { Cliente } from 'src/types/Cliente';
 import { salva_component } from '@utils/salva_component';
 
 interface ClienteFormProps {
