@@ -1,0 +1,24 @@
+[0;1;32m●[0m gunicorn.service - Gunicorn daemon for Flask app
+     Loaded: loaded (]8;;file://srv668340/etc/systemd/system/gunicorn.service/etc/systemd/system/gunicorn.service]8;;; [0;1;32menabled[0m; preset: [0;1;32menabled[0m)
+     Active: [0;1;32mactive (running)[0m since Thu 2024-12-19 12:42:38 UTC; 21min ago
+   Main PID: 58278 (gunicorn)
+      Tasks: 5 (limit: 19149)
+     Memory: 200.1M (peak: 201.0M)
+        CPU: 3.288s
+     CGroup: /system.slice/gunicorn.service
+             ├─[0;38;5;245m58278 /var/www/northcromo_final_vps/backend/venv/bin/python3 /var/www/northcromo_final_vps/backend/venv/bin/gunicorn --workers 4 --worker-class gevent --bind unix:/var/www/northcromo_final_vps/backend/northcromo.sock app.app:app --log-level debug --access-logfile /var/log/gunicorn_access.log --error-logfile /var/log/gunicorn_error.log[0m
+             ├─[0;38;5;245m58289 /var/www/northcromo_final_vps/backend/venv/bin/python3 /var/www/northcromo_final_vps/backend/venv/bin/gunicorn --workers 4 --worker-class gevent --bind unix:/var/www/northcromo_final_vps/backend/northcromo.sock app.app:app --log-level debug --access-logfile /var/log/gunicorn_access.log --error-logfile /var/log/gunicorn_error.log[0m
+             ├─[0;38;5;245m58290 /var/www/northcromo_final_vps/backend/venv/bin/python3 /var/www/northcromo_final_vps/backend/venv/bin/gunicorn --workers 4 --worker-class gevent --bind unix:/var/www/northcromo_final_vps/backend/northcromo.sock app.app:app --log-level debug --access-logfile /var/log/gunicorn_access.log --error-logfile /var/log/gunicorn_error.log[0m
+             ├─[0;38;5;245m58293 /var/www/northcromo_final_vps/backend/venv/bin/python3 /var/www/northcromo_final_vps/backend/venv/bin/gunicorn --workers 4 --worker-class gevent --bind unix:/var/www/northcromo_final_vps/backend/northcromo.sock app.app:app --log-level debug --access-logfile /var/log/gunicorn_access.log --error-logfile /var/log/gunicorn_error.log[0m
+             └─[0;38;5;245m58300 /var/www/northcromo_final_vps/backend/venv/bin/python3 /var/www/northcromo_final_vps/backend/venv/bin/gunicorn --workers 4 --worker-class gevent --bind unix:/var/www/northcromo_final_vps/backend/northcromo.sock app.app:app --log-level debug --access-logfile /var/log/gunicorn_access.log --error-logfile /var/log/gunicorn_error.log[0m
+
+Dec 19 12:42:38 srv668340 gunicorn[58289]: 2024-12-19 12:42:38,930 INFO sqlalchemy.engine.Engine select pg_catalog.version()
+Dec 19 12:42:38 srv668340 gunicorn[58289]: 2024-12-19 12:42:38,930 INFO sqlalchemy.engine.Engine [raw sql] {}
+Dec 19 12:42:38 srv668340 gunicorn[58289]: 2024-12-19 12:42:38,931 INFO sqlalchemy.engine.Engine select current_schema()
+Dec 19 12:42:38 srv668340 gunicorn[58289]: 2024-12-19 12:42:38,931 INFO sqlalchemy.engine.Engine [raw sql] {}
+Dec 19 12:42:38 srv668340 gunicorn[58289]: 2024-12-19 12:42:38,932 INFO sqlalchemy.engine.Engine show standard_conforming_strings
+Dec 19 12:42:38 srv668340 gunicorn[58289]: 2024-12-19 12:42:38,932 INFO sqlalchemy.engine.Engine [raw sql] {}
+Dec 19 12:42:38 srv668340 gunicorn[58289]: 2024-12-19 12:42:38,933 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+Dec 19 12:42:38 srv668340 gunicorn[58289]: 2024-12-19 12:42:38,933 INFO sqlalchemy.engine.Engine SELECT 1
+Dec 19 12:42:38 srv668340 gunicorn[58289]: 2024-12-19 12:42:38,933 INFO sqlalchemy.engine.Engine [generated in 0.00015s] {}
+Dec 19 12:42:38 srv668340 gunicorn[58289]: 2024-12-19 12:42:38,933 INFO sqlalchemy.engine.Engine ROLLBACK

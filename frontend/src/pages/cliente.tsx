@@ -120,6 +120,5 @@ const Cliente: React.FC = () => {
       <Button label="Clique aqui" onClick={() => alert('Ação de botão executada!')} />
     </div>
   );
-};
 
 export default Cliente;
