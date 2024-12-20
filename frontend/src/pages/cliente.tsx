@@ -16,7 +16,8 @@ const Cliente: React.FC = () => {
       const clientesCarregados = carregarComVerificacaoDeExpiracao('clientes', 24 * 60 * 60 * 1000); // 24 horas em ms
   
       if (clientesCarregados) {
-        setClientes(clientesCarregados);  // Carrega os dados para o estado, já sendo um array
+        // Se for um único cliente, envolva em um array
+        setClientes([clientesCarregados]);  // Agora setClientes recebe um array de Cliente[]
       } else {
         setClientes([]);  // Caso não haja dados ou os dados estejam expirados
       }
@@ -25,6 +26,7 @@ const Cliente: React.FC = () => {
       setClientes([]);  // Em caso de erro, inicializa como um array vazio
     }
   }, []);  // O useEffect será executado uma única vez no carregamento da página
+  
   
   // Função para adicionar um cliente
   const handleClienteAdicionado = (novoCliente: Cliente) => {
