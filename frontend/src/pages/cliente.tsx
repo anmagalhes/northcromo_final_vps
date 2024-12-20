@@ -4,7 +4,7 @@ import { Cliente } from '../types/Cliente';  // Tipo Cliente
 import ClienteForm from '../components/ClienteForm/ClienteForm';  // Formulário de Cliente
 import ClienteList from '../components/ClienteList/ClienteList';  // Lista de Clientes
 import Button from '../components/Button/Button';  // Componente de Botão
-import { salva_component } from '../utils';  // Função de Salvamento
+import { salva_component } from '../utils/salva_component';  // Função de Salvamento
 
 const Cliente: React.FC = () => {
   const [clientes, setClientes] = useState<Cliente[]>([]);  // Estado para armazenar a lista de clientes
@@ -13,17 +13,20 @@ const Cliente: React.FC = () => {
   useEffect(() => {
     const clientesSalvos = localStorage.getItem('clientes');
     if (clientesSalvos) {
-      setClientes(JSON.parse(clientesSalvos));  // Carrega os dados para o estado
+      try {
+        setClientes(JSON.parse(clientesSalvos));  // Carrega os dados para o estado
+      } catch (error) {
+        console.error("Erro ao carregar os clientes do localStorage:", error);
+      }
     }
   }, []);
 
   // Função para adicionar um cliente
   const handleClienteAdicionado = (novoCliente: Cliente) => {
-    // Adiciona o novo cliente ao estado
     const updatedClientes = [...clientes, novoCliente];
     setClientes(updatedClientes);
     
-    // Salva a lista de clientes no localStorage
+    // Salva a lista de clientes no localStorage apenas se houver alteração
     salva_component('clientes', updatedClientes);  // Salvando no localStorage
   };
 
@@ -31,6 +34,8 @@ const Cliente: React.FC = () => {
   const handleDeleteCliente = (id: number) => {
     const updatedClientes = clientes.filter((cliente) => cliente.id !== id);
     setClientes(updatedClientes);
+    
+    // Salva a lista de clientes no localStorage após exclusão
     salva_component('clientes', updatedClientes);  // Salvando no localStorage após exclusão
   };
 
