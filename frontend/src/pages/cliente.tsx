@@ -19,24 +19,36 @@ const Cliente: React.FC = () => {
     try {
       const clientesCarregadosStr = localStorage.getItem('clientes');
       console.log("clientes carregados:", clientesCarregadosStr); // Verifique aqui
+  
       if (clientesCarregadosStr) {
-        const clientesCarregados = JSON.parse(clientesCarregadosStr);
-        console.log("clientes após parse:", clientesCarregados); // Verifique após parse
-        // Verifica se os dados são um array de clientes válidos
-        if (Array.isArray(clientesCarregados) && clientesCarregados.every((item: any) => item.id && item.nome && item.email && item.telefone)) {
-          return clientesCarregados;
-        } else {
-          console.warn("Dados inválidos no localStorage. Retornando lista vazia.");
-          return [];
+        let clientesCarregados: Cliente[] = [];
+  
+        try {
+          // Tenta parsear o conteúdo do localStorage
+          clientesCarregados = JSON.parse(clientesCarregadosStr);
+  
+          // Verifica se o resultado é um array de objetos Cliente válidos
+          if (
+            !Array.isArray(clientesCarregados) || 
+            !clientesCarregados.every((item: any) => item.id && item.nome && item.email && item.telefone)
+          ) {
+            throw new Error("Dados inválidos no localStorage");
+          }
+        } catch (error) {
+          console.error("Erro ao parsear clientes do localStorage", error);
+          clientesCarregados = []; // Retorna um array vazio em caso de erro
         }
+  
+        return clientesCarregados;
       }
-      return [];
+  
+      return []; // Retorna um array vazio caso não haja dados no localStorage
     } catch (error) {
       console.error("Erro ao carregar os dados do localStorage", error);
-      return [];
+      return []; // Retorna um array vazio em caso de erro
     }
   };
-
+  
   // Função para adicionar um cliente ao localStorage
   const adicionarClienteAoLocalStorage = (novoCliente: Cliente) => {
     try {
@@ -48,10 +60,11 @@ const Cliente: React.FC = () => {
       if (clientesExistentesStr) {
         try {
           clientesExistentes = JSON.parse(clientesExistentesStr);
-          
+  
           // Verifica se a estrutura é um array válido
           if (!Array.isArray(clientesExistentes)) {
-            throw new Error("Dados no localStorage não são um array.");
+            console.warn("Dados no localStorage não são um array, inicializando com array vazio.");
+            clientesExistentes = [];
           }
         } catch (error) {
           console.error("Erro ao parsear clientes do localStorage", error);
