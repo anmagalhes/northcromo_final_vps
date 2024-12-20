@@ -8,7 +8,9 @@ export default defineConfig({
     alias: {
       '@components': path.resolve(__dirname, './src/components'),
       '@assets': path.resolve(__dirname, './src/assets'),
-      '@utils': path.resolve(__dirname, './src/utils'),
+      '@utils': path.resolve(__dirname, './src/utils'),  // Alias correto para utils
+      '@types': path.resolve(__dirname, './src/types'),  // Alias para o diretório src
+      'src': path.resolve(__dirname, './src'),  // Alias para o diretório src
     },
   },
   build: {
