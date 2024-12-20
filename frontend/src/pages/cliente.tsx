@@ -22,20 +22,6 @@ const Cliente: React.FC = () => {
       if (clientesCarregadosStr) {
         const clientesCarregados = JSON.parse(clientesCarregadosStr);
         console.log("clientes após parse:", clientesCarregados); // Verifique após parse
-        if (Array.isArray(clientesCarregados) && clientesCarregados.every((item: any) => item.id && item.nome && item.email && item.telefone)) {
-          return clientesCarregados;
-        } else {
-          console.warn("Dados inválidos no localStorage.");
-          return [];
-        }
-      }
-      return [];
-    } catch (error) {
-      console.error("Erro ao carregar os dados do localStorage", error);
-      return [];
-    }
-  };
-  
         // Verifica se os dados são um array de clientes válidos
         if (Array.isArray(clientesCarregados) && clientesCarregados.every((item: any) => item.id && item.nome && item.email && item.telefone)) {
           return clientesCarregados;
@@ -62,6 +48,7 @@ const Cliente: React.FC = () => {
       // Define a data de expiração para 24h a partir de agora
       const expiração = getCurrentTime() + 24 * 60 * 60 * 1000;
 
+      // Salva os clientes atualizados no localStorage com expiração
       localStorage.setItem('clientes', JSON.stringify(updatedClientes));
       localStorage.setItem('clientes_expiracao', expiração.toString());
     } catch (error) {
