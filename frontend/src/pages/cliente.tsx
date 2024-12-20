@@ -6,7 +6,7 @@ import ClienteList from '../components/ClienteList/ClienteList'; // Lista de Cli
 import Button from '../components/Button/Button'; // Componente de Botão
 import { salvarComExpiracao, carregarComVerificacaoDeExpiracao } from '../utils/salva_component_com_expiracao'; // Funções de expiração
 
-cconst Cliente: React.FC = () => {
+const Cliente: React.FC = () => {
   const [clientes, setClientes] = useState<Cliente[]>([]);  // Estado para armazenar a lista de clientes
 
   // Carregar os clientes do localStorage com expiração de 24 horas
