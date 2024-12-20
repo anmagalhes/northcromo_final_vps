@@ -40,22 +40,35 @@ const Cliente: React.FC = () => {
   // Função para adicionar um cliente ao localStorage
   const adicionarClienteAoLocalStorage = (novoCliente: Cliente) => {
     try {
+      // Recupera os clientes existentes do localStorage (se houver)
       const clientesExistentesStr = localStorage.getItem('clientes');
-      const clientesExistentes = clientesExistentesStr ? JSON.parse(clientesExistentesStr) : [];
-
+      let clientesExistentes: Cliente[] = [];
+  
+      // Se existirem clientes no localStorage, tente parsear
+      if (clientesExistentesStr) {
+        try {
+          clientesExistentes = JSON.parse(clientesExistentesStr);
+          
+          // Verifica se a estrutura é um array válido
+          if (!Array.isArray(clientesExistentes)) {
+            throw new Error("Dados no localStorage não são um array.");
+          }
+        } catch (error) {
+          console.error("Erro ao parsear clientes do localStorage", error);
+          clientesExistentes = [];
+        }
+      }
+  
+      // Adiciona o novo cliente ao array
       const updatedClientes = [...clientesExistentes, novoCliente];
-
-      // Define a data de expiração para 24h a partir de agora
-      const expiração = getCurrentTime() + 24 * 60 * 60 * 1000;
-
-      // Salva os clientes atualizados no localStorage com expiração
+  
+      // Atualiza o localStorage com o novo array de clientes
       localStorage.setItem('clientes', JSON.stringify(updatedClientes));
-      localStorage.setItem('clientes_expiracao', expiração.toString());
     } catch (error) {
       console.error("Erro ao adicionar cliente ao localStorage:", error);
     }
   };
-
+  
   // Carregar os clientes do localStorage com expiração de 24 horas
   useEffect(() => {
     const clientesCarregados = carregarClientes();  // Recupera os clientes do localStorage
