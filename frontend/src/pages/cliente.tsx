@@ -15,12 +15,12 @@ const Cliente: React.FC = () => {
       // Carrega os dados dos clientes e verifica a expiração (24h)
       const clientesCarregados = carregarComVerificacaoDeExpiracao('clientes', 24 * 60 * 60 * 1000); // 24 horas em ms
   
-      if (clientesCarregados) {
-        // Se for um único cliente, envolva em um array
-        setClientes([clientesCarregados]);  // Agora setClientes recebe um array de Cliente[]
-      } else {
-        setClientes([]);  // Caso não haja dados ou os dados estejam expirados
-      }
+      // Garantir que o tipo dos dados é um array de Cliente
+    if (Array.isArray(clientesCarregados)) {
+      setClientes(clientesCarregados);  // Já é um array, então apenas define
+    } else {
+      setClientes([]);  // Caso não seja um array, inicialize com um array vazio
+    }
     } catch (error) {
       console.error("Erro ao carregar os clientes do localStorage:", error);
       setClientes([]);  // Em caso de erro, inicializa como um array vazio
@@ -31,36 +31,40 @@ const Cliente: React.FC = () => {
   // Função para adicionar um cliente
   const handleClienteAdicionado = (novoCliente: Cliente) => {
     try {
-      // Recupera os clientes existentes do localStorage
+      // Recupera os clientes existentes do localStorage (se houver)
       const clientesExistentes = JSON.parse(localStorage.getItem('clientes') || '[]');
-
+      
       // Adiciona o novo cliente ao array de clientes existentes
       const updatedClientes = [...clientesExistentes, novoCliente];
-
+  
       // Atualiza o estado com o novo array de clientes
       setClientes(updatedClientes);
-
+  
       // Salva o array atualizado no localStorage com expiração (24h)
       salvarComExpiracao('clientes', updatedClientes, 24 * 60 * 60 * 1000);  // Salvando com expiração de 24 horas
     } catch (error) {
       console.error("Erro ao adicionar cliente ao localStorage:", error);
+      alert("Ocorreu um erro ao adicionar o cliente.");  // Feedback ao usuário em caso de erro
     }
   };
-
+  
   // Função para excluir um cliente
   const handleDeleteCliente = (id: number) => {
     try {
       // Filtra o cliente a ser excluído
       const updatedClientes = clientes.filter((cliente) => cliente.id !== id);
-      setClientes(updatedClientes);  // Atualiza a lista de clientes no estado
-
+      
+      // Atualiza a lista de clientes no estado
+      setClientes(updatedClientes);
+  
       // Salva o array atualizado no localStorage com expiração (24h)
       salvarComExpiracao('clientes', updatedClientes, 24 * 60 * 60 * 1000);  // Salvando com expiração de 24 horas
     } catch (error) {
       console.error("Erro ao excluir cliente:", error);
+      alert("Ocorreu um erro ao excluir o cliente.");  // Feedback ao usuário em caso de erro
     }
   };
-
+  
   return (
     <div>
       <h2>Gestão de Clientes</h2>
