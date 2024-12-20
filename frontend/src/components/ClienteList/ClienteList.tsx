@@ -33,7 +33,7 @@ const ClienteList: React.FC<ClienteListProps> = ({ clientes, onDelete }) => {
           clientesState.map(cliente => (
             <li key={cliente.id}>
               {cliente.nome} - {cliente.email} - {cliente.telefone}
-              <button onClick={() => onDelete(cliente.id)}>Excluir</button>
+              <button onClick={() => cliente.id !== undefined && onDelete(cliente.id)}>Excluir</button>
             </li>
           ))
         ) : (
@@ -45,4 +45,3 @@ const ClienteList: React.FC<ClienteListProps> = ({ clientes, onDelete }) => {
 };
 
 export default ClienteList;
-

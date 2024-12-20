@@ -1,5 +1,6 @@
 // src/api/clientes.ts
 import { fetchAPI } from './index'; // Importando a função fetchAPI
+import { Cliente } from '../types/Cliente';
 
 // Função para obter a lista de clientes
 export const getClientes = async () => {
