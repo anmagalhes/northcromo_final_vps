@@ -1,3 +1,4 @@
+# app/models/produto
 from datetime import datetime
 from sqlalchemy import Column, Integer, String, Float, ForeignKey, Boolean, DateTime
 from sqlalchemy.orm import relationship
@@ -21,7 +22,7 @@ class Produto(db.Model):
     und_medida_produto = db.Column(db.String(20), nullable=False)  # Unidade de medida do produto
     valor_unid_produto = db.Column(db.Float, nullable=False)  # Valor unitário do produto
     controle_produto = db.Column(db.Boolean, default=True)  # Controle do produto (ativo ou inativo)
-    status_produto = db.Column(db.String(20), nullable=False)  # Status do produto (ex: "Ativo", "Inativo")
+    status_produto = db.Column(db.String(20), nullable=False)  # Status do produto (ex: 'Ativo', 'Inativo')
     tipo_produto = db.Column(db.String(50), nullable=False)  # Tipo do produto
     origem_produto = db.Column(db.String(50), nullable=True)  # Origem do produto (ex: nacional, importado)
     foto_produto = db.Column(db.String(255), nullable=True)  # Foto do produto (URL ou caminho)
@@ -31,13 +32,13 @@ class Produto(db.Model):
     recebimento_id = db.Column(db.Integer, ForeignKey('recebimentos.id'))  # Chave estrangeira para recebimentos
 
     # Relacionamentos
-    grupo_produto = relationship("Grupo_Produto", back_populates="produtos", lazy='joined')  # Relacionamento com 'Grupo'
-    operacao_servico = relationship("PostoTrabalho", back_populates="produtos", lazy='joined')  # Relacionamento com 'OperacaoServico'
-    componente = relationship("Componente", back_populates="produtos", lazy='joined')  # Relacionamento com 'componente_1'
+    grupo_produto = relationship('Grupo_Produto', back_populates='produtos', lazy='joined')  # Relacionamento com 'Grupo'
+    operacao_servico = relationship('PostoTrabalho', back_populates='produtos', lazy='joined')  # Relacionamento com 'OperacaoServico'
+    componente = relationship('Componente', back_populates='produtos', lazy='joined')  # Relacionamento com 'componente_1'
     posto_trabalho = relationship('PostoTrabalho', back_populates='produtos', lazy='joined')  # Relacionamento com 'PostoTrabalho'
-    checklists = relationship("ChecklistRecebimento", back_populates="produto", lazy='joined')
-    usuario = relationship("User", back_populates="produtos", lazy='joined')
-    recebimentos = relationship("Recebimento", back_populates="produto", foreign_keys="Recebimento.cod_produto", lazy='joined')
+    checklists = relationship('ChecklistRecebimento', back_populates='produto', lazy='joined')
+    usuario = relationship('User', back_populates='produtos', lazy='joined')
+    recebimentos = relationship('Recebimento', back_populates='produto', foreign_keys='Recebimento.cod_produto', lazy='joined')
 
     def __repr__(self):
         return f'<Produto id={self.id} nome={self.nome_produto}>'

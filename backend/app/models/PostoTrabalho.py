@@ -1,3 +1,4 @@
+# app/models/posto_Trbalho
 from datetime import datetime
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
@@ -11,7 +12,7 @@ class PostoTrabalho(db.Model):
     usuario_id = db.Column(db.Integer, ForeignKey('usuario.id'))  # Chave estrangeira para 'usuario'
 
     # Relacionamento com a tabela Usuario
-    usuario = relationship("User", back_populates='posto_trabalho', foreign_keys=[usuario_id], lazy='joined')
+    usuario = relationship('User', back_populates='posto_trabalho', foreign_keys=[usuario_id], lazy='joined')
 
     produtos = relationship('Produto', back_populates='posto_trabalho', lazy='joined')
     operacao_servico = relationship('Produto', back_populates='posto_trabalho', lazy='joined')

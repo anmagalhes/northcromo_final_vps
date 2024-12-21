@@ -1,3 +1,4 @@
+# app/models/componente
 from datetime import datetime
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
@@ -12,21 +13,21 @@ class Componente(db.Model):
     grupo_produto_id = db.Column(db.Integer, ForeignKey('grupo_produto.id'))  # Relacionamento com 'Grupo_Produto'
     
     # Relacionamento com 'User'
-    usuario = relationship("User", back_populates="componentes", foreign_keys=[usuario_id], lazy='joined')
+    usuario = relationship('User', back_populates='componentes', foreign_keys=[usuario_id], lazy='joined')
 
     # Relacionamento com 'Grupo_Produto'
-    grupo_produto = relationship("Grupo_Produto", back_populates="componentes", lazy='joined')
+    grupo_produto = relationship('Grupo_Produto', back_populates='componentes', lazy='joined')
     
     # Relacionamento com 'Defeito'
     defeitos = db.relationship(
-        "Defeito", 
-        back_populates="componente",  # Referenciar 'componente' no modelo Defeito
+        'Defeito', 
+        back_populates='componente',  # Referenciar 'componente' no modelo Defeito
         lazy='joined'
     )
     
     # Relacionamento com 'Produto'
     produtos = db.relationship(
-        "Produto", 
+        'Produto', 
         back_populates='componente_1', 
         uselist=True,  # Indica que é uma relação de um-para-muitos
         lazy='joined'
@@ -38,7 +39,7 @@ class Componente(db.Model):
     deleted_at = db.Column(db.DateTime, nullable=True)  # Data de exclusão (opcional para soft delete)
 
     def __repr__(self):
-        return f'<Componente id={self.id} nome={self.nome if self.nome else "Unnamed"}>'
+        return f'<Componente id={self.id} nome={self.nome if self.nome else 'Unnamed'}>'
 
 class Defeito(db.Model):
     __tablename__ = 'defeito'
@@ -50,7 +51,7 @@ class Defeito(db.Model):
     componente_id = db.Column(db.Integer, db.ForeignKey('componente_1.id'))
 
     # Relacionamento inverso com Componente
-    componente = db.relationship("Componente", back_populates="defeitos")
+    componente = db.relationship('Componente', back_populates='defeitos')
 
     # Outros atributos do defeito
     created_at = db.Column(db.DateTime, default=datetime.utcnow)

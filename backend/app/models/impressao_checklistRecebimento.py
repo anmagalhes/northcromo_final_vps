@@ -1,3 +1,4 @@
+# app/models/impressao_checklistRecebimento
 from datetime import datetime
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Numeric
 from sqlalchemy.orm import relationship
@@ -21,7 +22,7 @@ class ImpressaoChecklistRecebimento(db.Model):
 
     # Relacionamentos
     checklist = relationship('ChecklistRecebimento', back_populates='impressao_checklists', lazy=True)
-    recebimento = relationship("Recebimento", back_populates="impressao_checklists")
+    recebimento = relationship('Recebimento', back_populates='impressao_checklists')
 
     # Relacionamento com o usuário
     usuario = db.relationship('User', back_populates='impressao_checklists', foreign_keys=[usuario_id], lazy='joined')

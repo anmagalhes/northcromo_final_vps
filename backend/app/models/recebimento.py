@@ -1,3 +1,4 @@
+# app/models/recebimento
 from datetime import datetime
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Numeric
 from sqlalchemy.orm import relationship
@@ -21,13 +22,13 @@ class Recebimento(db.Model):
     usuario_id = db.Column(db.Integer, ForeignKey('usuario.id'), nullable=False)  # Chave estrangeira para Usuario
 
     # Relacionamentos
-    cliente = relationship("Cliente", back_populates="recebimentos", lazy='joined')  # Relacionamento com Cliente
-    produto = relationship("Produto", back_populates="recebimentos", foreign_keys=[cod_produto], lazy='joined')  # Relacionamento com Produto
-    usuario = relationship("User", back_populates="recebimentos", foreign_keys=[usuario_id], lazy='joined')  # Relacionamento com Usuario
+    cliente = relationship('Cliente', back_populates='recebimentos', lazy='joined')  # Relacionamento com Cliente
+    produto = relationship('Produto', back_populates='recebimentos', foreign_keys=[cod_produto], lazy='joined')  # Relacionamento com Produto
+    usuario = relationship('User', back_populates='recebimentos', foreign_keys=[usuario_id], lazy='joined')  # Relacionamento com Usuario
     funcionario = relationship('Funcionario', back_populates='recebimentos_cadastrados', lazy='joined')  # Relacionamento com Funcionario
-    checklists = relationship("ChecklistRecebimento", back_populates="recebimento", lazy='joined')  # Relacionamento com ChecklistRecebimento
-    impressao_checklists = relationship("ImpressaoChecklistRecebimento", back_populates="recebimento", lazy='joined')
-    fotos = relationship("FotoRecebimento", back_populates="ordem", lazy='joined')
+    checklists = relationship('ChecklistRecebimento', back_populates='recebimento', lazy='joined')  # Relacionamento com ChecklistRecebimento
+    impressao_checklists = relationship('ImpressaoChecklistRecebimento', back_populates='recebimento', lazy='joined')
+    fotos = relationship('FotoRecebimento', back_populates='ordem', lazy='joined')
     
     # Colunas de data e hora
     created_at = db.Column(db.DateTime, default=datetime.utcnow)  # Data de criação

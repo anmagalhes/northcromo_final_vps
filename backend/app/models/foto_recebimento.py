@@ -1,3 +1,4 @@
+# app/models/foto_recebimento
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
 from datetime import datetime
@@ -12,7 +13,7 @@ class FotoRecebimento(db.Model):
     nome_foto = db.Column(db.String(255), nullable=False)  # Nome ou caminho do arquivo da foto
     
     # Relacionamento com a tabela Recebimento
-    ordem = relationship("Recebimento", back_populates="fotos")
+    ordem = relationship('Recebimento', back_populates='fotos')
 
     # Adicionando as colunas de data e hora
     created_at = db.Column(db.DateTime, default=datetime.utcnow)  # Data de criação

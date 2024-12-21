@@ -12,13 +12,13 @@ class Grupo_Produto(db.Model):
     usuario_id = db.Column(db.Integer, ForeignKey('usuario.id'))  # Chave estrangeira para 'usuarios'
     
     # Relacionamento: Agora utilizando o nome correto da classe 'User' (não 'Usuario')
-    usuario = relationship("User", back_populates='grupo_produtos', foreign_keys=[usuario_id], lazy='joined')
+    usuario = relationship('User', back_populates='grupo_produtos', foreign_keys=[usuario_id], lazy='joined')
     
     # Relacionamento com 'componente_1'
-    componentes = relationship("Componente", back_populates="grupo_produto", lazy='joined')
+    componentes = relationship('Componente', back_populates='grupo_produto', lazy='joined')
     
     # Relacionamento com a tabela Produto
-    produtos = relationship("Produto", back_populates="grupo_produto", lazy='joined')
+    produtos = relationship('Produto', back_populates='grupo_produto', lazy='joined')
 
 
     # Adicionando as colunas de data e hora

@@ -1,5 +1,5 @@
 from app import db  # O db foi inicializado no seu app
-from ..models.defeito import Defeito
+from app.models.defeito import Defeito
 
 # Função para listar todos os defeitos
 def list_defeitos():

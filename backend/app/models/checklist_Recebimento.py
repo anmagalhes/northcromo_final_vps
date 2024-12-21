@@ -1,3 +1,4 @@
+# app/models/checklist_Recebimento
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Numeric
 from sqlalchemy.orm import relationship
 from datetime import datetime
@@ -20,13 +21,13 @@ class ChecklistRecebimento(db.Model):
     Status_Checklist = db.Column(db.String(50), nullable=False)  # Status do checklist (ex: 'Concluído', 'Em andamento', etc.)
 
     # Relacionamentos
-    recebimento = relationship("Recebimento", back_populates="checklists")
-    cliente = relationship("Cliente", back_populates="checklists")
-    produto = relationship("Produto", back_populates="checklists")
-    usuario = relationship("User", back_populates="checklists")
+    recebimento = relationship('Recebimento', back_populates='checklists')
+    cliente = relationship('Cliente', back_populates='checklists')
+    produto = relationship('Produto', back_populates='checklists')
+    usuario = relationship('User', back_populates='checklists')
     
     # Removendo o backref e mantendo a relação explícita
-    impressao_checklists = relationship("ImpressaoChecklistRecebimento", lazy=True)
+    impressao_checklists = relationship('ImpressaoChecklistRecebimento', lazy=True)
 
     # Colunas de data e hora
     created_at = db.Column(db.DateTime, default=datetime.utcnow)  # Data de criação

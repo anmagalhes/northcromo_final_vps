@@ -1,3 +1,4 @@
+# app/models/user
 from datetime import datetime  # Importando o datetime
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Boolean
 from sqlalchemy.orm import validates, relationship  # Corrigido 'Relationship' para 'relationship'

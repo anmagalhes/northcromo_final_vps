@@ -1,6 +1,9 @@
 from flask import jsonify, request
+from app.models.defeito import Defeito
+from app.schemas.defeito import DefeitoSchema
 from . import defeito_blueprint
 from .services import list_defeitos, get_defeito, create_defeito, update_defeito, delete_defeito
+
 
 # Rota para listar todos os defeitos
 @defeito_blueprint.route('/', methods=['GET'])
