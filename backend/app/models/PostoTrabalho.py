@@ -16,7 +16,7 @@ class PostoTrabalho(db.Model):
     produtos = relationship('Produto', back_populates='posto_trabalho', lazy='joined')
     operacao_servico = relationship('Produto', back_populates='posto_trabalho', lazy='joined')
 
-    # Adicionando as colunas de data e hora
+    # Adicionando as colunas de data e horas
     created_at = db.Column(db.DateTime, default=datetime.utcnow)  # Data de criação
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)  # Data de última atualização
     deleted_at = db.Column(db.DateTime, nullable=True)  # Data de exclusão (opcional para soft delete)
