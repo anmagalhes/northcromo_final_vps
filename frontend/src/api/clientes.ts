@@ -8,10 +8,7 @@ const url_cliente = 'https://northcromocontrole.com.br/api/cliente';
 // Função para enviar cliente para o backend
 export const enviarParaBackend = async (cliente: Cliente) => {
   try {
-    console.log('Enviando cliente para o backend:', cliente);
-
     // Ajusta os dados para enviar conforme os campos esperados pelo backend
-     // Ajusta os dados para enviar conforme os campos esperados pelo backend
      const clienteParaEnviar = {
       nome_cliente: cliente.nome_cliente,  // Nome do cliente
       email_funcionario: cliente.email_funcionario,  // Email do cliente
@@ -35,6 +32,8 @@ export const enviarParaBackend = async (cliente: Cliente) => {
       cliente.tipo_cliente = 'default'; // Substitua 'default' por um valor adequado ou obrigatório
     }
 
+    console.log('envio backend:', cliente);
+
     // Envia os dados para o backend
     const response = await fetch(url_cliente, {
       method: 'POST',
@@ -47,7 +46,7 @@ export const enviarParaBackend = async (cliente: Cliente) => {
     if (!response.ok) {
       const errorText = await response.text();  // Captura texto de erro do backend
       console.error('Erro ao enviar para o backend:', errorText);
-      throw new Error(`Erro ao enviar cliente para o backend: ${errorText}`);
+      throw new Error(`Erro ao enviar para o backend: ${errorText}`);
     }
 
     const result = await response.json();
