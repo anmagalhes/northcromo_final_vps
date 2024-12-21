@@ -5,20 +5,20 @@ from datetime import datetime
 
 class ClienteSchema(Schema):
     id = fields.Int(dump_only=True)  # Exclui do input (somente leitura)
-    tipo_cliente = fields.Str(required=True)  # Tipo de Cliente
-    nome_cliente = fields.Str(required=True)  # Nome do Cliente
-    doc_cliente = fields.Str(required=True)  # Documento do Cliente (CPF/CNPJ)
-    endereco_cliente = fields.Str(required=True)  # Endereço do Cliente
-    num_cliente = fields.Str(required=True)  # Número do endereço
-    bairro_cliente = fields.Str(required=True)  # Bairro
-    cidade_cliente = fields.Str(required=True)  # Cidade
-    uf_cliente = fields.Str(required=True)  # UF
-    cep_cliente = fields.Str(required=True)  # CEP
-    telefone_cliente = fields.Str(required=True)  # Telefone do Cliente
+    tipo_cliente = fields.Str(required=False)  # Tipo de Cliente
+    nome_cliente = fields.Str(required=False)  # Nome do Cliente
+    doc_cliente = fields.Str(required=False)  # Documento do Cliente (CPF/CNPJ)
+    endereco_cliente = fields.Str(required=False)  # Endereço do Cliente
+    num_cliente = fields.Str(required=False)  # Número do endereço
+    bairro_cliente = fields.Str(required=False)  # Bairro
+    cidade_cliente = fields.Str(required=False)  # Cidade
+    uf_cliente = fields.Str(required=False)  # UF
+    cep_cliente = fields.Str(required=False)  # CEP
+    telefone_cliente = fields.Str(required=False)  # Telefone do Cliente
     telefone_rec_cliente = fields.Str()  # Telefone de recado
     whatsapp_cliente = fields.Str()  # WhatsApp
     data_cadastro_cliente = fields.DateTime(dump_only=True, default=datetime.utcnow)  # Data de cadastro
-    fornecedor_cliente = fields.Str(required=True)  # Fornecedor associado ao cliente
+    fornecedor_cliente = fields.Str(required=False)  # Fornecedor associado ao cliente
     email_funcionario = fields.Str()  # E-mail do Funcionário responsável
     acao = fields.Str()  # Ação/observações adicionais
     usuario_id = fields.Int()  # Chave estrangeira para usuário
