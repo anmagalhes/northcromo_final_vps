@@ -45,7 +45,7 @@ export const enviarParaBackend = async (cliente: Cliente) => {
 
     if (!response.ok) {
       const errorText = await response.text();  // Captura texto de erro do backend
-      console.error('Erro ao enviar para o backend:', errorText);
+      //console.error('Erro ao enviar para o backend:', errorText);
       throw new Error(`Erro ao enviar para o backend: ${errorText}`);
     }
 
@@ -53,7 +53,7 @@ export const enviarParaBackend = async (cliente: Cliente) => {
     console.log('Resposta do servidor:', result);
     return result;
   } catch (error) {
-    console.error('Falha ao enviar cliente para o backend:', error);
+    console.error('Falha ao enviar para backend:', error);
   }
 };
 

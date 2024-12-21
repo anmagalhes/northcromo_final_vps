@@ -1,3 +1,4 @@
+# app/models/cliente
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
 from datetime import datetime
@@ -42,4 +43,3 @@ class Cliente(db.Model):
 
     def __repr__(self):
         return f'<Cliente {self.nome_cliente}>'
-#va
