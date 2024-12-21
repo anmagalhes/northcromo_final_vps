@@ -1,5 +1,5 @@
 from datetime import datetime
-from sqlalchemy import Column, Integer, String, Float, ForeignKey, Boolean, Text, Numeric
+from sqlalchemy import Column, Integer, String, Float, ForeignKey, Boolean, DateTime
 from sqlalchemy.orm import relationship
 from .db import db  # Instância db
 
@@ -30,17 +30,14 @@ class Produto(db.Model):
     tipo = db.Column(db.String(50), nullable=False)  # Tipo de produto
     recebimento_id = db.Column(db.Integer, ForeignKey('recebimentos.id'))  # Chave estrangeira para recebimentos
 
-
     # Relacionamentos
-    grupo = relationship("Grupo_Produto", back_populates="produtos", lazy='joined')  # Relacionamento com 'Grupo'
+    grupo_produto = relationship("Grupo_Produto", back_populates="produtos", lazy='joined')  # Relacionamento com 'Grupo'
     operacao_servico = relationship("PostoTrabalho", back_populates="produtos", lazy='joined')  # Relacionamento com 'OperacaoServico'
     componente = relationship("Componente", back_populates="produtos", lazy='joined')  # Relacionamento com 'Componente'
     posto_trabalho = relationship('PostoTrabalho', back_populates='produtos', lazy='joined')  # Relacionamento com 'PostoTrabalho'
     checklists = relationship("ChecklistRecebimento", back_populates="produto", lazy='joined')
     usuario = relationship("User", back_populates="produtos", lazy='joined')
-    grupo_produto = relationship("Grupo_Produto", back_populates="produtos", lazy='joined')
-    recebimentos = relationship("Recebimento", back_populates="produtos", lazy='joined')
-
+    recebimentos = relationship("Recebimento", back_populates="produto", foreign_keys="Recebimento.produto_id", lazy='joined')
 
     def __repr__(self):
-        return f'<Produto id={self.id} name={self.nome}>'
+        return f'<Produto id={self.id} nome={self.nome_produto}>'

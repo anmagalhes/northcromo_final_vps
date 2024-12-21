@@ -22,7 +22,7 @@ class Recebimento(db.Model):
 
     # Relacionamentos
     cliente = relationship("Cliente", back_populates="recebimentos", lazy='joined')  # Relacionamento com Cliente
-    produto = relationship("Produto", back_populates="recebimentos", lazy='joined')  # Relacionamento com Produto
+    produto = relationship("Produto", back_populates="recebimentos", foreign_keys=[cod_produto], lazy='joined')  # Relacionamento com Produto
     usuario = relationship("User", back_populates="recebimentos", foreign_keys=[usuario_id], lazy='joined')  # Relacionamento com Usuario
     funcionario = relationship('Funcionario', back_populates='recebimentos_cadastrados', lazy='joined')  # Relacionamento com Funcionario
     checklists = relationship("ChecklistRecebimento", back_populates="recebimento", lazy='joined')  # Relacionamento com ChecklistRecebimento
@@ -31,7 +31,8 @@ class Recebimento(db.Model):
     # Colunas de data e hora
     created_at = db.Column(db.DateTime, default=datetime.utcnow)  # Data de criação
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)  # Data de última atualização
-    deleted_at = db.Column(db.DateTime, nullable=True)  # Data de exclusão (opcional para soft delete
+    deleted_at = db.Column(db.DateTime, nullable=True)  # Data de exclusão (opcional para soft delete)
 
     def __repr__(self):
         return f'<Recebimento id={self.id} ordem={self.id_ordem}>'
+
