@@ -3,7 +3,7 @@ from datetime import datetime  # Importando o datetime
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Boolean
 from sqlalchemy.orm import validates, relationship  # Corrigido 'Relationship' para 'relationship'
 from werkzeug.security import generate_password_hash, check_password_hash  #
-from .db import db  # Importa a instância do db
+from database import db 
 
 class User(db.Model):  # A classe está correta com 'Usuarios' e não 'Usuario'
     __tablename__ = 'usuario'

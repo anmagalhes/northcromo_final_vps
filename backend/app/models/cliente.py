@@ -2,7 +2,7 @@
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
 from datetime import datetime
-from .db import db  # Importando a instância do db
+from database import db  # Importa o db corretamente de 'database.py'
 
 class Cliente(db.Model):
     __tablename__ = 'clientes'  # Nome da tabela no banco de dados
