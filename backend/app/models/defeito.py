@@ -9,7 +9,7 @@ class Defeito(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nome = db.Column(db.String(40), unique=True, nullable=False)
     usuario_id = db.Column(db.Integer, ForeignKey('usuario.id'))  # Chave estrangeira para 'usuarios'
-    componente_id = db.Column(db.Integer, ForeignKey('componente.id'))  # Chave estrangeira para 'componente'
+    componente_id = db.Column(db.Integer, ForeignKey('componente.id'))  # Chave estrangeira para 'componente_1'
 
      # Relacionamento: Agora utilizando o nome correto da classe 'User' (não 'Usuario')
     usuario = relationship("User", back_populates='defeitos', foreign_keys=[usuario_id], lazy='joined')

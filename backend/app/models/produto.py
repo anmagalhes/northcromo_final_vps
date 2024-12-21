@@ -14,7 +14,7 @@ class Produto(db.Model):
     id_operacao_servico = db.Column(db.Integer, ForeignKey('posto_trabalho.id'))  # Chave estrangeira para 'OperacaoServico'
     und_servicos = db.Column(db.String(50), nullable=False)  # Unidade de serviço
     hora_peca_servicos = db.Column(db.Float, nullable=True)  # Hora de serviço por peça
-    id_componente = db.Column(db.Integer, ForeignKey('componente.id'))  # Chave estrangeira para 'Componente'
+    id_componente = db.Column(db.Integer, ForeignKey('componente.id'))  # Chave estrangeira para 'componente_1'
     id_posto_trabalho = db.Column(db.Integer, ForeignKey('postos_trabalho.id'))  # Chave estrangeira para 'PostoTrabalho'
     fornec_produto = db.Column(db.String(100), nullable=True)  # Fornecedor do produto
     estomin_produto = db.Column(db.Integer, nullable=True)  # Estoque mínimo do produto
@@ -33,7 +33,7 @@ class Produto(db.Model):
     # Relacionamentos
     grupo_produto = relationship("Grupo_Produto", back_populates="produtos", lazy='joined')  # Relacionamento com 'Grupo'
     operacao_servico = relationship("PostoTrabalho", back_populates="produtos", lazy='joined')  # Relacionamento com 'OperacaoServico'
-    componente = relationship("Componente", back_populates="produtos", lazy='joined')  # Relacionamento com 'Componente'
+    componente = relationship("Componente", back_populates="produtos", lazy='joined')  # Relacionamento com 'componente_1'
     posto_trabalho = relationship('PostoTrabalho', back_populates='produtos', lazy='joined')  # Relacionamento com 'PostoTrabalho'
     checklists = relationship("ChecklistRecebimento", back_populates="produto", lazy='joined')
     usuario = relationship("User", back_populates="produtos", lazy='joined')

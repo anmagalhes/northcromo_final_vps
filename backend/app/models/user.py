@@ -35,10 +35,10 @@ class User(db.Model):  # A classe está correta com 'Usuarios' e não 'Usuario'
         lazy='joined'
     )
     
-     # Relacionamento correto com 'Componente'
+     # Relacionamento correto com 'componente_1'
     componentes = relationship(
         "Componente", 
-        back_populates='usuario',  # Defina o 'back_populates' correto do lado do 'Componente'
+        back_populates='usuario',  # Defina o 'back_populates' correto do lado do 'componente_1'
         uselist=True,
         lazy='joined'
     )

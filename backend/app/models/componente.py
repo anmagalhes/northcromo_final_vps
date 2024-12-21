@@ -4,7 +4,7 @@ from sqlalchemy.orm import relationship
 from .db import db  # Importando a instância do db
 
 class Componente(db.Model):
-    __tablename__ = 'componente'  # Nome da tabela no banco de dados
+    __tablename__ = 'componente_1'  # Nome da tabela no banco de dados
 
     id = db.Column(db.Integer, primary_key=True)
     nome = db.Column(db.String(40), unique=True, nullable=False)  # Alterado de 'name' para 'nome'
@@ -20,7 +20,7 @@ class Componente(db.Model):
     # Relacionamento com 'Defeito'
     defeitos = relationship(
         "Defeito", 
-        back_populates='componente', 
+        back_populates='componente_1', 
         uselist=True,  # Indica que é uma relação de um-para-muitos
         lazy='joined'
     )
@@ -28,7 +28,7 @@ class Componente(db.Model):
     # Relacionamento com 'Produto'
     produtos = relationship(
         "Produto", 
-        back_populates='componente', 
+        back_populates='componente_1', 
         uselist=True,  # Indica que é uma relação de um-para-muitos
         lazy='joined'
     )
