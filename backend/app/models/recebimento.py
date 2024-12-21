@@ -22,7 +22,7 @@ class Recebimento(db.Model):
 
     # Relacionamentos
     cliente = relationship("Cliente", back_populates="recebimentos", lazy='joined')  # Relacionamento com Cliente
-    produto = relationship("Produto", back_populates="recebimentos", foreign_keys=[cod_produto], lazy='joined')  # Relacionamento com Produto
+    produto = relationship("Produto", back_populates="recebimentos", foreign_keys=[produtos.id], lazy='joined')  # Relacionamento com Produto
     usuario = relationship("User", back_populates="recebimentos", foreign_keys=[usuario_id], lazy='joined')  # Relacionamento com Usuario
     funcionario = relationship('Funcionario', back_populates='recebimentos_cadastrados', lazy='joined')  # Relacionamento com Funcionario
     checklists = relationship("ChecklistRecebimento", back_populates="recebimento", lazy='joined')  # Relacionamento com ChecklistRecebimento
