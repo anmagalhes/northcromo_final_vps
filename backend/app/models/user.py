@@ -24,7 +24,7 @@ class User(db.Model):  # A classe está correta com 'Usuarios' e não 'Usuario'
     # Relacionamento: Um usuário pode ter vários grupos de produto
     grupo_produtos = relationship(
         "Grupo_Produto", 
-        back_populates='criador', 
+        back_populates='usuario', 
         uselist=True,
         lazy='joined'
         )
