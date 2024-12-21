@@ -22,7 +22,7 @@ class ImpressaoChecklistRecebimento(db.Model):
 
     # Relacionamentos
     checklist = db.relationship('ChecklistRecebimento', backref='impressao_checklists', lazy=True)
-    recebimento = db.relationship('Recebimento', backref='impressao_checklists', lazy=True)  # relacionamento com a tabela 'recebimentos'
+    recebimento = relationship("Recebimento", back_populates="impressao_checklists")
 
     # Relacionamento com o usuário
     usuario = db.relationship('User', back_populates='impressao_checklists', foreign_keys=[usuario_id], lazy='joined')
