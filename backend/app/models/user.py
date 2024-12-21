@@ -110,6 +110,14 @@ class User(db.Model):  # A classe está correta com 'Usuarios' e não 'Usuario'
         uselist=True, 
         lazy='joined'
     )
+
+     # Relacionamento com 'Funcionario'
+    funcionarios = relationship(
+        "Funcionario", 
+        back_populates="usuario",  # Nome do relacionamento na classe Funcionario
+        uselist=True,  # Relação de um para muitos
+        lazy='joined'  # Lazy loading para otimizar a carga dos dados
+    )
     
     # Método para definir a senha (transforma em hash)
     def set_password(self, password):
