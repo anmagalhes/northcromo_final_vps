@@ -79,7 +79,7 @@ def after_request(response):
 # Definindo a variável 'application' que o Gunicorn precisa para rodar a aplicação
 application = create_app()  # Gunicorn vai procurar por 'application'
 
-# DEV
+# DEV teste
 # Função para rodar a aplicação
 #if __name__ == "__main__":
  #   create_app()  # Cria o app
