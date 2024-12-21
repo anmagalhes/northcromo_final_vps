@@ -28,6 +28,7 @@ export const enviarParaBackend = async (cliente: Cliente) => {
       acao: cliente.acao,  // Ação do cliente (se necessário)
       tipo_cliente: cliente.tipo_cliente,  // Tipo de cliente
       doc_cliente: cliente.doc_cliente || "",  // Se 'doc_cliente' for null, substitua por uma string vazia
+      grupo_produto: cliente.grupo_produto || "", 
     };
 
     // Verificar se o tipo_cliente está vazio ou nulo antes de enviar
