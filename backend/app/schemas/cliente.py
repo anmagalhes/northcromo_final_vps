@@ -1,3 +1,4 @@
+# cliente/schema.py
 from marshmallow import Schema, fields, post_load
 from ..models import Cliente, Recebimento, ChecklistRecebimento, User
 from datetime import datetime
