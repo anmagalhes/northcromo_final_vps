@@ -20,6 +20,9 @@ def get_cliente(id):
 
 # Criar um novo cliente
 def create_cliente(data):
+    # Atribuindo o ID do usuário (como admin, por exemplo) para o cliente
+    usuario_id = data.get('usuario_id', 1)  # 1 é o ID do usuário admin
+
     cliente = Cliente(
         tipo_cliente=data['tipo_cliente'],
         nome_cliente=data['nome_cliente'],
@@ -36,6 +39,7 @@ def create_cliente(data):
         fornecedor_cliente=data['fornecedor_cliente'],
         email_funcionario=data.get('email_funcionario'),
         acao=data.get('acao'),
+        usuario_id=usuario_id  # Forçando o envio do usuario_id
     )
     db.session.add(cliente)
     db.session.commit()  # Persiste o cliente no banco
