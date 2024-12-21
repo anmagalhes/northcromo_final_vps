@@ -6,45 +6,28 @@ import { Cliente } from '../types/Cliente';
 const url_cliente = 'https://northcromocontrole.com.br/api/cliente';
 
 // Função para enviar cliente para o backend
-export const enviarParaBackend = async (cliente: Cliente) => {
+const enviarParaBackend = async (novoCliente: Cliente) => {
   try {
-    console.log('Enviando cliente para o backend:', cliente);
+    // Verificar se o tipo_cliente está vazio ou nulo
+    if (!novoCliente.tipo_cliente) {
+      novoCliente.tipo_cliente = 'default'; // Substitua 'default' por um valor adequado ou obrigatório
+    }
 
-    // Ajusta os dados para enviar conforme os campos esperados pelo backend
-    const clienteParaEnviar = {
-      nome_cliente: cliente.nome_cliente,  // Nome do cliente
-      email_funcionario: cliente.email_funcionario,  // Email do cliente
-      telefone_cliente: cliente.telefone_cliente,  // Telefone do cliente
-      endereco_cliente: cliente.endereco_cliente,  // Endereço do cliente
-      num_cliente: cliente.num_cliente,  // Número do cliente (se necessário)
-      bairro_cliente: cliente.bairro_cliente,  // Bairro do cliente (se necessário)
-      cidade_cliente: cliente.cidade_cliente,  // Cidade do cliente (se necessário)
-      uf_cliente: cliente.uf_cliente,  // UF do cliente (se necessário)
-      cep_cliente: cliente.cep_cliente,  // CEP do cliente (se necessário)
-      whatsapp_cliente: cliente.whatsapp_cliente,  // WhatsApp do cliente (se necessário)
-      telefone_rec_cliente: cliente.telefone_rec_cliente,  // Telefone de referência
-      fornecedor_cliente: cliente.fornecedor_cliente,  // Fornecedor do cliente (se necessário)
-      acao: cliente.acao,  // Ação do cliente (se necessário)
-    };
-
-    // Envia os dados para o backend
-    const response = await fetch(url_cliente, {
+    // Agora que o tipo_cliente está garantido, envie os dados para a API
+    const response = await fetch('https://northcromocontrole.com.br/api/cliente', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(clienteParaEnviar),  // Envia os dados ajustados
+      body: JSON.stringify(novoCliente),  // Enviar os dados
     });
 
-    if (!response.ok) {
-      const errorText = await response.text();  // Captura texto de erro do backend
-      console.error('Erro ao enviar para o backend:', errorText);
-      throw new Error(`Erro ao enviar cliente para o backend: ${errorText}`);
-    }
-
     const result = await response.json();
-    console.log('Resposta do servidor:', result);
-    return result;
+    if (response.ok) {
+      console.log('Cliente enviado com sucesso', result);
+    } else {
+      throw new Error(result.error || 'Erro desconhecido');
+    }
   } catch (error) {
     console.error('Falha ao enviar cliente para o backend:', error);
   }
