@@ -112,7 +112,7 @@ const ClientePage: React.FC = () => {
   
       // Garantir que os campos obrigatórios sejam preenchidos
       novoCliente.nome_cliente = novoCliente.nome_cliente || null;
-      novoCliente.email_cliente = novoCliente.email_cliente || null;
+      novoCliente.email_funcionario = novoCliente.email_funcionario || '';  // Atribuindo string vazia caso seja null;
       novoCliente.telefone_cliente = novoCliente.telefone_cliente || null;
   
       // Envia o cliente para o backend

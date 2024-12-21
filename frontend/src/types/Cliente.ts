@@ -3,7 +3,7 @@ export interface Cliente {
   id?: number;                   // O ID é auto-incrementado no banco de dados, por isso é opcional.
   tipo_cliente: string | null;    // Tipo de Cliente (Pessoa Física ou Jurídica, etc.)
   nome_cliente: string | null;    // Nome do Cliente
-  email_cliente: string;  // Alterado para email_cliente 
+  email_funcionario: string;  // Alterado para email_funcionario 
   doc_cliente: string | null;     // Documento do Cliente (CPF/CNPJ)
   endereco_cliente: string | null; // Endereço do Cliente
   num_cliente: string | null;     // Número do endereço

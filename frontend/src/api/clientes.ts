@@ -5,7 +5,6 @@ import { Cliente } from '../types/Cliente';
 // Variável para a URL base do cliente
 const url_cliente = 'https://northcromocontrole.com.br/api/cliente';
 
-// Função para obter a lista de clientes
 // Função para enviar cliente para o backend
 export const enviarParaBackend = async (cliente: Cliente) => {
   try {
@@ -14,7 +13,7 @@ export const enviarParaBackend = async (cliente: Cliente) => {
     // Ajusta os dados para enviar conforme os campos esperados pelo backend
     const clienteParaEnviar = {
       nome_cliente: cliente.nome_cliente,  // Nome do cliente
-      email_cliente: cliente.email_cliente,  // Email do cliente
+      email_funcionario: cliente.email_funcionario,  // Email do cliente
       telefone_cliente: cliente.telefone_cliente,  // Telefone do cliente
       endereco_cliente: cliente.endereco_cliente,  // Endereço do cliente
       num_cliente: cliente.num_cliente,  // Número do cliente (se necessário)
@@ -48,35 +47,6 @@ export const enviarParaBackend = async (cliente: Cliente) => {
     return result;
   } catch (error) {
     console.error('Falha ao enviar cliente para o backend:', error);
-  }
-};
-
-
-// Função para enviar cliente para o backend
-export const enviarParaBackend = async (cliente: Cliente): Promise<any> => {
-  try {
-    console.log('Enviando cliente para o backend:', cliente);
-
-    const response = await fetch(url_cliente, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(cliente),
-    });
-
-    if (!response.ok) {
-      const errorText = await response.text(); // Captura texto de erro do backend
-      console.error('Erro ao enviar para o backend:', errorText);
-      throw new Error(`Erro ao enviar cliente para o backend: ${errorText}`);
-    }
-
-    const result = await response.json();
-    console.log('Resposta do servidor:', result);
-    return result; // Retorna a resposta do backend
-  } catch (error) {
-    console.error('Falha ao enviar cliente para o backend:', error);
-    throw error; // Lança o erro para que o chamador possa tratá-lo
   }
 };
 
