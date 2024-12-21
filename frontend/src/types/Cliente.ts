@@ -1,3 +1,4 @@
+//teste
 export interface Cliente {
   id?: number;  // Pode ser opcional, pois o ID é gerado automaticamente pelo banco
   tipo_cliente: string | null;  // Pode ser null

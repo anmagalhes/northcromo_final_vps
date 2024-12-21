@@ -135,7 +135,7 @@ const Cliente: React.FC = () => {
     }
   };
   
-  // Função para editar um cliente
+  // Função para editar um clientes
 const handleEditCliente = async (clienteEditado: Cliente) => {
   try {
     if (clienteEditado.id !== undefined) {
