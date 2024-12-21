@@ -46,7 +46,7 @@ def create_cliente(data):
 
         # Adicionando o cliente à sessão do banco de dados
         g.db_session.add(cliente)
-
+        g.db_session.commit()  # Commitando a transação no banco
         # Commit será feito no ciclo de vida da requisição
         return cliente_schema.dump(cliente)  # Usando o schema para serializar o cliente
 
