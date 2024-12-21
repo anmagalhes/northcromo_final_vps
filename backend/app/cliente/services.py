@@ -1,9 +1,11 @@
+# app/cliente/services.py
 from ..models.cliente import Cliente
 from app import db
-from .schemas import ClienteSchema
+from app.schemas.cliente import ClienteSchema  # Importação relativa
 
-# Instância do schema para serializar os dados
-cliente_schema = ClienteSchema()
+# Instância do schema
+cliente_schema = ClienteSchema()  # Para operações com um único cliente
+clientes_schema = ClienteSchema(many=True)  # Para listar múltiplos clientes
 
 # Listar todos os clientes
 def list_clientes():
