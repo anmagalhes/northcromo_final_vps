@@ -108,5 +108,20 @@ export const editarClienteNoBackend = async (clienteId: number, clienteData: Cli
   }
 };
 
+// src/api/clientes.ts
+// src/api/clientes.ts
+export const deleteCliente = async (clienteId: number) => {
+  const response = await fetch(`${url_cliente}/${clienteId}`, {
+    method: 'DELETE',
+  });
+
+  if (!response.ok) {
+    throw new Error('Erro ao deletar cliente');
+  }
+
+  return await response.json();
+};
+
+
   
 
