@@ -11,7 +11,6 @@ class Grupo_Produto(db.Model):
     name = db.Column(db.String(20), unique=True, nullable=False)
     usuario_id = db.Column(db.Integer, ForeignKey('usuario.id'))  # Chave estrangeira para 'usuarios'
     
-
     # Relacionamento: Cada grupo de produto pertence a um usuário
     usuario = relationship("Users", back_populates='grupo_produtos', lazy='joined')
    

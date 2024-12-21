@@ -12,7 +12,6 @@ class Grupo_ProdutoSchema(Schema):
 
     # Relacionamento com o modelo Usuario (assumindo que você tem o schema 'UserSchema')
     usuario = fields.Nested('UserSchema', dump_only=True)
-    criador = fields.Nested('UserSchema', dump_only=True)
 
     # Campos de timestamp
     created_at = fields.DateTime(dump_only=True)
@@ -25,5 +24,5 @@ class Grupo_ProdutoSchema(Schema):
         return Grupo_Produto(**data)  # Certifique-se de que o nome da classe é "Grupo_Produto" (com G maiúsculo)
     
 # Instâncias do schema para uso
-grupo_produto_schema = Grupo_ProdutoSchema()  # Para uma instância única
-grupo_produtos_schema = Grupo_ProdutoSchema(many=True)  # Para várias instâncias
+#grupo_produto_schema = Grupo_ProdutoSchema()  # Para uma instância única
+#grupo_produtos_schema = Grupo_ProdutoSchema(many=True)  # Para várias instâncias
