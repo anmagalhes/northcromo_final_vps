@@ -15,3 +15,8 @@ from .recebimento import Recebimento
 from .foto_recebimento import FotoRecebimento
 from .checklist_Recebimento import ChecklistRecebimento
 from .impressao_checklistRecebimento import ImpressaoChecklistRecebimento
+
+
+# Definindo a função some_function (se for necessária)
+def some_function():
+    pass  # Esta função pode ser um placeholder ou uma função vazia
