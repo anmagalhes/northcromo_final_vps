@@ -28,19 +28,19 @@ class Produto(db.Model):
     data_cadastro_produto = db.Column(db.DateTime, default=datetime.utcnow)  # Data de cadastro
     usuario_id = db.Column(db.Integer, ForeignKey('usuario.id'))  # Chave estrangeira de usuários
     tipo = db.Column(db.String(50), nullable=False)  # Tipo de produto
+    recebimento_id = db.Column(db.Integer, ForeignKey('recebimentos.id'))  # Chave estrangeira para recebimentos
+
 
     # Relacionamentos
-    grupo = relationship("Grupo_Produto", back_populates="produtos")  # Relacionamento com 'Grupo'
-    operacao_servico = relationship("PostoTrabalho", back_populates="produtos")  # Relacionamento com 'OperacaoServico'
-    componente = relationship("Componente", back_populates="produtos")  # Relacionamento com 'Componente'
-    posto_trabalho = relationship('PostoTrabalho', back_populates='produtos')  # Relacionamento com 'PostoTrabalho'
-    recebimentos = relationship("Recebimento", back_populates="produtos")
-    checklists = relationship("ChecklistRecebimento", back_populates="produto")
+    grupo = relationship("Grupo_Produto", back_populates="produtos", lazy='joined')  # Relacionamento com 'Grupo'
+    operacao_servico = relationship("PostoTrabalho", back_populates="produtos", lazy='joined')  # Relacionamento com 'OperacaoServico'
+    componente = relationship("Componente", back_populates="produtos", lazy='joined')  # Relacionamento com 'Componente'
+    posto_trabalho = relationship('PostoTrabalho', back_populates='produtos', lazy='joined')  # Relacionamento com 'PostoTrabalho'
+    checklists = relationship("ChecklistRecebimento", back_populates="produto", lazy='joined')
     usuario = relationship("User", back_populates='produto', foreign_keys=[usuario_id], lazy='joined')
-     # Relacionamento com a tabela Grupo_Produto
     grupo_produto = relationship("Grupo_Produto", back_populates="produtos", lazy='joined')
+    recebimentos = relationship("Recebimento", back_populates="produtos", lazy='joined')
 
 
-    
     def __repr__(self):
         return f'<Produto id={self.id} name={self.nome}>'
