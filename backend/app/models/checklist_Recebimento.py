@@ -25,8 +25,8 @@ class ChecklistRecebimento(db.Model):
     produto = relationship("Produto", back_populates="checklists")
     usuario = relationship("User", back_populates="checklists")
     
-    # Remove o relacionamento redundante com 'checklist'
-    impressao_checklists = relationship("ImpressaoChecklistRecebimento", backref="checklist", lazy=True)
+    # Remover o 'backref' aqui. Não precisa ser configurado de novo
+    impressao_checklists = relationship("ImpressaoChecklistRecebimento", lazy=True)
 
     # Colunas de data e hora
     created_at = db.Column(db.DateTime, default=datetime.utcnow)  # Data de criação
