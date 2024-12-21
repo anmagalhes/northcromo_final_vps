@@ -13,7 +13,7 @@ class FotoRecebimento(db.Model):
     usuario_id = db.Column(db.Integer, ForeignKey('usuario.id'))  # Chave estrangeira para 'usuarios'
     
      # Relacionamento: Agora utilizando o nome correto da classe 'User' (não 'Usuario')
-    usuario = relationship("User", back_populates='grupo_produtos', foreign_keys=[usuario_id], lazy='joined')
+    usuario = relationship("User", back_populates='foto_recebimento', foreign_keys=[usuario_id], lazy='joined')
 
     # Relacionamento com a tabela Recebimento
     ordem = relationship("Recebimento", back_populates="fotos")

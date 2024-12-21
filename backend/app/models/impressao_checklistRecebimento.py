@@ -25,7 +25,7 @@ class ImpressaoChecklistRecebimento(db.Model):
     usuario = db.relationship('User', backref='impressao_checklists', lazy=True)
 
     # Relacionamento: Agora utilizando o nome correto da classe 'User' (não 'Usuario')
-    usuario = relationship("User", back_populates='grupo_produtos', foreign_keys=[usuario_id], lazy='joined')
+    usuario = relationship("User", back_populates='impressao_checklists', foreign_keys=[usuario_id], lazy='joined')
 
 
     # Colunas de controle de data

@@ -15,13 +15,12 @@ class Funcionario(db.Model):
     data_cadastro = db.Column(db.DateTime, default=datetime.utcnow)
     acesso_sistema = db.Column(db.Boolean, default=True)  # Se tem acesso ao sistema
     usuario_id = db.Column(db.Integer, ForeignKey('usuario.id'))  # Chave estrangeira de usuários
-    usuario = relationship("User", back_populates="funcionarios")  # Corrigido para usar 'User' e 'funcionarios'
-
+ 
     nivel_acesso = db.Column(db.String(50), nullable=False)  # Nível de acesso do funcionário
     acao = db.Column(db.String(100), nullable=True)  # Ações/observações adicionais
     
     # Relacionamento: Agora utilizando o nome correto da classe 'User' (não 'Usuario')
-    usuario = relationship("User", back_populates='grupo_produtos', foreign_keys=[usuario_id], lazy='joined')
+    usuario = relationship("User", back_populates='funcionarios', foreign_keys=[usuario_id], lazy='joined')
 
 
     # Relacionamento com Recebimentos (como vendedor, por exemplo)
