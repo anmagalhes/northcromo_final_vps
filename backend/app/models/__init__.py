@@ -1,4 +1,4 @@
-from .db import db  # Importando a instância db
+from app.database import db  # Importando a instância db
 
 # Importando os modelos
 from .user import User
@@ -15,7 +15,3 @@ from .recebimento import Recebimento
 from .foto_recebimento import FotoRecebimento
 from .checklist_Recebimento import ChecklistRecebimento
 from .impressao_checklistRecebimento import ImpressaoChecklistRecebimento
-
-# Agora você pode adicionar a função some_function sem problema
-def some_function():
-    pass  # A função está vazia, mas deve estar corretamente definida aqui
