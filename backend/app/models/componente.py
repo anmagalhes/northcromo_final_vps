@@ -10,9 +10,9 @@ class Componente(db.Model):
     name = db.Column(db.String(40), unique=True, nullable=False)
     usuario_id = db.Column(db.Integer, ForeignKey('usuario.id'))  # Chave estrangeira para 'usuarios'
 
-     # Relacionamento: Agora utilizando o nome correto da classe 'User' (não 'Usuario')
-    usuario = relationship("User", back_populates='grupo_produtos', foreign_keys=[usuario_id], lazy='joined')
-
+    # Relacionamento com 'User'
+    usuario = relationship("User", back_populates="componentes", foreign_keys=[usuario_id], lazy='joined')
+    
     # Relacionamento com defeitos
     defeitos = relationship(
         "Defeito", 

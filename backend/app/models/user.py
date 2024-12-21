@@ -21,20 +21,20 @@ class User(db.Model):  # A classe está correta com 'Usuarios' e não 'Usuario'
     extra_info = db.Column(db.JSON, nullable=True)  # Campo adicional para armazenar outras informações no formato JSON
 
 
-    # Relacionamento: Um usuário pode ter vários grupos de produto
+    # Relacionamento correto com 'Grupo_Produto' (garantir que a referência para 'Grupo_Produto' esteja correta)
     grupo_produtos = relationship(
         "Grupo_Produto", 
         back_populates='usuario', 
         uselist=True,
         lazy='joined'
-        )
+    )
     
-    # Relacionamento: Um usuário pode ter vários componentes
+     # Relacionamento correto com 'Componente'
     componentes = relationship(
         "Componente", 
-        back_populates='usuario',  # Define a relação bidirecional
-        uselist=True,  # Indica que é uma relação de um-para-muitos
-        lazy='joined'  # Lazy loading para otimizar a carga dos dados
+        back_populates='usuario',  # Defina o 'back_populates' correto do lado do 'Componente'
+        uselist=True,
+        lazy='joined'
     )
 
 # Relacionamento: Um usuário pode ter vários componentes
