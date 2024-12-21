@@ -28,8 +28,7 @@ class Produto(db.Model):
     data_cadastro_produto = db.Column(db.DateTime, default=datetime.utcnow)  # Data de cadastro
     usuario_id = db.Column(db.Integer, ForeignKey('usuario.id'))  # Chave estrangeira de usuários
     tipo = db.Column(db.String(50), nullable=False)  # Tipo de produto
-    recebimento_id = db.Column(db.Integer, ForeignKey('recebimentos.id'))  # Chave estrangeira para recebimentos
-
+    
     # Relacionamentos
     grupo_produto = relationship("Grupo_Produto", back_populates="produtos", lazy='joined')  # Relacionamento com 'Grupo'
     operacao_servico = relationship("PostoTrabalho", back_populates="produtos", lazy='joined')  # Relacionamento com 'OperacaoServico'
