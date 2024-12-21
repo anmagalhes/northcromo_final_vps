@@ -18,6 +18,7 @@ class ImpressaoChecklistRecebimento(db.Model):
     data_rec_ordem_servicos = db.Column(db.DateTime, nullable=False)
     usuario_id = db.Column(db.Integer, ForeignKey('usuario.id'), nullable=False)  # Chave estrangeira para 'usuario'
     link_pdf_checklist = db.Column(db.String(255), nullable=True)
+    recebimento_id = db.Column(db.Integer, db.ForeignKey('recebimentos.id'))  # Chave estrangeira para Recebimento
 
     # Relacionamentos
     checklist = db.relationship('ChecklistRecebimento', backref='impressao_checklists', lazy=True)
