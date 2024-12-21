@@ -11,9 +11,8 @@ class Grupo_Produto(db.Model):
     name = db.Column(db.String(20), unique=True, nullable=False)
     usuario_id = db.Column(db.Integer, ForeignKey('usuario.id'))  # Chave estrangeira para 'usuarios'
     
-    # Relacionamento: Cada grupo de produto pertence a um usuário
-    usuario = relationship("Users", back_populates='grupo_produtos', lazy='joined')
-   
+    # Relacionamento: Agora utilizando o nome correto da classe 'User' (não 'Usuario')
+    usuario = relationship("User", back_populates='grupo_produtos', foreign_keys=[usuario_id], lazy='joined')
 
     # Adicionando as colunas de data e hora
     created_at = db.Column(db.DateTime, default=datetime.utcnow)  # Data de criação
