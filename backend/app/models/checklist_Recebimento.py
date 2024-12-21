@@ -25,7 +25,7 @@ class ChecklistRecebimento(db.Model):
     produto = relationship("Produto", back_populates="checklists")
     usuario = relationship("User", back_populates="checklists")
     
-    # Remover o 'backref' aqui. Não precisa ser configurado de novo
+    # Remova o 'backref' aqui. Não precisa ser configurado de novo
     impressao_checklists = relationship("ImpressaoChecklistRecebimento", lazy=True)
 
     # Colunas de data e hora
@@ -37,3 +37,4 @@ class ChecklistRecebimento(db.Model):
         # Acessando o nome do produto carregado (mesmo com o lazy load)
         produto_nome = self.produto.nome if self.produto else 'Produto não encontrado'
         return f'<ChecklistRecebimento {self.referencia_Produto} - {produto_nome}>'
+
