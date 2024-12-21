@@ -27,6 +27,7 @@ class Recebimento(db.Model):
     funcionario = relationship('Funcionario', back_populates='recebimentos_cadastrados', lazy='joined')  # Relacionamento com Funcionario
     checklists = relationship("ChecklistRecebimento", back_populates="recebimento", lazy='joined')  # Relacionamento com ChecklistRecebimento
     impressao_checklists = relationship("ImpressaoChecklistRecebimento", back_populates="recebimento", lazy='joined')
+    fotos = relationship("FotoRecebimento", back_populates="ordem", lazy='joined')
     
     # Colunas de data e hora
     created_at = db.Column(db.DateTime, default=datetime.utcnow)  # Data de criação

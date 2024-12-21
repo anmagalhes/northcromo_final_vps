@@ -8,7 +8,7 @@ class FotoRecebimento(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)  # ID da Foto
     id_ordem = db.Column(db.String(50), nullable=False)  # ID da ordem (chave estrangeira)
-    recebimento_id = db.Column(db.Integer, ForeignKey('recebimentos.id'), nullable=False)  # Referencia o ID da tabela 'recebimentos'
+    recebimento_id = db.Column(db.Integer, ForeignKey('recebimentos.id'), nullable=False)
     nome_foto = db.Column(db.String(255), nullable=False)  # Nome ou caminho do arquivo da foto
     
     # Relacionamento com a tabela Recebimento
