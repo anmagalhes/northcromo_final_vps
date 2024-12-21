@@ -11,8 +11,7 @@ class TarefaProduto(db.Model):
     usuario_id = db.Column(db.Integer, ForeignKey('usuario.id'))  # Chave estrangeira para 'usuarios'
 
     # Relacionamento: Agora utilizando o nome correto da classe 'User' (não 'Usuario')
-    usuario = relationship("User", back_populates='tarefa_Produto', foreign_keys=[usuario_id], lazy='joined')
-
+    usuario = relationship("User", back_populates='tarefa_produto', foreign_keys=[usuario_id], lazy='joined')
 
     # Adicionando as colunas de data e hora
     created_at = db.Column(db.DateTime, default=datetime.utcnow)  # Data de criação
@@ -20,4 +19,4 @@ class TarefaProduto(db.Model):
     deleted_at = db.Column(db.DateTime, nullable=True)  # Data de exclusão (opcional para soft delete)
 
     def __repr__(self):
-        return f'<TarefaProduto {self.name}>'
+        return f'<TarefaProduto {self.nome}>'

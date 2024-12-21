@@ -60,12 +60,13 @@ class User(db.Model):  # A classe está correta com 'Usuarios' e não 'Usuario'
         uselist=True,  # Indica que é uma relação de um-para-muitos
         lazy='joined')
 
-     # Relacionamento com defeitos
-    tarefa_Produto = relationship(
-        "Tarefa_Produto", 
-        back_populates='usuario', 
-        uselist=True,  # Indica que é uma relação de um-para-muitos
-        lazy='joined')
+     # Relacionamento com TarefaProduto
+    tarefa_produto = db.relationship(
+        "TarefaProduto",  # Nome correto da classe 'TarefaProduto'
+        back_populates="usuario",  # Relacionamento inverso
+        uselist=True,  # Relacionamento de um para muitos
+        lazy='joined'  # Lazy loading
+    )
     
       # Relacionamento com defeitos
     recebimentos = relationship(
@@ -131,3 +132,6 @@ class User(db.Model):  # A classe está correta com 'Usuarios' e não 'Usuario'
     def validate_updated_at(self, key, value):
         """Valida e define o updated_at"""
         return value or datetime.utcnow()
+    
+    def __repr__(self):
+            return f'<User {self.username}>'

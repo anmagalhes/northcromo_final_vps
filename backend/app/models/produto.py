@@ -41,4 +41,4 @@ class Produto(db.Model):
     
 
     def __repr__(self):
-        return f'<Produto id={self.id} name={self.name}>'
+        return f'<Produto id={self.id} name={self.nome}>'
