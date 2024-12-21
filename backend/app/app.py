@@ -15,7 +15,7 @@ from app.frontend_blueprint import frontend_bp  # Importação do blueprint do f
 # Registra os blueprints
 from app.auth import auth_blueprint
 from app.user import users_blueprint
-from app.defeitos import defeito_blueprint
+from app.defeito import defeito_blueprint
 from app.checklist_recebimento import checklist_recebimento_blueprint
 from app.foto_recebimento import foto_recebimento_blueprint
 from app.funcionario import funcionario_blueprint

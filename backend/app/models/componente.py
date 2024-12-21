@@ -21,7 +21,6 @@ class Componente(db.Model):
     defeitos = db.relationship(
         "Defeito", 
         back_populates="componente",  # Referenciar 'componente' no modelo Defeito
-        uselist=True,  # Relação de um-para-muitos
         lazy='joined'
     )
     

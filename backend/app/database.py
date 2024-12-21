@@ -1,5 +1,6 @@
 #database.py
 from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate  # Importando o Migrate
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
 from dotenv import load_dotenv
@@ -10,6 +11,9 @@ load_dotenv()
 
 # Criação da instância do SQLAlchemy
 db = SQLAlchemy()
+
+# Instância do Migrate
+migrate = Migrate()
 
 # Função para obter a URI do banco de dados a partir do .env
 def get_database_uri():
@@ -35,6 +39,9 @@ def init_db(app):
 
     # Inicializa o db com a configuração do Flask
     db.init_app(app)
+
+     # Inicializa o Flask-Migrate
+    migrate.init_app(app, db)
 
     # Testando a conexão com o banco de dados
     try:
