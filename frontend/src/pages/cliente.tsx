@@ -105,26 +105,36 @@ const Cliente: React.FC = () => {
       // Marca o cliente como "não enviado" inicialmente
       novoCliente.enviado = false;
   
+      // Certifique-se de que os campos opcionais sejam enviados como null se não forem preenchidos
+      novoCliente.telefone_rec_cliente = novoCliente.telefone_rec_cliente ? novoCliente.telefone_rec_cliente : null;
+      novoCliente.whatsapp_cliente = novoCliente.whatsapp_cliente ? novoCliente.whatsapp_cliente : null;
+      novoCliente.email_funcionario = novoCliente.email_funcionario ? novoCliente.email_funcionario : null;
+      novoCliente.acao = novoCliente.acao ? novoCliente.acao : null;
+  
+      // Garantir que os campos obrigatórios sejam preenchidos
+      novoCliente.nome = novoCliente.nome || null;
+      novoCliente.email = novoCliente.email || null;
+      novoCliente.telefone = novoCliente.telefone || null;
+  
       // Adiciona o cliente ao localStorage
       adicionarClienteAoLocalStorage(novoCliente);
   
       // Envia os dados para o backend
       const response = await enviarParaBackend(novoCliente);
-   
+  
       // Se a resposta do backend for bem-sucedida, marca o cliente como enviado
       if (response.success) {
         novoCliente.enviado = true;
         // Atualiza o localStorage com a marcação de enviado
         adicionarClienteAoLocalStorage(novoCliente);
       } else {
-        console.error("Falha ao enviar cliente para o backend");
+        console.error("Falha ao enviar cliente para o backend", response?.message || "Resposta inválida");
       }
     } catch (error) {
       console.error("Erro ao adicionar cliente:", error);
     }
   };
-
-  // Função para editar um cliente
+  
   // Função para editar um cliente
 const handleEditCliente = async (clienteEditado: Cliente) => {
   try {
