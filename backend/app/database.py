@@ -1,10 +1,14 @@
-import os
+from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
 from dotenv import load_dotenv
+import os
 
 # Carregar variáveis do arquivo .env
 load_dotenv()
+
+# Criação da instância do SQLAlchemy
+db = SQLAlchemy()
 
 # Função para obter a URI do banco de dados a partir do .env
 def get_database_uri():
@@ -18,39 +22,28 @@ def get_database_uri():
         raise ValueError("Uma ou mais variáveis de ambiente do banco de dados não foram configuradas corretamente.")
     
     if os.environ.get('FLASK_ENV') == 'production':
-        return f'postgresql://{DATABASE_USER}:{DATABASE_PASSWORD}@{DATABASE_HOST}:{DATABASE_PORT}/{DATABASE_NAME}'  # PostgreSQL síncrono
+        return f'postgresql://{DATABASE_USER}:{DATABASE_PASSWORD}@{DATABASE_HOST}:{DATABASE_PORT}/{DATABASE_NAME}'  # PostgreSQL
     else:
-        return 'sqlite:///northcromo.db'  # SQLite síncrono
+        return 'sqlite:///northcromo.db'  # SQLite para desenvolvimento
 
 # Função para inicializar o banco de dados
 def init_db(app):
     # Obtenha a URI do banco de dados
     app.config['SQLALCHEMY_DATABASE_URI'] = get_database_uri()
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False  # Desabilita modificações de objetos para desempenho
 
-    # Inicializa o engine e o sessionmaker
-    engine = create_engine(app.config['SQLALCHEMY_DATABASE_URI'], echo=True)
-
-    Session = sessionmaker(
-        autocommit=False,
-        autoflush=False,
-        bind=engine
-    )
+    # Inicializa o db com a configuração do Flask
+    db.init_app(app)
 
     # Testando a conexão com o banco de dados
     try:
-        with engine.connect() as conn:
-            conn.execute(text('SELECT 1'))  # Query simples para testar a conexão
+        with app.app_context():  # Necessário para executar a consulta dentro do contexto do Flask
+            with db.engine.connect() as conn:
+                conn.execute(text('SELECT 1'))  # Query simples para testar a conexão
         print("Conexão com o banco de dados bem-sucedida!")
     except Exception as e:
         print(f"Erro ao conectar com o banco de dados: {e}")
-        raise e  # Levanta o erro caso a conexão falhe
+        raise e
 
-    return engine, Session
+    return db  # Retorna o objeto db para uso
 
-# Função para obter a sessão do banco
-def get_db_session(engine, Session):
-    return Session()  # Retorna a sessão do banco de dados
-
-# Função para fechar a sessão do banco
-def close_db_session(session):
-    session.close()  # Fecha a sessão após a requisição
