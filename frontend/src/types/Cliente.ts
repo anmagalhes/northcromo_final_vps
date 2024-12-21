@@ -1,6 +1,6 @@
 // src/types/Cliente.ts
 export interface Cliente {
-  id?: number;                   // O ID é auto-incrementado no banco de dados, por isso é opcional.
+  id: number;                   // O ID é auto-incrementado no banco de dados, por isso é opcional.
   tipo_cliente: string | null;    // Tipo de Cliente (Pessoa Física ou Jurídica, etc.)
   nome_cliente: string | null;    // Nome do Cliente
   doc_cliente: string | null;     // Documento do Cliente (CPF/CNPJ)

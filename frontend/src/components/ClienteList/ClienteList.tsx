@@ -20,7 +20,8 @@ const ClienteList: React.FC<ClienteListProps> = ({ clientes, onDelete, onEdit })
             <li key={cliente.id}>
               {cliente.nome} - {cliente.email} - {cliente.telefone}
               <button onClick={() => onEdit(cliente)}>Editar</button>  {/* Chamando a função onEdit */}
-              <button onClick={() => onDelete(cliente.id)}>Excluir</button> {/* Chamando a função onDelete */}
+              {/* Verifica se cliente.id não é undefined antes de chamar onDelete */}
+              <button onClick={() => cliente.id !== undefined && onDelete(cliente.id)}>Excluir</button> {/* Chamando a função onDelete */}
             </li>
           ))
         ) : (
@@ -32,3 +33,4 @@ const ClienteList: React.FC<ClienteListProps> = ({ clientes, onDelete, onEdit })
 };
 
 export default ClienteList;
+
