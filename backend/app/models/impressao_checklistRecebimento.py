@@ -22,15 +22,13 @@ class ImpressaoChecklistRecebimento(db.Model):
     # Relacionamentos
     checklist = db.relationship('ChecklistRecebimento', backref='impressao_checklists', lazy=True)
     recebimento = db.relationship('Recebimento', backref='impressao_checklists', lazy=True)  # relacionamento com a tabela 'recebimentos'
-    usuario = db.relationship('User', backref='impressao_checklists', lazy=True)
 
-    # Relacionamento: Agora utilizando o nome correto da classe 'User' (não 'Usuario')
-    usuario = relationship("User", back_populates='impressao_checklists', foreign_keys=[usuario_id], lazy='joined')
-
+    # Relacionamento com o usuário
+    usuario = db.relationship('User', back_populates='impressao_checklists', foreign_keys=[usuario_id], lazy='joined')
 
     # Colunas de controle de data
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     def __repr__(self):
-        return f'<ImpressaoChecklistRecebimento id={self.id} name={self.name}>'
+        return f'<ImpressaoChecklistRecebimento id={self.id} nome_cliente={self.nome_cliente}>'

@@ -103,12 +103,13 @@ class User(db.Model):  # A classe está correta com 'Usuarios' e não 'Usuario'
         uselist=True,  # Indica que é uma relação de um-para-muitos
         lazy='joined')
     
+     # Relacionamento: Um usuário pode ter vários 'ImpressaoChecklistRecebimento'
     impressao_checklists = relationship(
         "ImpressaoChecklistRecebimento", 
-        backref="usuario",
-        uselist=True,  # Indica que é uma relação de um-para-muitos
+        back_populates="usuario",  # Relacionamento inverso
+        uselist=True, 
         lazy='joined'
-        )
+    )
     
     # Método para definir a senha (transforma em hash)
     def set_password(self, password):
