@@ -23,7 +23,7 @@ def get_cliente_details(id):
     return jsonify({"message": "Cliente não encontrado!"}), 404
 
 # Rota para criar um novo cliente
-@cliente_blueprint.route('/api/cliente', methods=['POST'])
+@cliente_blueprint.route('/', methods=['POST'])
 def criar_cliente():
     try:
         # Recebe os dados JSON da requisição
