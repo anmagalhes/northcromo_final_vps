@@ -23,7 +23,9 @@ class Recebimento(db.Model):
     # Relacionamentos
     cliente = relationship("Cliente", back_populates="recebimentos")
     produto = relationship("Produto", back_populates="recebimentos")
-    usuario = relationship("User", back_populates="recebimentos")
+    # Relacionamento: Agora utilizando o nome correto da classe 'User' (não 'Usuario')
+    usuario = relationship("User", back_populates='grupo_produtos', foreign_keys=[usuario_id], lazy='joined')
+
     ##fotos = relationship('FotoRecebimento', back_populates='ordem')
     funcionario = relationship('Funcionario', back_populates='recebimentos_cadastrados')
     checklists = relationship("ChecklistRecebimento", back_populates="recebimento")

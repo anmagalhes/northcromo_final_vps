@@ -11,8 +11,8 @@ class Defeito(db.Model):
     usuario_id = db.Column(db.Integer, ForeignKey('usuario.id'))  # Chave estrangeira para 'usuarios'
     componente_id = db.Column(db.Integer, ForeignKey('componente.id'))  # Chave estrangeira para 'componente'
 
-    # Relacionamento: Cada grupo de produto pertence a um usuário
-    usuario = relationship("Users", back_populates='posto_trabalho', lazy='joined')
+     # Relacionamento: Agora utilizando o nome correto da classe 'User' (não 'Usuario')
+    usuario = relationship("User", back_populates='grupo_produtos', foreign_keys=[usuario_id], lazy='joined')
 
      # Relacionamento com o componente
     componente = relationship("Componente", back_populates='defeitos', lazy='joined')

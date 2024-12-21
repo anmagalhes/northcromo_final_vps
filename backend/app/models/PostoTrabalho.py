@@ -11,7 +11,8 @@ class PostoTrabalho(db.Model):
     usuario_id = db.Column(db.Integer, ForeignKey('usuario.id'))  # Chave estrangeira para 'usuario'
 
     # Relacionamento com a tabela Usuario
-    usuario = relationship("User", back_populates='posto_trabalho', lazy='joined')  # Verifique se o modelo é 'User' (não 'users')
+    usuario = relationship("User", back_populates='grupo_produtos', foreign_keys=[usuario_id], lazy='joined')
+
     produtos = relationship('Produto', back_populates='posto_trabalho', lazy='joined')
     operacao_servico = relationship('Produto', back_populates='posto_trabalho', lazy='joined')
 

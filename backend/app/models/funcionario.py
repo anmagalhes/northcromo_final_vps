@@ -19,6 +19,10 @@ class Funcionario(db.Model):
 
     nivel_acesso = db.Column(db.String(50), nullable=False)  # Nível de acesso do funcionário
     acao = db.Column(db.String(100), nullable=True)  # Ações/observações adicionais
+    
+    # Relacionamento: Agora utilizando o nome correto da classe 'User' (não 'Usuario')
+    usuario = relationship("User", back_populates='grupo_produtos', foreign_keys=[usuario_id], lazy='joined')
+
 
     # Relacionamento com Recebimentos (como vendedor, por exemplo)
     recebimentos_cadastrados = relationship(

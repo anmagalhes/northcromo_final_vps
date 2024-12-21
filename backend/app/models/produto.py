@@ -37,6 +37,8 @@ class Produto(db.Model):
     usuario = relationship("Users", back_populates="produtos")  # Relacionamento com Usuários
     recebimentos = relationship("Recebimento", back_populates="produtos")
     checklists = relationship("ChecklistRecebimento", back_populates="produto")
+    usuario = relationship("User", back_populates='grupo_produtos', foreign_keys=[usuario_id], lazy='joined')
+
     
 
     def __repr__(self):
