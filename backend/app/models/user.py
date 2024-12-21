@@ -45,12 +45,12 @@ class User(db.Model):  # A classe está correta com 'Usuarios' e não 'Usuario'
         lazy='joined'  # Lazy loading para otimizar a carga dos dados
     )
 
-    # Relacionamento: Um usuário pode ter vários componentes
-    posto_Trabalho = relationship(
-        "Posto_Trabalho", 
-        back_populates='usuario',  # Define a relação bidirecional
-        uselist=True,  # Indica que é uma relação de um-para-muitos
-        lazy='joined'  # Lazy loading para otimizar a carga dos dados
+    # Relacionamento com Posto_Trabalho
+    posto_trabalho = db.relationship(
+        "PostoTrabalho",  # Nome correto da classe 'PostoTrabalho'
+        back_populates="usuario",  # Relacionamento inverso
+        uselist=True,  # Relacionamento de um para muitos
+        lazy='joined'  # Lazy loading
     )
 
      # Relacionamento com defeitos
