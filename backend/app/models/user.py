@@ -20,7 +20,6 @@ class User(db.Model):  # A classe está correta com 'Usuarios' e não 'Usuario'
     permissions = db.Column(db.JSON, default=[])  # Lista de permissões (ex: ['view', 'edit', 'delete'])
     extra_info = db.Column(db.JSON, nullable=True)  # Campo adicional para armazenar outras informações no formato JSON
 
-
     # Relacionamentos
     clientes = relationship(
          "Cliente", 
@@ -78,13 +77,6 @@ class User(db.Model):  # A classe está correta com 'Usuarios' e não 'Usuario'
       # Relacionamento com defeitos
     recebimentos = relationship(
         "Recebimento", 
-        back_populates='usuario', 
-        uselist=True,  # Indica que é uma relação de um-para-muitos
-        lazy='joined')
-    
-    # Relacionamento com defeitos
-    fotoRecebimento = relationship(
-        "FotoRecebimento", 
         back_populates='usuario', 
         uselist=True,  # Indica que é uma relação de um-para-muitos
         lazy='joined')
