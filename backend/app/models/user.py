@@ -21,6 +21,13 @@ class User(db.Model):  # A classe está correta com 'Usuarios' e não 'Usuario'
     extra_info = db.Column(db.JSON, nullable=True)  # Campo adicional para armazenar outras informações no formato JSON
 
 
+    # Relacionamentos
+    clientes = relationship(
+         "Cliente", 
+         back_populates="usuario", 
+         lazy='joined'
+         )  # Relacionamento com Cliente
+
     # Relacionamento correto com 'Grupo_Produto' (garantir que a referência para 'Grupo_Produto' esteja correta)
     grupo_produtos = relationship(
         "Grupo_Produto", 

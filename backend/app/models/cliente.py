@@ -37,7 +37,7 @@ class Cliente(db.Model):
     usuario_id = db.Column(db.Integer, ForeignKey('usuario.id'))  # Chave estrangeira de usuários
 
     # Relacionamentos
-    usuario = relationship("Users", back_populates="clientes")  # Relacionamento com Usuários
+    usuario = relationship("User", back_populates="clientes")  # Correção: 'Users' -> 'User'
     recebimentos = relationship("Recebimento", back_populates="cliente")
     checklists = relationship("ChecklistRecebimento", back_populates="cliente")
 
