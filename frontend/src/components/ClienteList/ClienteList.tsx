@@ -1,39 +1,26 @@
 // src/components/ClienteList/ClienteList.tsx
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import React from 'react';
 import { Cliente } from 'src/types/Cliente'; // Importando o tipo Cliente
 
 // Definindo o tipo das props do componente ClienteList
 interface ClienteListProps {
   clientes: Cliente[];  // Array de clientes, que será passado como prop
   onDelete: (id: number) => void;  // Função para excluir cliente, passada como prop
+  onEdit: (clienteEditado: Cliente) => void;  // Função para editar cliente, passada como prop
 }
 
-const ClienteList: React.FC<ClienteListProps> = ({ clientes, onDelete }) => {
-  const [clientesState, setClientesState] = useState<Cliente[]>([]);  // Estado interno para armazenar clientes
-
-  // Carregar a lista de clientes da API quando o componente for montado
-  useEffect(() => {
-    // Chamando a API para buscar os dados dos clientes
-    axios.get('https://northcromocontrole.com.br/api/cliente') // Endpoint para pegar os dados dos clientes
-      .then((response) => {
-        setClientesState(response.data);  // Atualizando o estado com os dados recebidos
-      })
-      .catch((error) => {
-        console.error('Erro ao buscar clientes:', error);  // Tratando erro na requisição
-      });
-  }, []);  // O array vazio garante que a requisição aconteça apenas uma vez
-
+const ClienteList: React.FC<ClienteListProps> = ({ clientes, onDelete, onEdit }) => {
   return (
     <div>
       <h2>Lista de Clientes</h2>
       <ul>
-        {clientesState.length > 0 ? (
+        {clientes.length > 0 ? (
           // Renderizando a lista de clientes
-          clientesState.map(cliente => (
+          clientes.map(cliente => (
             <li key={cliente.id}>
               {cliente.nome} - {cliente.email} - {cliente.telefone}
-              <button onClick={() => cliente.id !== undefined && onDelete(cliente.id)}>Excluir</button>
+              <button onClick={() => onEdit(cliente)}>Editar</button>  {/* Chamando a função onEdit */}
+              <button onClick={() => onDelete(cliente.id)}>Excluir</button> {/* Chamando a função onDelete */}
             </li>
           ))
         ) : (
