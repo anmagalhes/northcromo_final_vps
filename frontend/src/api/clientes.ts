@@ -11,7 +11,8 @@ export const enviarParaBackend = async (cliente: Cliente) => {
     console.log('Enviando cliente para o backend:', cliente);
 
     // Ajusta os dados para enviar conforme os campos esperados pelo backend
-    const clienteParaEnviar = {
+     // Ajusta os dados para enviar conforme os campos esperados pelo backend
+     const clienteParaEnviar = {
       nome_cliente: cliente.nome_cliente,  // Nome do cliente
       email_funcionario: cliente.email_funcionario,  // Email do cliente
       telefone_cliente: cliente.telefone_cliente,  // Telefone do cliente
@@ -26,6 +27,7 @@ export const enviarParaBackend = async (cliente: Cliente) => {
       fornecedor_cliente: cliente.fornecedor_cliente,  // Fornecedor do cliente (se necessário)
       acao: cliente.acao,  // Ação do cliente (se necessário)
       tipo_cliente: cliente.tipo_cliente,  // Tipo de cliente
+      doc_cliente: cliente.doc_cliente || "",  // Se 'doc_cliente' for null, substitua por uma string vazia
     };
 
     // Verificar se o tipo_cliente está vazio ou nulo antes de enviar
