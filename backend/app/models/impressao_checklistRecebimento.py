@@ -20,7 +20,7 @@ class ImpressaoChecklistRecebimento(db.Model):
     recebimento_id = db.Column(db.Integer, db.ForeignKey('recebimentos.id'))  # Chave estrangeira para Recebimento
 
     # Relacionamentos
-    checklist = db.relationship('ChecklistRecebimento', backref='impressao_checklists', lazy=True)  # Define o 'backref' aqui
+    checklist = relationship('ChecklistRecebimento', back_populates='impressao_checklists', lazy=True)
     recebimento = relationship("Recebimento", back_populates="impressao_checklists")
 
     # Relacionamento com o usuário
