@@ -1,4 +1,5 @@
 # app/cliente/services.py
+from flask import g  # Certifique-se de importar g corretamente
 from ..models.cliente import Cliente
 from app import db
 from app.schemas.cliente import ClienteSchema  # Importação relativa
