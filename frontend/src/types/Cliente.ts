@@ -19,8 +19,7 @@ export interface Cliente {
   data_cadastro_cliente?: string | null; // Data de cadastro do cliente (timestamp)
   created_at?: string | null;         // Data de criação
   updated_at?: string | null;         // Data de atualização
-  usuario_id?: number | null;         // Chave estrangeira para o usuário
-  grupo_produto?: number | null;
+  usuario_id?: number | 1;         // Chave estrangeira para o usuário
   enviado?: boolean;                  // Indica se o cliente foi enviado (opcional)
   
   // Adicione os campos extra, se necessário, para atender ao seu front-end.
