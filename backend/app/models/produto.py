@@ -37,8 +37,10 @@ class Produto(db.Model):
     recebimentos = relationship("Recebimento", back_populates="produtos")
     checklists = relationship("ChecklistRecebimento", back_populates="produto")
     usuario = relationship("User", back_populates='produto', foreign_keys=[usuario_id], lazy='joined')
+     # Relacionamento com a tabela Grupo_Produto
+    grupo_produto = relationship("Grupo_Produto", back_populates="produtos", lazy='joined')
+
 
     
-
     def __repr__(self):
         return f'<Produto id={self.id} name={self.nome}>'

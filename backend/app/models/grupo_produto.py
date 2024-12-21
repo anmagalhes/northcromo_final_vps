@@ -16,6 +16,10 @@ class Grupo_Produto(db.Model):
     
     # Relacionamento com 'Componente'
     componentes = relationship("Componente", back_populates="grupo_produto", lazy='joined')
+    
+    # Relacionamento com a tabela Produto
+    produtos = relationship("Produto", back_populates="grupo_produto", lazy='joined')
+
 
     # Adicionando as colunas de data e hora
     created_at = db.Column(db.DateTime, default=datetime.utcnow)  # Data de criação
