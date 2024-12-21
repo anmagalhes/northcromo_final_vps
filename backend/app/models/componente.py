@@ -4,7 +4,7 @@ from sqlalchemy.orm import relationship
 from .db import db  # Importando a instância do db
 
 class Componente(db.Model):
-    __tablename__ = 'componente'  # Nome da tabela no banco de dados
+    __tablename__ = 'componente_1'  # Nome da tabela no banco de dados
 
     id = db.Column(db.Integer, primary_key=True)
     nome = db.Column(db.String(40), unique=True, nullable=False)  # Alterado de 'name' para 'nome'
@@ -18,17 +18,16 @@ class Componente(db.Model):
     grupo_produto = relationship("Grupo_Produto", back_populates="componentes", lazy='joined')
     
     # Relacionamento com 'Defeito'
-    defeitos = relationship(
+    defeitos = db.relationship(
         "Defeito", 
-        back_populates='componente', 
-        uselist=True,  # Indica que é uma relação de um-para-muitos
+        back_populates="componente",  # Referenciar 'componente' no modelo Defeito
         lazy='joined'
     )
     
     # Relacionamento com 'Produto'
-    produtos = relationship(
+    produtos = db.relationship(
         "Produto", 
-        back_populates='componente', 
+        back_populates='componente_1', 
         uselist=True,  # Indica que é uma relação de um-para-muitos
         lazy='joined'
     )
@@ -40,3 +39,19 @@ class Componente(db.Model):
 
     def __repr__(self):
         return f'<Componente id={self.id} nome={self.nome if self.nome else "Unnamed"}>'
+
+class Defeito(db.Model):
+    __tablename__ = 'defeito'
+
+    id = db.Column(db.Integer, primary_key=True)
+    nome = db.Column(db.String(40), nullable=False)
+
+    # Chave estrangeira para o Componente
+    componente_id = db.Column(db.Integer, db.ForeignKey('componente_1.id'))
+
+    # Relacionamento inverso com Componente
+    componente = db.relationship("Componente", back_populates="defeitos")
+
+    # Outros atributos do defeito
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
