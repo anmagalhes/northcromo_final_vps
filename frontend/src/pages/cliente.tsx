@@ -17,7 +17,7 @@ const getCurrentTime = (): number => {
   return new Date().getTime();
 };
 
-const Cliente: React.FC = () => {
+const ClientePage: React.FC = () => {
   const [clientes, setClientes] = useState<Cliente[]>([]);  // Estado para armazenar a lista de clientes
 
   // Função para carregar os clientes do localStorage com verificação de expiração
@@ -199,4 +199,4 @@ const handleDeleteCliente = async (id: number) => {
   );
 };
 
-export default Cliente;
+export default ClientePage;
