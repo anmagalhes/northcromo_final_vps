@@ -6,26 +6,51 @@ import { Cliente } from '../types/Cliente';
 const url_cliente = 'https://northcromocontrole.com.br/api/cliente';
 
 // Função para obter a lista de clientes
-export const getClientes = async (): Promise<any> => {
+// Função para enviar cliente para o backend
+export const enviarParaBackend = async (cliente: Cliente) => {
   try {
-    const response = await fetchAPI('/api/cliente');
-    return response; // Retorna a resposta da API
+    console.log('Enviando cliente para o backend:', cliente);
+
+    // Ajusta os dados para enviar conforme os campos esperados pelo backend
+    const clienteParaEnviar = {
+      nome_cliente: cliente.nome_cliente,  // Nome do cliente
+      email_cliente: cliente.email_cliente,  // Email do cliente
+      telefone_cliente: cliente.telefone_cliente,  // Telefone do cliente
+      endereco_cliente: cliente.endereco_cliente,  // Endereço do cliente
+      num_cliente: cliente.num_cliente,  // Número do cliente (se necessário)
+      bairro_cliente: cliente.bairro_cliente,  // Bairro do cliente (se necessário)
+      cidade_cliente: cliente.cidade_cliente,  // Cidade do cliente (se necessário)
+      uf_cliente: cliente.uf_cliente,  // UF do cliente (se necessário)
+      cep_cliente: cliente.cep_cliente,  // CEP do cliente (se necessário)
+      whatsapp_cliente: cliente.whatsapp_cliente,  // WhatsApp do cliente (se necessário)
+      telefone_rec_cliente: cliente.telefone_rec_cliente,  // Telefone de referência
+      fornecedor_cliente: cliente.fornecedor_cliente,  // Fornecedor do cliente (se necessário)
+      acao: cliente.acao,  // Ação do cliente (se necessário)
+    };
+
+    // Envia os dados para o backend
+    const response = await fetch(url_cliente, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(clienteParaEnviar),  // Envia os dados ajustados
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();  // Captura texto de erro do backend
+      console.error('Erro ao enviar para o backend:', errorText);
+      throw new Error(`Erro ao enviar cliente para o backend: ${errorText}`);
+    }
+
+    const result = await response.json();
+    console.log('Resposta do servidor:', result);
+    return result;
   } catch (error) {
-    console.error("Erro ao obter clientes:", error);
-    throw new Error('Erro ao obter a lista de clientes');
+    console.error('Falha ao enviar cliente para o backend:', error);
   }
 };
 
-// Função para deletar um cliente
-export const deleteCliente = async (clienteId: number): Promise<any> => {
-  try {
-    const response = await fetchAPI(`/api/cliente/${clienteId}`, 'DELETE');
-    return response; // Retorna a resposta da API
-  } catch (error) {
-    console.error("Erro ao excluir cliente:", error);
-    throw new Error('Erro ao excluir cliente');
-  }
-};
 
 // Função para enviar cliente para o backend
 export const enviarParaBackend = async (cliente: Cliente): Promise<any> => {
