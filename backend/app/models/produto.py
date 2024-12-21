@@ -37,7 +37,7 @@ class Produto(db.Model):
     componente = relationship("Componente", back_populates="produtos", lazy='joined')  # Relacionamento com 'Componente'
     posto_trabalho = relationship('PostoTrabalho', back_populates='produtos', lazy='joined')  # Relacionamento com 'PostoTrabalho'
     checklists = relationship("ChecklistRecebimento", back_populates="produto", lazy='joined')
-    usuario = relationship("User", back_populates='produto', foreign_keys=[usuario_id], lazy='joined')
+    usuario = relationship("User", back_populates="produtos", lazy='joined')
     grupo_produto = relationship("Grupo_Produto", back_populates="produtos", lazy='joined')
     recebimentos = relationship("Recebimento", back_populates="produtos", lazy='joined')
 
