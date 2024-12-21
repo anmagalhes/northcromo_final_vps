@@ -5,26 +5,30 @@ import { Cliente } from 'src/types/Cliente'; // Importa a interface
 export const salvarComExpiracao = (key: string, data: Cliente[], expirarEmMs: number): void => {
   // Normaliza os dados para garantir que campos vazios se tornem null
   const dadosNormalizados: Cliente[] = data.map(cliente => ({
-    nome_cliente: cliente.nome_cliente || null,  // Se nome estiver vazio, salva como null
-    email_funcionario: cliente.email_funcionario || null,  // Se email estiver vazio, salva como null
-    telefone_cliente: cliente.telefone_cliente || null,  // Se telefone estiver vazio, salva como null
-    id: cliente.id || undefined,  // Mantém o ID
-    tipo_cliente: cliente.tipo_cliente || null,
-    doc_cliente: cliente.doc_cliente || null,
-    endereco_cliente: cliente.endereco_cliente || null,
-    num_cliente: cliente.num_cliente || null,
-    bairro_cliente: cliente.bairro_cliente || null,
-    cidade_cliente: cliente.cidade_cliente || null,
-    uf_cliente: cliente.uf_cliente || null,
-    cep_cliente: cliente.cep_cliente || null,
-    telefone_rec_cliente: cliente.telefone_rec_cliente || null,
-    whatsapp_cliente: cliente.whatsapp_cliente || null,
-    fornecedor_cliente: cliente.fornecedor_cliente || null,
-    acao: cliente.acao || null,
-    nome: cliente.nome || null,  // Se nome estiver vazio, salva como null
-    email: cliente.email || null,  // Se email estiver vazio, salva como null
-    telefone: cliente.telefone || null,  // Se telefone estiver vazio, salva como null
-    enviado: cliente.enviado,  // Mantém o valor de "enviado"
+    id: cliente.id || undefined,  // Mantém o ID se presente, senão undefined
+    tipo_cliente: cliente.tipo_cliente || null,  // Tipo de Cliente (não pode ser vazio)
+    nome_cliente: cliente.nome_cliente || null,  // Nome do Cliente
+    doc_cliente: cliente.doc_cliente || null,  // Documento do Cliente (CPF/CNPJ)
+    endereco_cliente: cliente.endereco_cliente || null,  // Endereço
+    num_cliente: cliente.num_cliente || null,  // Número do endereço
+    bairro_cliente: cliente.bairro_cliente || null,  // Bairro
+    cidade_cliente: cliente.cidade_cliente || null,  // Cidade
+    uf_cliente: cliente.uf_cliente || null,  // UF
+    cep_cliente: cliente.cep_cliente || null,  // CEP
+    telefone_cliente: cliente.telefone_cliente || null,  // Telefone
+    telefone_rec_cliente: cliente.telefone_rec_cliente || null,  // Telefone de recado
+    whatsapp_cliente: cliente.whatsapp_cliente || null,  // WhatsApp
+    fornecedor_cliente: cliente.fornecedor_cliente || null,  // Fornecedor
+    acao: cliente.acao || null,  // Ação adicional
+    nome: cliente.nome || null,  // Nome extra (caso necessário)
+    email: cliente.email || null,  // E-mail extra (caso necessário)
+    telefone: cliente.telefone || null,  // Telefone extra (caso necessário)
+    email_funcionario: cliente.email_funcionario || null,  // E-mail do responsável
+    enviado: cliente.enviado,  // Status de envio (pode ser true ou false)
+    data_cadastro_cliente: cliente.data_cadastro_cliente || null, // Data de cadastro
+    created_at: cliente.created_at || null, // Data de criação
+    updated_at: cliente.updated_at || null, // Data de atualização
+    usuario_id: cliente.usuario_id || null, // Chave estrangeira para o usuário
   }));
 
   // Armazena os dados no localStorage com o tempo de expiração
@@ -45,7 +49,7 @@ export const carregarComVerificacaoDeExpiracao = (key: string, tempoExpiracao: n
     // Verifica se os dados são um JSON válido
     const dadosComExpiracao = JSON.parse(dados);
 
-    // Verifique se a estrutura dos dados é a esperada
+    // Verifica se a estrutura dos dados é a esperada
     if (!dadosComExpiracao || !dadosComExpiracao.dados || !dadosComExpiracao.expiração) {
       console.error(`Formato inválido dos dados no ${key}`);
       return null;
@@ -69,3 +73,4 @@ export const carregarComVerificacaoDeExpiracao = (key: string, tempoExpiracao: n
     return null;
   }
 };
+

@@ -8,7 +8,6 @@ import { salvarComExpiracao } from '../utils/salva_component_com_expiracao'; // 
 
 // API 
 import { enviarParaBackend } from '../api/clientes';
-// import { updateCliente } from '../api/clientes'; 
 import { editarClienteNoBackend } from '../api/clientes';
 import { deleteCliente } from '../api/clientes'; 
 
@@ -54,7 +53,7 @@ const ClientePage: React.FC = () => {
       return []; // Retorna um array vazio em caso de erro
     }
   };
-  
+
   // Função para adicionar um cliente ao localStorage
   const adicionarClienteAoLocalStorage = (novoCliente: Cliente) => {
     try {
@@ -106,10 +105,10 @@ const ClientePage: React.FC = () => {
       novoCliente.enviado = false;
   
       // Certifique-se de que os campos opcionais sejam enviados como null se não forem preenchidos
-      novoCliente.telefone_rec_cliente = novoCliente.telefone_rec_cliente ? novoCliente.telefone_rec_cliente : null;
-      novoCliente.whatsapp_cliente = novoCliente.whatsapp_cliente ? novoCliente.whatsapp_cliente : null;
-      novoCliente.email_funcionario = novoCliente.email_funcionario ? novoCliente.email_funcionario : null;
-      novoCliente.acao = novoCliente.acao ? novoCliente.acao : null;
+      novoCliente.telefone_rec_cliente = novoCliente.telefone_rec_cliente || null;
+      novoCliente.whatsapp_cliente = novoCliente.whatsapp_cliente || null;
+      novoCliente.email_funcionario = novoCliente.email_funcionario || null;
+      novoCliente.acao = novoCliente.acao || null;
   
       // Garantir que os campos obrigatórios sejam preenchidos
       novoCliente.nome = novoCliente.nome || null;
@@ -134,54 +133,54 @@ const ClientePage: React.FC = () => {
       console.error("Erro ao adicionar cliente:", error);
     }
   };
-  
+
   // Função para editar um clientes
-const handleEditCliente = async (clienteEditado: Cliente) => {
-  try {
-    if (clienteEditado.id !== undefined) {
-      // Envia os dados do cliente editado para o backend
-      const response = await editarClienteNoBackend(clienteEditado.id, clienteEditado);
+  const handleEditCliente = async (clienteEditado: Cliente) => {
+    try {
+      if (clienteEditado.id !== undefined) {
+        // Envia os dados do cliente editado para o backend
+        const response = await editarClienteNoBackend(clienteEditado.id, clienteEditado);
 
-      if (response && response.success) {
-        // Atualiza a lista de clientes no estado com os dados modificados
-        const updatedClientes = clientes.map((cliente) =>
-          cliente.id === clienteEditado.id ? clienteEditado : cliente
-        );
-        setClientes(updatedClientes);  // Atualiza o estado com a lista de clientes
+        if (response && response.success) {
+          // Atualiza a lista de clientes no estado com os dados modificados
+          const updatedClientes = clientes.map((cliente) =>
+            cliente.id === clienteEditado.id ? clienteEditado : cliente
+          );
+          setClientes(updatedClientes);  // Atualiza o estado com a lista de clientes
 
-        // Atualiza o localStorage com os clientes modificados (com expiração)
-        salvarComExpiracao('clientes', updatedClientes, 24 * 60 * 60 * 1000);  // Salvando com expiração de 24 horas
+          // Atualiza o localStorage com os clientes modificados (com expiração)
+          salvarComExpiracao('clientes', updatedClientes, 24 * 60 * 60 * 1000);  // Salvando com expiração de 24 horas
+        } else {
+          console.error("Erro ao editar cliente no backend:", response?.message || "Resposta inválida");
+        }
       } else {
-        console.error("Erro ao editar cliente no backend:", response?.message || "Resposta inválida");
+        console.error("ID do cliente não encontrado");
       }
-    } else {
-      console.error("ID do cliente não encontrado");
+    } catch (error) {
+      console.error("Erro ao editar cliente:", error);
     }
-  } catch (error) {
-    console.error("Erro ao editar cliente:", error);
-  }
-};
+  };
 
   // Função para excluir um cliente
-const handleDeleteCliente = async (id: number) => {
-  try {
-    // Envia a requisição para excluir o cliente no backend
-    const response = await deleteCliente(id);
+  const handleDeleteCliente = async (id: number) => {
+    try {
+      // Envia a requisição para excluir o cliente no backend
+      const response = await deleteCliente(id);
 
-    if (response && response.success) {
-      // Se a exclusão for bem-sucedida, remove o cliente da lista no estado
-      const updatedClientes = clientes.filter((cliente) => cliente.id !== id);
-      setClientes(updatedClientes);  // Atualiza o estado com a lista de clientes
+      if (response && response.success) {
+        // Se a exclusão for bem-sucedida, remove o cliente da lista no estado
+        const updatedClientes = clientes.filter((cliente) => cliente.id !== id);
+        setClientes(updatedClientes);  // Atualiza o estado com a lista de clientes
 
-      // Salva o array atualizado no localStorage com expiração de 24 horas
-      salvarComExpiracao('clientes', updatedClientes, 24 * 60 * 60 * 1000);  // Salvando com expiração de 24 horas
-    } else {
-      console.error("Erro ao excluir cliente no backend:", response?.message || "Resposta inválida");
+        // Salva o array atualizado no localStorage com expiração de 24 horas
+        salvarComExpiracao('clientes', updatedClientes, 24 * 60 * 60 * 1000);  // Salvando com expiração de 24 horas
+      } else {
+        console.error("Erro ao excluir cliente no backend:", response?.message || "Resposta inválida");
+      }
+    } catch (error) {
+      console.error("Erro ao excluir cliente:", error);
     }
-  } catch (error) {
-    console.error("Erro ao excluir cliente:", error);
-  }
-};
+  };
 
   return (
     <div>
@@ -191,7 +190,7 @@ const handleDeleteCliente = async (id: number) => {
       <ClienteForm onClienteAdicionado={handleClienteAdicionado} />
 
       {/* Lista de Clientes */}
-      <ClienteList clientes={clientes} onDelete={handleDeleteCliente} />
+      <ClienteList clientes={clientes} onDelete={handleDeleteCliente} onEdit={handleEditCliente} />
 
       {/* Botão de ação */}
       <Button label="Clique aqui" onClick={() => alert('Ação de botão executada!')} />
@@ -200,3 +199,4 @@ const handleDeleteCliente = async (id: number) => {
 };
 
 export default ClientePage;
+
