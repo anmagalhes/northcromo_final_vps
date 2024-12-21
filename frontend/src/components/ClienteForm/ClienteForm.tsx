@@ -19,9 +19,25 @@ const ClienteForm: React.FC<ClienteFormProps> = ({ onClienteAdicionado }) => {
     // Instanciando o novo cliente com base nos dados do formulário
     const novoCliente: Cliente = {
       id: Date.now(), // ID único gerado com base no timestamp
-      nome: nome || '', // Se o campo estiver vazio, atribui uma string vazia
-      email: email || '', // O mesmo para o email
-      telefone: telefone || '', // E o mesmo para o telefone
+      tipo_cliente: null, // Se não for necessário, mantenha null
+      nome_cliente: nome || null, // Se o campo estiver vazio, atribui null
+      doc_cliente: null, // Adicione conforme necessário
+      endereco_cliente: null, // Adicione conforme necessário
+      num_cliente: null, // Adicione conforme necessário
+      bairro_cliente: null, // Adicione conforme necessário
+      cidade_cliente: null, // Adicione conforme necessário
+      uf_cliente: null, // Adicione conforme necessário
+      cep_cliente: null, // Adicione conforme necessário
+      telefone_cliente: telefone || null, // Se o campo estiver vazio, atribui null
+      telefone_rec_cliente: null, // Adicione conforme necessário
+      whatsapp_cliente: null, // Adicione conforme necessário
+      fornecedor_cliente: null, // Adicione conforme necessário
+      email_funcionario: email || null, // Se o campo estiver vazio, atribui null
+      acao: null, // Adicione conforme necessário
+      nome: nome || null, // Se nome estiver vazio, salva como null
+      email: email || null, // Se email estiver vazio, salva como null
+      telefone: telefone || null, // Se telefone estiver vazio, salva como null
+      enviado: false, // Valor inicial de "enviado" como false
     };
 
     // Chama a função passada via props para adicionar o cliente no componente pai
@@ -40,7 +56,7 @@ const ClienteForm: React.FC<ClienteFormProps> = ({ onClienteAdicionado }) => {
     <form id="clientes-form" onSubmit={handleSubmit}>
       <input
         type="text"
-        id="nome"
+        id="nome_cliente"
         className="my-input"
         placeholder="Nome"
         value={nome}
@@ -49,7 +65,7 @@ const ClienteForm: React.FC<ClienteFormProps> = ({ onClienteAdicionado }) => {
 
       <input
         type="email"
-        id="email"
+        id="email_funcionario"
         className="my-input"
         placeholder="Email"
         value={email}
@@ -58,7 +74,7 @@ const ClienteForm: React.FC<ClienteFormProps> = ({ onClienteAdicionado }) => {
 
       <input
         type="text"
-        id="telefone"
+        id="telefone_cliente"
         className="my-input"
         placeholder="Telefone"
         value={telefone}

@@ -1,14 +1,30 @@
 // src/utils/salva_component_com_expiracao.ts
-import { Cliente }from 'src/types/Cliente'; // Importa a interface
+import { Cliente } from 'src/types/Cliente'; // Importa a interface
 
 // Função para salvar dados com expiração
 export const salvarComExpiracao = (key: string, data: Cliente[], expirarEmMs: number): void => {
   // Normaliza os dados para garantir que campos vazios se tornem null
   const dadosNormalizados: Cliente[] = data.map(cliente => ({
+    nome_cliente: cliente.nome_cliente || null,  // Se nome estiver vazio, salva como null
+    email_funcionario: cliente.email_funcionario || null,  // Se email estiver vazio, salva como null
+    telefone_cliente: cliente.telefone_cliente || null,  // Se telefone estiver vazio, salva como null
+    id: cliente.id || undefined,  // Mantém o ID
+    tipo_cliente: cliente.tipo_cliente || null,
+    doc_cliente: cliente.doc_cliente || null,
+    endereco_cliente: cliente.endereco_cliente || null,
+    num_cliente: cliente.num_cliente || null,
+    bairro_cliente: cliente.bairro_cliente || null,
+    cidade_cliente: cliente.cidade_cliente || null,
+    uf_cliente: cliente.uf_cliente || null,
+    cep_cliente: cliente.cep_cliente || null,
+    telefone_rec_cliente: cliente.telefone_rec_cliente || null,
+    whatsapp_cliente: cliente.whatsapp_cliente || null,
+    fornecedor_cliente: cliente.fornecedor_cliente || null,
+    acao: cliente.acao || null,
     nome: cliente.nome || null,  // Se nome estiver vazio, salva como null
     email: cliente.email || null,  // Se email estiver vazio, salva como null
     telefone: cliente.telefone || null,  // Se telefone estiver vazio, salva como null
-    id: cliente.id  // Mantém o ID
+    enviado: cliente.enviado,  // Mantém o valor de "enviado"
   }));
 
   // Armazena os dados no localStorage com o tempo de expiração
@@ -17,7 +33,7 @@ export const salvarComExpiracao = (key: string, data: Cliente[], expirarEmMs: nu
 };
 
 // Função para carregar dados com verificação de expiração
-export const carregarComVerificacaoDeExpiracao = (key: string, tempoExpiracao: number): Cliente | null => {
+export const carregarComVerificacaoDeExpiracao = (key: string, tempoExpiracao: number): Cliente[] | null => {
   const dados = localStorage.getItem(key);
 
   if (!dados) {
@@ -30,15 +46,15 @@ export const carregarComVerificacaoDeExpiracao = (key: string, tempoExpiracao: n
     const dadosComExpiracao = JSON.parse(dados);
 
     // Verifique se a estrutura dos dados é a esperada
-    if (!dadosComExpiracao || !dadosComExpiracao.data || !dadosComExpiracao.expiracao) {
+    if (!dadosComExpiracao || !dadosComExpiracao.dados || !dadosComExpiracao.expiração) {
       console.error(`Formato inválido dos dados no ${key}`);
       return null;
     }
 
-    const { data, expiracao } = dadosComExpiracao;
+    const { dados: data, expiração } = dadosComExpiracao;
 
     // Verifica se os dados ainda não expiraram
-    if (Date.now() < expiracao) {
+    if (Date.now() < expiração) {
       return data; // Retorna os dados se não expiraram
     } else {
       console.log(`${key} expirou e foi removido.`);
@@ -53,4 +69,3 @@ export const carregarComVerificacaoDeExpiracao = (key: string, tempoExpiracao: n
     return null;
   }
 };
-//#
