@@ -1,8 +1,7 @@
-# app/models/funcionario
 from datetime import datetime
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Boolean
 from sqlalchemy.orm import relationship
-from database import db  # Correto, importa o db de 'database.py'
+from .db import db  # Importando a instância do db
 
 class Funcionario(db.Model):
     __tablename__ = 'funcionarios'  # Nome da tabela no banco de dados
@@ -21,13 +20,13 @@ class Funcionario(db.Model):
     acao = db.Column(db.String(100), nullable=True)  # Ações/observações adicionais
     
     # Relacionamento: Agora utilizando o nome correto da classe 'User' (não 'Usuario')
-    usuario = relationship('User', back_populates='funcionarios', foreign_keys=[usuario_id], lazy='joined')
+    usuario = relationship("User", back_populates='funcionarios', foreign_keys=[usuario_id], lazy='joined')
 
 
     # Relacionamento com Recebimentos (como vendedor, por exemplo)
     recebimentos_cadastrados = relationship(
-        'Recebimento', 
-        back_populates='funcionario',  # O 'back_populates' na classe Recebimento já foi configurado corretamente
+        "Recebimento", 
+        back_populates="funcionario",  # O 'back_populates' na classe Recebimento já foi configurado corretamente
         uselist=True,  # Relação de um-para-muitos
         lazy='joined'  # Lazy loading para otimizar a carga dos dados
     )

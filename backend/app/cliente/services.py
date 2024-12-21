@@ -1,5 +1,4 @@
 # app/cliente/services.py
-from flask import g  # Certifique-se de importar g corretamente
 from ..models.cliente import Cliente
 from app import db
 from app.schemas.cliente import ClienteSchema  # Importação relativa
@@ -21,39 +20,30 @@ def get_cliente(id):
 
 # Criar um novo cliente
 def create_cliente(data):
-    try:
-        # Atribuindo o ID do usuário (como admin, por exemplo) para o cliente
-        usuario_id = data.get('usuario_id', 2)  # 1 é o ID do usuário admin
+    # Atribuindo o ID do usuário (como admin, por exemplo) para o cliente
+    usuario_id = data.get('usuario_id', 1)  # 1 é o ID do usuário admin
 
-        # Criando o cliente com os dados fornecidos
-        cliente = Cliente(
-            tipo_cliente=data['tipo_cliente'],
-            nome_cliente=data['nome_cliente'],
-            doc_cliente=data['doc_cliente'],
-            endereco_cliente=data['endereco_cliente'],
-            num_cliente=data['num_cliente'],
-            bairro_cliente=data['bairro_cliente'],
-            cidade_cliente=data['cidade_cliente'],
-            uf_cliente=data['uf_cliente'],
-            cep_cliente=data['cep_cliente'],
-            telefone_cliente=data['telefone_cliente'],
-            telefone_rec_cliente=data.get('telefone_rec_cliente'),
-            whatsapp_cliente=data.get('whatsapp_cliente'),
-            fornecedor_cliente=data['fornecedor_cliente'],
-            email_funcionario=data.get('email_funcionario'),
-            acao=data.get('acao'),
-            usuario_id=usuario_id  # Forçando o envio do usuario_id
-        )
-
-        # Adicionando o cliente à sessão do banco de dados
-        g.db_session.add(cliente)
-        g.db_session.commit()  # Commitando a transação no banco
-        # Commit será feito no ciclo de vida da requisição
-        return cliente_schema.dump(cliente)  # Usando o schema para serializar o cliente
-
-    except Exception as e:
-        g.db_session.rollback()  # Em caso de erro, faz rollback
-        raise e  # Levanta o erro para ser tratado mais tarde
+    cliente = Cliente(
+        tipo_cliente=data['tipo_cliente'],
+        nome_cliente=data['nome_cliente'],
+        doc_cliente=data['doc_cliente'],
+        endereco_cliente=data['endereco_cliente'],
+        num_cliente=data['num_cliente'],
+        bairro_cliente=data['bairro_cliente'],
+        cidade_cliente=data['cidade_cliente'],
+        uf_cliente=data['uf_cliente'],
+        cep_cliente=data['cep_cliente'],
+        telefone_cliente=data['telefone_cliente'],
+        telefone_rec_cliente=data.get('telefone_rec_cliente'),
+        whatsapp_cliente=data.get('whatsapp_cliente'),
+        fornecedor_cliente=data['fornecedor_cliente'],
+        email_funcionario=data.get('email_funcionario'),
+        acao=data.get('acao'),
+        usuario_id=usuario_id  # Forçando o envio do usuario_id
+    )
+    db.session.add(cliente)
+    db.session.commit()  # Persiste o cliente no banco
+    return cliente_schema.dump(cliente)  # Usando o schema para serializar o cliente
 
 # Atualizar um cliente existente
 def update_cliente(id, data):

@@ -1,4 +1,3 @@
-#frontend_blueprint.py
 from flask import Blueprint, send_from_directory
 import os
 

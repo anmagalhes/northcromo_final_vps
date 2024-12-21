@@ -1,11 +1,10 @@
-# app/models/componente
 from datetime import datetime
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
-from database import db  # Correto, importa o db de 'database.py'
+from .db import db  # Importando a instância do db
 
 class Componente(db.Model):
-    __tablename__ = 'componente_1'  # Nome da tabela no banco de dados
+    __tablename__ = 'componente'  # Nome da tabela no banco de dados
 
     id = db.Column(db.Integer, primary_key=True)
     nome = db.Column(db.String(40), unique=True, nullable=False)  # Alterado de 'name' para 'nome'
@@ -13,22 +12,23 @@ class Componente(db.Model):
     grupo_produto_id = db.Column(db.Integer, ForeignKey('grupo_produto.id'))  # Relacionamento com 'Grupo_Produto'
     
     # Relacionamento com 'User'
-    usuario = relationship('User', back_populates='componentes', foreign_keys=[usuario_id], lazy='joined')
+    usuario = relationship("User", back_populates="componentes", foreign_keys=[usuario_id], lazy='joined')
 
     # Relacionamento com 'Grupo_Produto'
-    grupo_produto = relationship('Grupo_Produto', back_populates='componentes', lazy='joined')
+    grupo_produto = relationship("Grupo_Produto", back_populates="componentes", lazy='joined')
     
     # Relacionamento com 'Defeito'
-    defeitos = db.relationship(
-        'Defeito', 
-        back_populates='componente',  # Referenciar 'componente' no modelo Defeito
+    defeitos = relationship(
+        "Defeito", 
+        back_populates='componente', 
+        uselist=True,  # Indica que é uma relação de um-para-muitos
         lazy='joined'
     )
     
     # Relacionamento com 'Produto'
-    produtos = db.relationship(
-        'Produto', 
-        back_populates='componente_1', 
+    produtos = relationship(
+        "Produto", 
+        back_populates='componente', 
         uselist=True,  # Indica que é uma relação de um-para-muitos
         lazy='joined'
     )
@@ -39,20 +39,4 @@ class Componente(db.Model):
     deleted_at = db.Column(db.DateTime, nullable=True)  # Data de exclusão (opcional para soft delete)
 
     def __repr__(self):
-        return f'<Componente id={self.id} nome={self.nome if self.nome else 'Unnamed'}>'
-
-class Defeito(db.Model):
-    __tablename__ = 'defeito'
-
-    id = db.Column(db.Integer, primary_key=True)
-    nome = db.Column(db.String(40), nullable=False)
-
-    # Chave estrangeira para o Componente
-    componente_id = db.Column(db.Integer, db.ForeignKey('componente_1.id'))
-
-    # Relacionamento inverso com Componente
-    componente = db.relationship('Componente', back_populates='defeitos')
-
-    # Outros atributos do defeito
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+        return f'<Componente id={self.id} nome={self.nome if self.nome else "Unnamed"}>'

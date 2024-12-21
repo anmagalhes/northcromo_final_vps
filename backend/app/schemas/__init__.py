@@ -1,7 +1,7 @@
 from .cliente import ClienteSchema  # Importando o modelo Usuarios
 
 # Importando a instância db
-from app.database import db
+from app.models.db import db
 
 # Definição da função some_function
 def some_function():

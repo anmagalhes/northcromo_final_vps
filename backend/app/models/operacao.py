@@ -1,8 +1,7 @@
-# app/models/operacao
 from datetime import datetime
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
-from database import db  # Correto, importa o db de 'database.py'
+from .db import db  # Importando a instância do db
 
 class Operacao(db.Model):
     __tablename__ = 'operacao'  # Nome da tabela no banco de dados
@@ -13,7 +12,7 @@ class Operacao(db.Model):
     usuario_id = db.Column(db.Integer, ForeignKey('usuario.id'))  # Chave estrangeira para 'usuarios'
 
    # Relacionamento: Agora utilizando o nome correto da classe 'User' (não 'Usuario')
-    usuario = relationship('User', back_populates='operacao', foreign_keys=[usuario_id], lazy='joined')
+    usuario = relationship("User", back_populates='operacao', foreign_keys=[usuario_id], lazy='joined')
 
 
     # Adicionando as colunas de data e hora

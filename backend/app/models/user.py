@@ -1,9 +1,8 @@
-# app/models/user
 from datetime import datetime  # Importando o datetime
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Boolean
 from sqlalchemy.orm import validates, relationship  # Corrigido 'Relationship' para 'relationship'
 from werkzeug.security import generate_password_hash, check_password_hash  #
-from database import db 
+from .db import db  # Importa a instância do db
 
 class User(db.Model):  # A classe está correta com 'Usuarios' e não 'Usuario'
     __tablename__ = 'usuario'
@@ -36,10 +35,10 @@ class User(db.Model):  # A classe está correta com 'Usuarios' e não 'Usuario'
         lazy='joined'
     )
     
-     # Relacionamento correto com 'componente_1'
+     # Relacionamento correto com 'Componente'
     componentes = relationship(
         "Componente", 
-        back_populates='usuario',  # Defina o 'back_populates' correto do lado do 'componente_1'
+        back_populates='usuario',  # Defina o 'back_populates' correto do lado do 'Componente'
         uselist=True,
         lazy='joined'
     )

@@ -1,12 +1,12 @@
-# app/models/impressao_checklistRecebimento
 from datetime import datetime
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Numeric
 from sqlalchemy.orm import relationship
-from database import db  # Correto, importa o db de 'database.py'
+from .db import db
 
 class ImpressaoChecklistRecebimento(db.Model):
     __tablename__ = 'impressao_checklist_recebimento'
 
+    # Definição das colunas
     id = db.Column(db.Integer, primary_key=True)  # Chave primária
     id_checklist = db.Column(db.Integer, ForeignKey('checklist_recebimento.id'), nullable=False)  # Chave estrangeira para 'checklist_recebimento'
     nome_cliente = db.Column(db.String(100), nullable=False)
@@ -21,8 +21,8 @@ class ImpressaoChecklistRecebimento(db.Model):
     recebimento_id = db.Column(db.Integer, db.ForeignKey('recebimentos.id'))  # Chave estrangeira para Recebimento
 
     # Relacionamentos
-    checklist = relationship('ChecklistRecebimento', back_populates='impressao_checklists', lazy=True)
-    recebimento = relationship('Recebimento', back_populates='impressao_checklists')
+    checklist = db.relationship('ChecklistRecebimento', backref='impressao_checklists', lazy=True)
+    recebimento = relationship("Recebimento", back_populates="impressao_checklists")
 
     # Relacionamento com o usuário
     usuario = db.relationship('User', back_populates='impressao_checklists', foreign_keys=[usuario_id], lazy='joined')

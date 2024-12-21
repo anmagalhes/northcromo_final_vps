@@ -1,5 +1,5 @@
 from app import create_app, db
-from backend.app.models.__all_models__ import User
+from app.models import User
 from werkzeug.security import generate_password_hash
 
 # Função para criar o usuário admin

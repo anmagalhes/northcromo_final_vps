@@ -2,7 +2,7 @@
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
 from datetime import datetime
-from database import db  # Importa o db corretamente de 'database.py'
+from .db import db  # Importando a instância do db
 
 class Cliente(db.Model):
     __tablename__ = 'clientes'  # Nome da tabela no banco de dados
@@ -37,10 +37,9 @@ class Cliente(db.Model):
     usuario_id = db.Column(db.Integer, ForeignKey('usuario.id'))  # Chave estrangeira de usuários
 
     # Relacionamentos
-    usuario = relationship('User', back_populates='clientes')  # Correção: 'Users' -> 'User'
-    recebimentos = relationship('Recebimento', back_populates='cliente')
-    checklists = relationship('ChecklistRecebimento', back_populates='cliente')
-    defeitos = db.relationship('Defeito', backref='cliente', lazy=True)
+    usuario = relationship("User", back_populates="clientes")  # Correção: 'Users' -> 'User'
+    recebimentos = relationship("Recebimento", back_populates="cliente")
+    checklists = relationship("ChecklistRecebimento", back_populates="cliente")
 
     def __repr__(self):
         return f'<Cliente {self.nome_cliente}>'

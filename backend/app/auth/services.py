@@ -1,7 +1,6 @@
 # app/auth/services.py
 from werkzeug.security import generate_password_hash, check_password_hash
-from app.models import db
-from app.models import User  # Certifique-se de importar o modelo User
+from app.models import User, db  # Certifique-se de importar o modelo User
 
 def create_user(username, email, password):
     hashed_password = generate_password_hash(password, method='sha256')
