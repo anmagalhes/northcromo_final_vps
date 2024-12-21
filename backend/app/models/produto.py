@@ -37,7 +37,7 @@ class Produto(db.Model):
     posto_trabalho = relationship('PostoTrabalho', back_populates='produtos', lazy='joined')  # Relacionamento com 'PostoTrabalho'
     checklists = relationship("ChecklistRecebimento", back_populates="produto", lazy='joined')
     usuario = relationship("User", back_populates="produtos", lazy='joined')
-    recebimentos = relationship("Recebimento", back_populates="produto", foreign_keys="Recebimento.produto_id", lazy='joined')
+    recebimentos = relationship("Recebimento", back_populates="produto", foreign_keys="Recebimento.cod_produto", lazy='joined')
 
     def __repr__(self):
         return f'<Produto id={self.id} nome={self.nome_produto}>'
