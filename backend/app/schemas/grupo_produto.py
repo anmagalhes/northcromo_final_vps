@@ -8,9 +8,11 @@ class Grupo_ProdutoSchema(Schema):
     id = fields.Int(dump_only=True)  # Campo somente leitura
     name = fields.Str(required=True)  # Nome do grupo de produto
     usuario_id = fields.Int()  # ID do usuário associado
+    criador_id = fields.Int()  # ID do usuário associado
 
     # Relacionamento com o modelo Usuario (assumindo que você tem o schema 'UserSchema')
     usuario = fields.Nested('UserSchema', dump_only=True)
+    criador = fields.Nested('UserSchema', dump_only=True)
 
     # Campos de timestamp
     created_at = fields.DateTime(dump_only=True)

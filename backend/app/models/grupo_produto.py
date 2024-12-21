@@ -10,9 +10,11 @@ class Grupo_Produto(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(20), unique=True, nullable=False)
     usuario_id = db.Column(db.Integer, ForeignKey('usuario.id'))  # Chave estrangeira para 'usuarios'
+    criador_id = db.Column(db.Integer, ForeignKey('usuario.id')) 
 
     # Relacionamento: Cada grupo de produto pertence a um usuário
     usuario = relationship("Users", back_populates='grupo_produtos', lazy='joined')
+    criador = relationship("Users", foreign_keys=[criador_id])  # Relacionamento com o usuário criador
 
     # Adicionando as colunas de data e hora
     created_at = db.Column(db.DateTime, default=datetime.utcnow)  # Data de criação
