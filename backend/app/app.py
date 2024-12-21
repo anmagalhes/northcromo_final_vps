@@ -74,5 +74,5 @@ def after_request(response):
 application = create_app()
 
 # Dev: Rodar a aplicação em modo debug
-if __name__ == "__main__":
-    application.run(debug=True)
+# if __name__ == "__main__":
+#     application.run(debug=True)
