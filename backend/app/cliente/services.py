@@ -1,16 +1,20 @@
 from ..models.cliente import Cliente
 from app import db
+from .schemas import ClienteSchema
+
+# Instância do schema para serializar os dados
+cliente_schema = ClienteSchema()
 
 # Listar todos os clientes
 def list_clientes():
   #  clientes = Cliente.query.all()  # Consulta todos os clientes
-# return [cliente.to_dict() for cliente in clientes]
+ # return [cliente_schema.dump(cliente) for cliente in clientes]  # Serializa e retorna a lista de clientes
  return [{"id": 1, "nome": "John Doe"}, {"id": 2, "nome": "Jane Doe"}]
 
 # Obter um cliente específico
 def get_cliente(id):
     cliente = Cliente.query.get(id)  # Encontra o cliente pelo ID
-    return cliente.to_dict() if cliente else None
+    return cliente_schema.dump(cliente) if cliente else None  # Serializa o cliente ou retorna None
 
 # Criar um novo cliente
 def create_cliente(data):
@@ -32,13 +36,14 @@ def create_cliente(data):
         acao=data.get('acao'),
     )
     db.session.add(cliente)
-    db.session.commit()
-    return cliente.to_dict()
+    db.session.commit()  # Persiste o cliente no banco
+    return cliente_schema.dump(cliente)  # Usando o schema para serializar o cliente
 
 # Atualizar um cliente existente
 def update_cliente(id, data):
     cliente = Cliente.query.get(id)
     if cliente:
+        # Atualiza cada campo com os dados recebidos ou mantém o valor existente
         cliente.tipo_cliente = data.get('tipo_cliente', cliente.tipo_cliente)
         cliente.nome_cliente = data.get('nome_cliente', cliente.nome_cliente)
         cliente.doc_cliente = data.get('doc_cliente', cliente.doc_cliente)
@@ -54,15 +59,15 @@ def update_cliente(id, data):
         cliente.fornecedor_cliente = data.get('fornecedor_cliente', cliente.fornecedor_cliente)
         cliente.email_funcionario = data.get('email_funcionario', cliente.email_funcionario)
         cliente.acao = data.get('acao', cliente.acao)
-        db.session.commit()
-        return cliente.to_dict()
-    return None
+        db.session.commit() # Persiste as mudanças no banco
+        return cliente_schema.dump(cliente)  # Retorna o cliente atualizado serializado
+    return None  # Retorna None se o cliente não for encontrado
 
 # Excluir um cliente
 def delete_cliente(id):
     cliente = Cliente.query.get(id)
     if cliente:
         db.session.delete(cliente)
-        db.session.commit()
-        return True
-    return False
+        db.session.commit() # Persiste a exclusão no banco
+        return True  # Cliente deletado com sucesso
+    return False # Cliente não encontrado
