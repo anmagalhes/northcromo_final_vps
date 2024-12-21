@@ -25,13 +25,14 @@ export const enviarParaBackend = async (cliente: Cliente) => {
       telefone_rec_cliente: cliente.telefone_rec_cliente,  // Telefone de referência
       fornecedor_cliente: cliente.fornecedor_cliente,  // Fornecedor do cliente (se necessário)
       acao: cliente.acao,  // Ação do cliente (se necessário)
+      tipo_cliente: cliente.tipo_cliente,  // Tipo de cliente
     };
 
-        // Verificar se o tipo_cliente está vazio ou nulo
-        if (!novoCliente.tipo_cliente) {
-          novoCliente.tipo_cliente = 'default'; // Substitua 'default' por um valor adequado ou obrigatório
-        }
-        
+    // Verificar se o tipo_cliente está vazio ou nulo antes de enviar
+    if (!cliente.tipo_cliente) {
+      cliente.tipo_cliente = 'default'; // Substitua 'default' por um valor adequado ou obrigatório
+    }
+
     // Envia os dados para o backend
     const response = await fetch(url_cliente, {
       method: 'POST',
