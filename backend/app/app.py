@@ -13,13 +13,13 @@ from app.database import db, init_db  # Agora importa o 'db' diretamente
 from app.frontend_blueprint import frontend_bp  # Importação do blueprint do frontend
 
 # Registra os blueprints
-from app.auth import auth_blueprint
-from app.user import users_blueprint
-from app.checklist_recebimento import checklist_recebimento_blueprint
-from app.foto_recebimento import foto_recebimento_blueprint
-from app.funcionario import funcionario_blueprint
+#from app.auth import auth_blueprint
+#from app.user import users_blueprint
+#from app.checklist_recebimento import checklist_recebimento_blueprint
+#from app.foto_recebimento import foto_recebimento_blueprint
+#from app.funcionario import funcionario_blueprint
 from app.cliente import cliente_blueprint
-from app.componente import componente_blueprint
+#from app.componente import componente_blueprint
 
 # Carregar as variáveis do arquivo .env
 load_dotenv()
@@ -41,13 +41,13 @@ def create_app():
     
     # Registra os blueprints
     app.register_blueprint(frontend_bp)
-    app.register_blueprint(auth_blueprint, url_prefix='/api/auth')
-    app.register_blueprint(users_blueprint, url_prefix='/api/users')
-    app.register_blueprint(checklist_recebimento_blueprint, url_prefix='/api/checklist')
-    app.register_blueprint(foto_recebimento_blueprint, url_prefix='/api/foto_recebimento')
-    app.register_blueprint(funcionario_blueprint, url_prefix='/api/funcionario')
+   # app.register_blueprint(auth_blueprint, url_prefix='/api/auth')
+   # app.register_blueprint(users_blueprint, url_prefix='/api/users')
+   # app.register_blueprint(checklist_recebimento_blueprint, url_prefix='/api/checklist')
+   # app.register_blueprint(foto_recebimento_blueprint, url_prefix='/api/foto_recebimento')
+   # app.register_blueprint(funcionario_blueprint, url_prefix='/api/funcionario')
     app.register_blueprint(cliente_blueprint, url_prefix='/api/cliente')
-    app.register_blueprint(componente_blueprint, url_prefix='/api/componente')
+   # app.register_blueprint(componente_blueprint, url_prefix='/api/componente')
 
     # Exemplo de rota da API
     @app.route('/api')
