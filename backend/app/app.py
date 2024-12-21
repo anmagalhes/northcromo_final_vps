@@ -54,7 +54,7 @@ def create_app():
     app.register_blueprint(checklist_recebimento_blueprint, url_prefix='/api/checklist')
     app.register_blueprint(foto_recebimento_blueprint, url_prefix='/api/foto_recebimento')
     app.register_blueprint(funcionario_blueprint, url_prefix='/api/funcionario')
-    app.register_blueprint(cliente_blueprint, url_prefix='/api/cliente')
+    app.register_blueprint(cliente_blueprint, url_prefix='/cliente')
     app.register_blueprint(componente_blueprint, url_prefix='/api/componente')
     #app.register_blueprint(grupo_produto_blueprint, url_prefix='/grupo_produto')
 

@@ -3,7 +3,7 @@ import { fetchAPI } from './index'; // Importando a função fetchAPI
 import { Cliente } from '../types/Cliente';
 
 // Variável para a URL base do cliente
-const url_cliente = 'https://northcromocontrole.com.br/api/cliente';
+const url_cliente = 'https://northcromocontrole.com.br/api';
 
 // Função para enviar cliente para o backend
 export const enviarParaBackend = async (cliente: Cliente) => {
