@@ -16,35 +16,39 @@
 #from models.checklist_Recebimento import ChecklistRecebimento
 #from models.impressao_checklistRecebimento import ImpressaoChecklistRecebimento
 #from database import init_db  # Importa a função de inicialização do banco de dados
-
-import asyncio
+import os
 from app import app  # Importa a instância do Flask
 from models import db  # Importa a instância do banco de dados (SQLAlchemy)
 from database import init_db  # Importa a função de inicialização do banco de dados
 
-# Função assíncrona para criar as tabelas no banco de dados
-async def criar_tabelas():
-    # Inicializa o banco de dados de forma assíncrona
-    engine, Session = await init_db(app)  # Obtém a engine e session do banco assíncrono
+# Função para verificar se a tabela já existe
+def tabela_existe(nome_tabela):
+    # Verifica se a tabela já existe no banco de dados
+    return db.engine.dialect.has_table(db.session.bind, nome_tabela)
 
-    # Cria todas as tabelas definidas nos modelos, se não existirem
-    async with engine.begin() as conn:
-        await conn.run_sync(db.metadata.create_all)  # Cria as tabelas
-
-    print("Tabelas criadas com sucesso!")
-
-# Função para rodar a criação das tabelas antes de iniciar o app
-async def run():
-    # Verifica o ambiente
-    if app.config['ENV'] == 'development':  # Só cria as tabelas no ambiente de desenvolvimento
-        print("Ambiente de Desenvolvimento detectado, criando as tabelas...")
-        await criar_tabelas()  # Cria as tabelas assíncronas
+# Função para criar as tabelas
+def criar_tabelas():
+    # Verifica o ambiente de execução
+    if os.getenv('FLASK_ENV') == 'development':  # Só cria as tabelas no ambiente de desenvolvimento
+        with app.app_context():  # Garante que o contexto do Flask esteja ativo
+            # Verifica se as tabelas já existem, caso contrário, cria
+            for tabela in db.metadata.sorted_tables:
+                if not tabela_existe(tabela.name):  # Verifica se a tabela já existe
+                    print(f"Criando a tabela {tabela.name}")
+                    db.create_all()  # Cria todas as tabelas definidas nos modelos
+                else:
+                    print(f"Tabela {tabela.name} já existe.")
+        print("Tabelas verificadas/criadas com sucesso!")
     else:
-        print("Ambiente de Produção detectado, criação de tabelas ignorada.") 
+        print("Ambiente de Produção detectado, criação de tabelas ignorada.")
 
-    # Agora roda o servidor Flask de forma síncrona
+# Função assíncrona para inicializar o banco de dados (se necessário)
+async def run():
+    criar_tabelas()  # Chama a função para criar as tabelas
+
+    # Agora roda o servidor Flask
     app.run(debug=True, host="0.0.0.0")  # Inicia o Flask
 
 # Ponto de entrada principal para rodar o código
 if __name__ == "__main__":
-    asyncio.run(run())  # Inicializa a criação das tabelas e depois o Flask
+    run()  # Executa o código

@@ -5,6 +5,8 @@ from .db import db  # Importando a instância do db
 
 class Defeito(db.Model):
     __tablename__ = 'defeito'  # Nome da tabela no banco de dados
+    __table_args__ = {'extend_existing': True}  # Permite redefinir, não cria nova tabela
+
 
     id = db.Column(db.Integer, primary_key=True)
     nome = db.Column(db.String(40), unique=True, nullable=False)
