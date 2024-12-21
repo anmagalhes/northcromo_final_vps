@@ -26,7 +26,7 @@ class Recebimento(db.Model):
     usuario = relationship("User", back_populates="recebimentos", foreign_keys=[usuario_id], lazy='joined')  # Relacionamento com Usuario
     funcionario = relationship('Funcionario', back_populates='recebimentos_cadastrados', lazy='joined')  # Relacionamento com Funcionario
     checklists = relationship("ChecklistRecebimento", back_populates="recebimento", lazy='joined')  # Relacionamento com ChecklistRecebimento
-    impressao_checklists = relationship("ImpressaoChecklistRecebimento", backref="recebimento", lazy='joined')  # Relacionamento com ImpressaoChecklistRecebimento
+    impressao_checklists = relationship("ImpressaoChecklistRecebimento", back_populates="recebimento", lazy='joined')
     
     # Colunas de data e hora
     created_at = db.Column(db.DateTime, default=datetime.utcnow)  # Data de criação
