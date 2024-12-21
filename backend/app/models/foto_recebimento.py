@@ -10,10 +10,6 @@ class FotoRecebimento(db.Model):
     id_ordem = db.Column(db.String(50), nullable=False)  # ID da ordem (chave estrangeira)
     recebimento_id = db.Column(db.Integer, ForeignKey('recebimentos.id'), nullable=False)  # Referencia o ID da tabela 'recebimentos'
     nome_foto = db.Column(db.String(255), nullable=False)  # Nome ou caminho do arquivo da foto
-    usuario_id = db.Column(db.Integer, ForeignKey('usuario.id'))  # Chave estrangeira para 'usuarios'
-    
-    # Relacionamento: agora com nome diferente para evitar conflito
-    usuario = relationship("User", back_populates="foto_recebimentos", foreign_keys=[usuario_id], lazy='joined')
     
     # Relacionamento com a tabela Recebimento
     ordem = relationship("Recebimento", back_populates="fotos")
@@ -25,4 +21,3 @@ class FotoRecebimento(db.Model):
 
     def __repr__(self):
         return f'<FotoRecebimento {self.id_ordem} - {self.nome_foto}>'
-

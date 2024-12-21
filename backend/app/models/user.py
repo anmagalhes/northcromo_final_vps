@@ -86,12 +86,6 @@ class User(db.Model):  # A classe está correta com 'Usuarios' e não 'Usuario'
         "Produto", 
         back_populates='usuario', 
         lazy='joined')
-
-       # Relacionamento com defeitos
-    fotos_cadastradas = relationship(
-        "FotoRecebimento", 
-        back_populates='usuario', 
-        lazy='joined')
     
     # Relacionamento com defeitos
     checklists  = relationship(
