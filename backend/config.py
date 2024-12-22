@@ -1,5 +1,3 @@
-# database.py
-
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate  # Importando o Migrate
 from sqlalchemy import create_engine, text
@@ -34,9 +32,15 @@ def get_database_uri():
 
 # Função para inicializar o banco de dados
 def init_db(app):
-    # Apenas configura a URI do banco de dados e testa a conexão
+    # Obtenha a URI do banco de dados
     app.config['SQLALCHEMY_DATABASE_URI'] = get_database_uri()
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False  # Desabilita modificações de objetos para desempenho
+
+    # Inicializa o db com a configuração do Flask
+    db.init_app(app)
+
+     # Inicializa o Flask-Migrate
+    migrate.init_app(app, db)
 
     # Testando a conexão com o banco de dados
     try:
@@ -48,3 +52,4 @@ def init_db(app):
         print(f"Erro ao conectar com o banco de dados: {e}")
         raise e
 
+    return db  # Retorna o objeto db para uso

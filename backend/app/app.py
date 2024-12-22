@@ -8,11 +8,11 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 from flask import Flask, jsonify, g
 from flask_migrate import Migrate
 from dotenv import load_dotenv
-from app.models import some_function
+#from app.models import some_function
 from app.database import db, init_db  # Agora importa o 'db' diretamente
-from app.frontend_blueprint import frontend_bp  # Importação do blueprint do frontend
 
 # Registra os blueprints
+from app.frontend_blueprint import frontend_bp  # Importação do blueprint do frontend
 from app.auth import auth_blueprint
 from app.user import users_blueprint
 from app.checklist_recebimento import checklist_recebimento_blueprint
