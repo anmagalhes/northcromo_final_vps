@@ -15,12 +15,15 @@ def tabela_existe(nome_tabela):
 # Função para criar as tabelas
 def criar_tabelas():
     with create_app().app_context():  # Garante o contexto do Flask
+        print("Verificando e criando as tabelas...")
+
         if os.environ.get('FLASK_ENV') == 'production':
-            print("Criando tabelas no banco de produção...")
-            db.create_all()
+            print("Ambiente de produção detectado. Criando tabelas no banco de produção...")
+            db.create_all()  # Cria as tabelas no banco de dados
+            print("Tabelas criadas com sucesso no banco de produção!")
         else:
             print("Ambiente de desenvolvimento detectado. Utilizando SQLite para criação de tabelas.")
-            db.create_all()
+            db.create_all()  # Cria as tabelas no banco de dados SQLite (caso esteja no modo de desenvolvimento)
 
         print("Tabelas verificadas/criadas com sucesso!")
 
