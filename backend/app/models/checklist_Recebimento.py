@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Numeric
 from sqlalchemy.orm import relationship
 from datetime import datetime
-from .db import db
+from app.database import db
 
 class ChecklistRecebimento(db.Model):
     __tablename__ = 'checklist_recebimento'

@@ -1,7 +1,7 @@
 from datetime import datetime
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
-from .db import db  # Importando a instância do db
+from app.database import db  # Importando a instância do db
 
 class Componente(db.Model):
     __tablename__ = 'componente_1'  # Nome da tabela no banco de dados
