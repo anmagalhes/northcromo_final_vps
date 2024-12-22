@@ -2,7 +2,7 @@
 from datetime import datetime
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
-from .db import db  # Importando a instância do db
+from app.database import db  # Importando a instância do db
 
 class Grupo_Produto(db.Model):
     __tablename__ = 'grupo_produto'  # Nome da tabela no banco de dados
