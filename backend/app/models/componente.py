@@ -39,19 +39,3 @@ class Componente(db.Model):
 
     def __repr__(self):
         return f'<Componente id={self.id} nome={self.nome if self.nome else "Unnamed"}>'
-
-class Defeito(db.Model):
-    __tablename__ = 'defeito'
-
-    id = db.Column(db.Integer, primary_key=True)
-    nome = db.Column(db.String(40), nullable=False)
-
-    # Chave estrangeira para o Componente
-    componente_id = db.Column(db.Integer, db.ForeignKey('componente_1.id'))
-
-    # Relacionamento inverso com Componente
-    componente = db.relationship("Componente", back_populates="defeitos")
-
-    # Outros atributos do defeito
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
