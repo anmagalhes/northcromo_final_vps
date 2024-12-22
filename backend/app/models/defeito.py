@@ -9,13 +9,13 @@ class Defeito(db.Model):
     
     id = db.Column(db.Integer, primary_key=True)
     nome = db.Column(db.String(40), unique=True, nullable=False)
-    usuario_id = db.Column(db.Integer, ForeignKey('usuario.id'))  # Chave estrangeira para 'usuarios'
-    componente_id = db.Column(db.Integer, ForeignKey('componente.id'))  # Chave estrangeira para 'componente_1'
+    usuario_id = db.Column(db.Integer, ForeignKey('usuario.id'))  # Chave estrangeira para 'usuario'
+    componente_id = db.Column(db.Integer, ForeignKey('componente_1.id'))  # Chave estrangeira para 'componente_1'
 
-    # Relacionamento: Agora utilizando o nome correto da classe 'User' (não 'Usuario')
+    # Relacionamento com 'User' (certifique-se de que a classe seja 'User' e não 'Usuario')
     usuario = relationship("User", back_populates='defeitos', foreign_keys=[usuario_id], lazy='joined')
 
-    # Relacionamento com o componente
+    # Relacionamento com 'Componente' (nome correto da tabela é 'componente_1')
     componente = relationship("Componente", back_populates='defeitos', lazy='joined')
 
     # Adicionando as colunas de data e hora
@@ -39,3 +39,4 @@ class Defeito(db.Model):
             "updated_at": self.updated_at,
             "deleted_at": self.deleted_at
         }
+

@@ -17,12 +17,11 @@ class Componente(db.Model):
     # Relacionamento com 'Grupo_Produto'
     grupo_produto = relationship("Grupo_Produto", back_populates="componentes", lazy='joined')
     
-    # Relacionamento com 'Defeito'
     defeitos = db.relationship(
-        "Defeito", 
-        back_populates="componente",  # Referenciar 'componente' no modelo Defeito
-        lazy='joined'
-    )
+    "Defeito", 
+    back_populates="componente",  # Referenciar 'componente' no modelo Defeito
+    lazy='joined'
+)
     
     # Relacionamento com 'Produto'
     produtos = db.relationship(
