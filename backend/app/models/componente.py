@@ -25,11 +25,11 @@ class Componente(db.Model):
     
     # Relacionamento com 'Produto'
     produtos = db.relationship(
-        "Produto", 
-        back_populates='componente_1', 
-        uselist=True,  # Indica que é uma relação de um-para-muitos
-        lazy='joined'
-    )
+    "Produto", 
+    back_populates="componente",  # Referência a "componente" no modelo Produto
+    uselist=True,  # Indica que é uma relação de um-para-muitos
+    lazy='joined'
+)
 
     # Colunas de controle de data
     created_at = db.Column(db.DateTime, default=datetime.utcnow)  # Data de criação
