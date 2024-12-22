@@ -27,12 +27,12 @@ NGINX_NORTHCROMO="$NGINX_SITES_AVAILABLE/northcromo"
 NGINX_NORTHCROMOCONTROLE="$NGINX_SITES_AVAILABLE/northcromocontrole"
 
 # Passo 0: Limpar todos os diretórios __pycache__
-echo "Limpando todos os diretórios __pycache__ do projeto..."
+# echo "Limpando todos os diretórios __pycache__ do projeto..."
 
 # Encontrar e remover todos os diretórios __pycache__ em qualquer subdiretório do projeto
-find $PROJECT_DIR -type d -name "__pycache__" -exec rm -r {} + || { echo "Erro: Não foi possível limpar os diretórios __pycache__"; exit 1; }
+# find $PROJECT_DIR -type d -name "__pycache__" -exec rm -r {} + || { echo "Erro: Não foi possível limpar os diretórios __pycache__"; exit 1; }
 
-echo "Todos os diretórios __pycache__ foram limpos com sucesso."
+# echo "Todos os diretórios __pycache__ foram limpos com sucesso."
 
 # Passo 1: Navegar até o diretório do projeto
 echo "Navegando até o diretório do projeto: $PROJECT_DIR"

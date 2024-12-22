@@ -6,8 +6,14 @@ def fechar_sessoes():
         db.session.remove()  # Remove a sessão ativa
         print("Sessões fechadas com sucesso.")
 
-# Chama a função para fechar as sessões
+def abrir_sessao():
+    """Abrir a sessão do SQLAlchemy"""
+    app = create_app()  # Cria a instância do app Flask
+    with app.app_context():  # Garante que estamos no contexto da aplicação
+        # A sessão já é automaticamente aberta dentro do contexto do app
+        db.session.begin()  # Isso inicia uma nova transação
+        print("Sessão aberta com sucesso!")
+        
+# Chama a função para abrir a sessão
 if __name__ == "__main__":
-    app = create_app()  # Cria o app Flask
-    fechar_sessoes()  # Fecha as sessões
-
+    abrir_sessao()  # Chama a função para abrir a sessão
