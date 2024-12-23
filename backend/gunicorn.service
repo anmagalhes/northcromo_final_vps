@@ -16,6 +16,7 @@ ExecStart=/var/www/northcromo_final_vps/backend/venv/bin/gunicorn \
     --log-level debug \
     --access-logfile /var/log/gunicorn_access.log \
     --error-logfile /var/log/gunicorn_error.log
+     --timeout 120  # Timeout padrão para operações rápidas e lentas 
 
 [Install]
 WantedBy=multi-user.target
