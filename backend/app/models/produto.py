@@ -1,3 +1,4 @@
+#app/modesl/produto.py
 from datetime import datetime
 from sqlalchemy import Column, Integer, String, Float, ForeignKey, Boolean, DateTime
 from sqlalchemy.orm import relationship
@@ -30,9 +31,22 @@ class Produto(db.Model):
     recebimento_id = db.Column(db.Integer, ForeignKey('recebimentos.id'))
 
     grupo_produto = relationship("Grupo_Produto", back_populates="produtos", lazy='joined')
-    operacao_servico = relationship("PostoTrabalho", back_populates="produtos", lazy='joined')
+    # Relacionamento com o posto de trabalho (id_posto_trabalho)
+    posto_trabalho = relationship(
+        "PostoTrabalho", 
+        back_populates="produtos", 
+        foreign_keys=[id_posto_trabalho],  # Especificando qual chave estrangeira utilizar
+        lazy='joined'
+    )
+    # Relacionamento com operação de serviço (id_operacao_servico)
+    operacao_servico = relationship(
+        "PostoTrabalho", 
+        back_populates="operacao_servico", 
+        foreign_keys=[id_operacao_servico],  # Especificando qual chave estrangeira utilizar
+        lazy='joined'
+    )
+
     componente = relationship("Componente", back_populates="produtos", lazy='joined')
-    posto_trabalho = relationship('PostoTrabalho', back_populates='produtos', lazy='joined')
     checklists = relationship("ChecklistRecebimento", back_populates="produto", lazy='joined')
     usuario = relationship("User", back_populates="produtos", lazy='joined')
     recebimentos = relationship("Recebimento", back_populates="produto", foreign_keys="Recebimento.cod_produto", lazy='joined')
