@@ -1,10 +1,6 @@
 # app.py
 import sys
 import os
-
-# Ajuste do Python Path para garantir que o diretório correto seja encontrado
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-
 from flask import Flask, jsonify, g
 from flask_migrate import Migrate
 from dotenv import load_dotenv
@@ -24,17 +20,27 @@ from app.componente import componente_blueprint
 # Carregar as variáveis do arquivo .env
 load_dotenv()
 
+# Ajuste do Python Path para garantir que o diretório correto seja encontrado
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 # Inicializa o Flask app
 app = Flask(__name__)
 
 # Função para inicializar o banco de dados
-def initialize_database():
-    db_instance = init_db(app)  # Chama a função init_db para configurar o banco
+def initialize_database(app):
+    # Seleciona a configuração dependendo do ambiente (Desenvolvimento ou Produção)
+    if os.getenv("FLASK_ENV") == "production":
+        app.config.from_object('app.config.ProductionConfig')
+    else:
+        app.config.from_object('app.config.DevelopmentConfig')
+
+    # Agora que as configurações estão carregadas, inicialize o banco de dados
+    db.init_app(app)  # Inicializa o SQLAlchemy com a app
     migrate = Migrate(app, db)  # Inicializa o Migrate para gerenciar migrações
 
 # Função principal de criação do app
 def create_app():
-    initialize_database()  # Inicializa o banco de dados de forma síncrona
+    initialize_database(app)  # Inicializa o banco de dados de forma síncrona
     
     # Registra os blueprints
     app.register_blueprint(auth_blueprint, url_prefix='/api/auth')  # Rotas de autenticação
@@ -78,5 +84,5 @@ application = create_app()  # Gunicorn vai procurar por 'application'
 
 # Se desejar rodar localmente com Flask (não no Gunicorn), você pode descomentar as linhas abaixo
 #if __name__ == "__main__":
-#    create_app()  # Cria o app
-#    app.run()  # Rodando o Flask de forma síncrona
+ #   create_app()  # Cria o app
+  #  app.run()  # Rodando o Flask de forma síncrona
