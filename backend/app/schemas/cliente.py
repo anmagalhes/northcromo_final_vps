@@ -1,42 +1,50 @@
 # cliente/schema.py
-from marshmallow import Schema, fields, post_load
-from ..models import Cliente
+from marshmallow import Schema, fields, post_load, ValidationError
 from datetime import datetime
+from ..models import Cliente
+
+# Função de validação para verificar se o usuário existe
+def validate_usuario_id(value):
+    from app.models import User
+    # Verifica se o usuário com esse id existe
+    if not User.query.get(value):
+        raise ValidationError("Usuário não encontrado.")
+    return value
 
 class ClienteSchema(Schema):
     id = fields.Int(dump_only=True)  # Exclui do input (somente leitura)
-    
-    tipo_cliente = fields.Str(allow_none=True)  # Tipo de Cliente (pode ser nulo)
-    nome_cliente = fields.Str(allow_none=True)  # Nome do Cliente (pode ser nulo)
-    doc_cliente = fields.Str(allow_none=True)  # Documento do Cliente (pode ser nulo)
-    endereco_cliente = fields.Str(allow_none=True)  # Endereço do Cliente (pode ser nulo)
-    num_cliente = fields.Str(allow_none=True)  # Número do endereço (pode ser nulo)
-    bairro_cliente = fields.Str(allow_none=True)  # Bairro (pode ser nulo)
-    cidade_cliente = fields.Str(allow_none=True)  # Cidade (pode ser nulo)
-    uf_cliente = fields.Str(allow_none=True)  # UF (pode ser nulo)
-    cep_cliente = fields.Str(allow_none=True)  # CEP (pode ser nulo)
-    telefone_cliente = fields.Str(allow_none=True)  # Telefone do Cliente (pode ser nulo)
-    telefone_rec_cliente = fields.Str(allow_none=True)  # Telefone de recado (pode ser nulo)
-    whatsapp_cliente = fields.Str(allow_none=True)  # WhatsApp (pode ser nulo)
-    
-    # Campos obrigatórios removidos, agora todos podem ser nulos.
-    data_cadastro_cliente = fields.DateTime(dump_only=True, default=datetime.utcnow)  # Data de cadastro
-    fornecedor_cliente = fields.Str(allow_none=True)  # Fornecedor associado ao cliente (pode ser nulo)
-    email_funcionario = fields.Str(allow_none=True)  # E-mail do Funcionário responsável (pode ser nulo)
-    acao = fields.Str(allow_none=True)  # Ação/observações adicionais (pode ser nulo)
-    usuario_id = fields.Int(allow_none=True)  # Chave estrangeira para usuário (pode ser nulo)
 
-    # Relacionamentos
-    usuario = fields.Nested('UserSchema', dump_only=True)  # Exibe dados do usuário relacionado
-    recebimentos = fields.List(fields.Nested('RecebimentoSchema', dump_only=True))  # Relacionamento com recebimentos
-    checklists = fields.List(fields.Nested('ChecklistRecebimentoSchema', dump_only=True))  # Relacionamento com checklists
+    tipo_cliente = fields.Str(allow_none=True)
+    nome_cliente = fields.Str(allow_none=True)
+    doc_cliente = fields.Str(allow_none=True)
+    endereco_cliente = fields.Str(allow_none=True)
+    num_cliente = fields.Str(allow_none=True)
+    bairro_cliente = fields.Str(allow_none=True)
+    cidade_cliente = fields.Str(allow_none=True)
+    uf_cliente = fields.Str(allow_none=True)
+    cep_cliente = fields.Str(allow_none=True)
+    telefone_cliente = fields.Str(allow_none=True)
+    telefone_rec_cliente = fields.Str(allow_none=True)
+    whatsapp_cliente = fields.Str(allow_none=True)
+    
+    data_cadastro_cliente = fields.DateTime(dump_only=True, default=datetime.utcnow)
+    fornecedor_cliente = fields.Str(allow_none=True)
+    email_funcionario = fields.Str(allow_none=True)
+    acao = fields.Str(allow_none=True)
+    usuario_id = fields.Int(validate=validate_usuario_id, allow_none=True)
+
+    # Relacionamentos com 'usuario', 'recebimentos' e 'checklists', limitando os campos
+    usuario = fields.Nested('UserSchema', only=["id", "username"], dump_only=True)
+    recebimentos = fields.List(fields.Nested('RecebimentoSchema', only=["id", "valor"], dump_only=True))
+    checklists = fields.List(fields.Nested('ChecklistRecebimentoSchema', only=["id", "status"], dump_only=True))
 
     # Timestamps
-    created_at = fields.DateTime(dump_only=True)  # Data de criação
-    updated_at = fields.DateTime(dump_only=True)  # Data de atualização
+    created_at = fields.DateTime(dump_only=True)
+    updated_at = fields.DateTime(dump_only=True)
 
     @post_load
     def make_cliente(self, data, **kwargs):
         """Converte o schema em um objeto da model Cliente"""
         return Cliente(**data)
+
 
