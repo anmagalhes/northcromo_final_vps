@@ -23,7 +23,7 @@ def get_cliente(id):
 def create_cliente(data):
     try:
         # Atribuindo o ID do usuário (como admin, por exemplo) para o cliente
-        usuario_id = data.get('usuario_id', 2)  # 1 é o ID do usuário admin
+        usuario_id = data.get('usuario_id', 1)  # 1 é o ID do usuário admin
 
         # Criando o cliente com os dados fornecidos
         cliente = Cliente(
