@@ -5,4 +5,3 @@ defeito_blueprint = Blueprint('defeito', __name__)
 
 # Importa as rotas que serão registradas no blueprint
 from . import routes
-

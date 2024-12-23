@@ -1,10 +1,11 @@
+#app/models/componente.py
 from datetime import datetime
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
 from app.database import db  # Importando a instância do db
 
 class Componente(db.Model):
-    __tablename__ = 'componente_1'  # Nome da tabela no banco de dados
+    __tablename__ = 'componente'  # Nome da tabela no banco de dados
 
     id = db.Column(db.Integer, primary_key=True)
     nome = db.Column(db.String(40), unique=True, nullable=False)  # Alterado de 'name' para 'nome'

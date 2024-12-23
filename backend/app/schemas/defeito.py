@@ -1,5 +1,7 @@
 from marshmallow import Schema, fields, post_load
-from .models import Defeito, Componente, Users
+from app.models.defeito import Defeito
+from app.models.componente import Componente
+from app.models.user import User
 
 class DefeitoSchema(Schema):
     id = fields.Int(dump_only=True)  # Exclui do input (somente leitura)

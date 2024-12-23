@@ -103,3 +103,19 @@ sudo systemctl start gunicorn
 sudo systemctl enable gunicorn
 
 echo "Habilitado amém!"
+
+# ACESSO AO BANCO DADOS
+
+#-- Conceder acesso completo (SELECT, INSERT, UPDATE, DELETE) a todas as tabelas existentes
+#GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO flask_user;
+
+#-- Conceder acesso a todas as sequências existentes
+#GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO flask_user;
+
+#-- Permitir que o usuário crie novas tabelas no esquema public
+#GRANT CREATE ON SCHEMA public TO flask_user;
+
+#-- Configurar permissões para futuras tabelas e sequências
+#ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO flask_user;
+#ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT USAGE, SELECT ON SEQUENCES TO flask_user;
+

@@ -4,23 +4,20 @@ from sqlalchemy.orm import relationship
 from app.database import db # Importando a instância do db
 
 class PostoTrabalho(db.Model):
-    __tablename__ = 'posto_trabalho'  # Nome correto da tabela no banco de dados
+    __tablename__ = 'posto_trabalho'
 
     id = db.Column(db.Integer, primary_key=True)
     nome = db.Column(db.String(40), unique=True, nullable=False)
-    usuario_id = db.Column(db.Integer, ForeignKey('usuario.id'))  # Chave estrangeira para 'usuario'
+    usuario_id = db.Column(db.Integer, ForeignKey('usuario.id'))
 
-    # Relacionamento com a tabela Usuario
     usuario = relationship("User", back_populates='posto_trabalho', foreign_keys=[usuario_id], lazy='joined')
-
     produtos = relationship('Produto', back_populates='posto_trabalho', lazy='joined')
     operacao_servico = relationship('Produto', back_populates='posto_trabalho', lazy='joined')
 
-    # Adicionando as colunas de data e horas
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)  # Data de criação
-    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)  # Data de última atualização
-    deleted_at = db.Column(db.DateTime, nullable=True)  # Data de exclusão (opcional para soft delete)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    deleted_at = db.Column(db.DateTime, nullable=True)
 
     def __repr__(self):
-        return f'<PostoTrabalho id={self.id} name={self.name}>'
+        return f'<PostoTrabalho id={self.id} nome={self.nome}>'
 
