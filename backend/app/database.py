@@ -18,4 +18,3 @@ def test_connection(app):
     except Exception as e:
         print(f"Erro ao conectar com o banco de dados: {e}")
         raise e
-

@@ -1,7 +1,11 @@
+# app/cliente/routes.py
 from flask import jsonify, request
+from marshmallow import ValidationError
 from . import cliente_blueprint
 from .services import list_clientes, get_cliente, create_cliente, update_cliente, delete_cliente
 from app.schemas.cliente import ClienteSchema
+
+
 
 # Instância do schema teste
 cliente_schema = ClienteSchema()  # Para operações com um único cliente
@@ -25,20 +29,29 @@ def get_cliente_details(id):
 @cliente_blueprint.route('/clientes', methods=['POST'])
 def criar_cliente():
     try:
-        # Recebe os dados JSON da requisiçãod
+        # Recebe os dados JSON da requisição
         data = request.get_json()
 
-        # Valida os dados usando o Marshmallow
-        errors = cliente_schema.validate(data)
-        if errors:
-            # Retorna um erro detalhado se a validação falhar
-            return jsonify({"error": "Dados inválidos", "details": errors}), 400
+        # Verifica se os dados foram recebidos corretamente
+        if not data:
+            return jsonify({"error": "Nenhum dado foi enviado."}), 400
+
+        # Valida os dados usando o Marshmallow (usando load para validação e transformação)
+        cliente_data = cliente_schema.load(data)  # Isso valida e retorna o objeto/dicionário carregado
 
         # Chama a função para criar o cliente, passando os dados validados
-        cliente = create_cliente(data)
+        cliente = create_cliente(cliente_data)
 
-        # Retorna os dados do cliente criado
+        # Se o retorno for um dicionário de erro (caso de falha)
+        if isinstance(cliente, dict) and "error" in cliente:
+            return jsonify(cliente), 400  # Aqui, o erro será retornado com status 400
+
+        # Caso o cliente tenha sido criado com sucesso, retorna os dados do cliente com status 201
         return jsonify(cliente), 201
+
+    except ValidationError as e:
+        # Erro de validação do Marshmallow
+        return jsonify({"error": "Dados inválidos", "details": e.messages}), 400
 
     except Exception as e:
         # Retorna erro genérico com a mensagem de exceção

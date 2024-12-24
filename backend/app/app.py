@@ -1,12 +1,6 @@
 # app.py
-
 import sys
 import os
-
-# Ajuste do Python Path para garantir que o diretório correto seja encontrado
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-
-
 from flask import Flask, jsonify, g
 from flask_migrate import Migrate
 from dotenv import load_dotenv
@@ -85,10 +79,15 @@ def after_request(response):
         g.db_session.close()  # Fecha a sessão do banco de dados
     return response
 
+for rule in app.url_map.iter_rules():
+    print(rule)
+    
 # Definindo a variável 'application' que o Gunicorn precisa para rodar a aplicação
 application = create_app()  # Gunicorn vai procurar por 'application'
+
+
 
 # Se desejar rodar localmente com Flask (não no Gunicorn), você pode descomentar as linhas abaixo
 #if __name__ == "__main__":
  #   create_app()  # Cria o app
- #   app.run()  # Rodando o Flask de forma síncrona
+  #  app.run()  # Rodando o Flask de forma síncrona

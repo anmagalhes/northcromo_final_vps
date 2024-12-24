@@ -17,7 +17,7 @@ class DevelopmentConfig(Config):
         f"@{os.getenv('DATABASE_HOST')}:{os.getenv('DATABASE_PORT')}/{os.getenv('DATABASE_NAME')}"
     )
     # Print da URI para depuração
-    print("SQLALCHEMY_DATABASE_URI (Development):", SQLALCHEMY_DATABASE_URI)
+    #print("SQLALCHEMY_DATABASE_URI (Development):", SQLALCHEMY_DATABASE_URI)
 
 class ProductionConfig(Config):
     FLASK_ENV = 'production'
@@ -26,4 +26,4 @@ class ProductionConfig(Config):
         f"@{os.getenv('DATABASE_HOST')}:{os.getenv('DATABASE_PORT')}/{os.getenv('DATABASE_NAME')}"
     )
     # Print da URI para depuração
-    print("SQLALCHEMY_DATABASE_URI (Production):", SQLALCHEMY_DATABASE_URI)
+    #print("SQLALCHEMY_DATABASE_URI (Production):", SQLALCHEMY_DATABASE_URI)

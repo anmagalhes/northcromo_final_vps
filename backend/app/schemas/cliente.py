@@ -7,16 +7,17 @@ from ..models import Cliente
 def validate_usuario_id(value):
     from app.models import User
     # Verifica se o usuário com esse id existe
-    if not User.query.get(value):
-        raise ValidationError("Usuário não encontrado.")
+    user = User.query.get(value)
+    if not user:
+        raise ValidationError(f"Usuário com ID {value} não encontrado.")
     return value
 
 class ClienteSchema(Schema):
     id = fields.Int(dump_only=True)  # Exclui do input (somente leitura)
 
-    tipo_cliente = fields.Str(allow_none=True)
-    nome_cliente = fields.Str(allow_none=True)
-    doc_cliente = fields.Str(allow_none=True)
+    tipo_cliente = fields.Str(required=True)
+    nome_cliente = fields.Str(required=True)
+    doc_cliente = fields.Str(required=True)
     endereco_cliente = fields.Str(allow_none=True)
     num_cliente = fields.Str(allow_none=True)
     bairro_cliente = fields.Str(allow_none=True)
@@ -32,7 +33,7 @@ class ClienteSchema(Schema):
     fornecedor_cliente = fields.Str(allow_none=True)
     email_funcionario = fields.Str(allow_none=True)
     acao = fields.Str(allow_none=True)
-    usuario_id = fields.Int(validate=validate_usuario_id, allow_none=True)
+    usuario_id = fields.Int(validate=validate_usuario_id, required=True)
 
     # Relacionamentos com 'usuario', 'recebimentos' e 'checklists', limitando os campos
     usuario = fields.Nested('UserSchema', only=["id", "username"], dump_only=True)
@@ -46,5 +47,4 @@ class ClienteSchema(Schema):
     @post_load
     def make_cliente(self, data, **kwargs):
         """Converte o schema em um objeto da model Cliente"""
-        # Cria o cliente a partir dos dados que passaram pela validação
-        return Cliente(**data)
+        return Cliente(**data)  # Isso cria uma instância de Cliente a partir dos dados validados

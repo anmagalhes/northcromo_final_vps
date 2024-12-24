@@ -1,3 +1,4 @@
+#app/cliente/__init__.py
 from flask import Blueprint
 
 # Cria o blueprint para o módulo defeitos
