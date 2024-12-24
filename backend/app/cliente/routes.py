@@ -1,5 +1,6 @@
 # app/cliente/routes.py
 from flask import jsonify, request
+from app import db
 from marshmallow import ValidationError
 from . import cliente_blueprint
 from .services import list_clientes, get_cliente, create_cliente, update_cliente, delete_cliente

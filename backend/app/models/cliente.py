@@ -2,7 +2,7 @@
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
 from datetime import datetime
-from app.database import db  # Importando a instância do db
+from app import db  
 
 class Cliente(db.Model):
     __tablename__ = 'clientes'  # Nome da tabela no banco de dados
@@ -36,14 +36,13 @@ class Cliente(db.Model):
 
     # Relacionamentos
     usuario = relationship("User", back_populates="clientes", lazy='joined')
-    recebimentos = relationship("Recebimento", back_populates="cliente", lazy='joined')
-    checklists = relationship("ChecklistRecebimento", back_populates="cliente", lazy='joined')
+    #recebimentos = relationship("Recebimento", back_populates="cliente", lazy='select')
+    #checklists = relationship("ChecklistRecebimento", back_populates="cliente", lazy='select')
 
     def __repr__(self):
         return f'<Cliente {self.nome_cliente}>'
 
     def to_json(self):
-        # Retorna um dicionário com os dados do cliente (para serializar para JSON)
         return {
             "id": self.id,
             "tipo_cliente": self.tipo_cliente,

@@ -2,7 +2,7 @@
 from datetime import datetime
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
-from app.database import db  # Importando a instância do db
+from app import db    # Importando a instância do db
 
 class PostoTrabalho(db.Model):
     __tablename__ = 'posto_trabalho'

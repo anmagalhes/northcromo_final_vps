@@ -1,15 +1,17 @@
 # app/database.py
-from sqlalchemy import create_engine, text
-from app import db
+from sqlalchemy import text
+#from sqlalchemy import create_engine, text
+#from app import db
+
 
 # Função para inicializar o banco de dados com a aplicação Flask
-def init_db(app):
-    """Inicializa o banco de dados com a aplicação Flask"""
-    db.init_app(app)  # Apenas garante que o db esteja inicializado com a aplicação
+# def init_db(app):
+ #   """Inicializa o banco de dados com a aplicação Flask"""
+ #   db.init_app(app)  # Apenas garante que o db esteja inicializado com a aplicação
 
 
 # Função para testar a conexão com o banco de dados
-def test_connection(app):
+def test_connection(db, app):
     try:
         with app.app_context():
             with db.engine.connect() as conn:  # Usando a engine do db

@@ -6,7 +6,7 @@ from app.models.componente import Componente  # Corrige para importar Componente
 from app.models.user import User
 
 # Importando a instância db
-from app.models.db import db  # Certifique-se de que o arquivo db.py existe e contém a instância db
+from app import db  # Certifique-se de que o arquivo db.py existe e contém a instância db
 
 # Definição da função some_function (apenas como exemplo, você pode adicionar a lógica necessária)
 def some_function():

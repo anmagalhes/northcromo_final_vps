@@ -1,7 +1,7 @@
 from datetime import datetime
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
-from app.database import db  # Importando a instância do db
+from app import db    # Importando a instância do db
 
 class TarefaProduto(db.Model):
     __tablename__ = 'tarefa_Produto'  # Nome da tabela no banco de dados

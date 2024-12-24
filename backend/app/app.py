@@ -2,10 +2,11 @@
 import sys
 import os
 from flask import Flask, jsonify, g
+from flask_sqlalchemy import SQLAlchemy
+from config import Config
 from flask_migrate import Migrate
 from dotenv import load_dotenv
-from app.models.db import db  # db instanciado aqui, provavelmente SQLAlchemy
-from app.database import init_db  # Função para inicializar o banco de dados
+from app import db  # Função para inicializar o banco de dados
 
 # Registra os blueprints
 from app.auth import auth_blueprint
@@ -25,6 +26,11 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 
 # Inicializa o Flask app
 app = Flask(__name__)
+
+
+# Configurações
+app.config.from_object(Config)  # Usa a configuração do arquivo .env ou settings
+
 
 # Função para inicializar o banco de dados
 def initialize_database(app):

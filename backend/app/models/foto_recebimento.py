@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
 from datetime import datetime
-from app.database import db
+from app import db  
 
 class FotoRecebimento(db.Model):
     __tablename__ = 'foto_recebimento'  # Nome da tabela
