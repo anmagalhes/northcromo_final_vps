@@ -4,6 +4,7 @@ import { Cliente } from '../types/Cliente';
 
 // Variável para a URL base do cliente
 const url_cliente = 'https://northcromocontrole.com.br/api/cliente';
+const url_criar_cliente = 'https://northcromocontrole.com.br/api/cliente/clientes';
 
 // Função para enviar cliente para o backend
 export const enviarParaBackend = async (cliente: Cliente) => {
@@ -35,7 +36,7 @@ export const enviarParaBackend = async (cliente: Cliente) => {
     console.log('envio backend:', cliente);
 
     // Envia os dados para o backend
-    const response = await fetch(url_cliente, {
+    const response = await fetch(url_criar_cliente, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

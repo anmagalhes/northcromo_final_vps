@@ -8,7 +8,7 @@ cliente_schema = ClienteSchema()  # Para operações com um único cliente
 clientes_schema = ClienteSchema(many=True)  # Para listar múltiplos clientes
 
 # Rota para listar todos os clientes
-@cliente_blueprint.route('/clientes', methods=['GET'])
+@cliente_blueprint.route('/', methods=['GET'])
 def get_all_clientes():
     clientes = list_clientes()  # Chama a função que lista os clientes
     return jsonify(clientes), 200
@@ -22,7 +22,7 @@ def get_cliente_details(id):
     return jsonify({"message": "Cliente não encontrado!"}), 404
 
 # Rota para criar um novo cliente
-@cliente_blueprint.route('/', methods=['POST'])
+@cliente_blueprint.route('/cliente', methods=['POST'])
 def criar_cliente():
     try:
         # Recebe os dados JSON da requisição
