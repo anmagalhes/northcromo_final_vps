@@ -20,26 +20,27 @@ def get_cliente(id):
     return cliente_schema.dump(cliente) if cliente else None  # Serializa o cliente ou retorna None
 
 # Criar um novo cliente
+# Função para criar um novo cliente
 def create_cliente(data):
     try:
         # Atribuindo o ID do usuário (como admin, por exemplo) para o cliente
-        usuario_id = data.get('usuario_id', 1)  # 1 é o ID do usuário admin
+        usuario_id = data.get('usuario_id', 1)  # 1 é o ID do usuário admin, ou ID padrão
 
         # Criando o cliente com os dados fornecidos
         cliente = Cliente(
-            tipo_cliente=data['tipo_cliente'],
-            nome_cliente=data['nome_cliente'],
-            doc_cliente=data['doc_cliente'],
-            endereco_cliente=data['endereco_cliente'],
-            num_cliente=data['num_cliente'],
-            bairro_cliente=data['bairro_cliente'],
-            cidade_cliente=data['cidade_cliente'],
-            uf_cliente=data['uf_cliente'],
-            cep_cliente=data['cep_cliente'],
-            telefone_cliente=data['telefone_cliente'],
+            tipo_cliente=data.get('tipo_cliente'),
+            nome_cliente=data.get('nome_cliente'),
+            doc_cliente=data.get('doc_cliente'),
+            endereco_cliente=data.get('endereco_cliente'),
+            num_cliente=data.get('num_cliente'),
+            bairro_cliente=data.get('bairro_cliente'),
+            cidade_cliente=data.get('cidade_cliente'),
+            uf_cliente=data.get('uf_cliente'),
+            cep_cliente=data.get('cep_cliente'),
+            telefone_cliente=data.get('telefone_cliente'),
             telefone_rec_cliente=data.get('telefone_rec_cliente'),
             whatsapp_cliente=data.get('whatsapp_cliente'),
-            fornecedor_cliente=data['fornecedor_cliente'],
+            fornecedor_cliente=data.get('fornecedor_cliente'),
             email_funcionario=data.get('email_funcionario'),
             acao=data.get('acao'),
             usuario_id=usuario_id  # Forçando o envio do usuario_id
@@ -47,8 +48,9 @@ def create_cliente(data):
 
         # Adicionando o cliente à sessão do banco de dados
         g.db_session.add(cliente)
-        g.db_session.commit()  # Commitando a transação no banco
-        # Commit será feito no ciclo de vida da requisição
+        g.db_session.commit()  # Commitando a transação no banco de dados
+
+        # Serializando e retornando o cliente criado
         return cliente_schema.dump(cliente)  # Usando o schema para serializar o cliente
 
     except Exception as e:

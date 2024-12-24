@@ -35,9 +35,9 @@ class Cliente(db.Model):
     usuario_id = db.Column(db.Integer, ForeignKey('usuario.id'))  # Chave estrangeira de usuários
 
     # Relacionamentos
-    usuario = relationship("User", back_populates="clientes")  # Correção: 'Users' -> 'User'
-    recebimentos = relationship("Recebimento", back_populates="cliente", lazy='dynamic')
-    checklists = relationship("ChecklistRecebimento", back_populates="cliente", lazy='dynamic')
+    usuario = relationship("User", back_populates="clientes", lazy='joined')
+    recebimentos = relationship("Recebimento", back_populates="cliente", lazy='joined')
+    checklists = relationship("ChecklistRecebimento", back_populates="cliente", lazy='joined')
 
     def __repr__(self):
         return f'<Cliente {self.nome_cliente}>'

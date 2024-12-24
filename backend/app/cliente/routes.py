@@ -22,26 +22,50 @@ def get_cliente_details(id):
     return jsonify({"message": "Cliente não encontrado!"}), 404
 
 # Rota para criar um novo cliente
-@cliente_blueprint.route('/clientes', methods=['POST'])
-def criar_cliente():
+def create_cliente(data):
     try:
-        # Recebe os dados JSON da requisiçãod
-        data = request.get_json()
+        # Validando se todos os campos obrigatórios estão presentes
+        if not data.get('tipo_cliente') or not data.get('nome_cliente') or not data.get('doc_cliente'):
+            raise ValueError("Os campos tipo_cliente, nome_cliente e doc_cliente são obrigatórios!")
 
-        # Valida os dados usando o Marshmallow
-        errors = cliente_schema.validate(data)
-        if errors:
-            # Retorna um erro detalhado se a validação falhar
-            return jsonify({"error": "Dados inválidos", "details": errors}), 400
+        # Atribuindo o ID do usuário (usuário admin ou o que for necessário)
+        usuario_id = data.get('usuario_id', 1)  # ID do usuário admin, caso não seja enviado
 
-        # Chama a função para criar o cliente, passando os dados validados
-        cliente = create_cliente(data)
+        # Criando o cliente
+        cliente = Cliente(
+            tipo_cliente=data['tipo_cliente'],
+            nome_cliente=data['nome_cliente'],
+            doc_cliente=data['doc_cliente'],
+            endereco_cliente=data.get('endereco_cliente'),
+            num_cliente=data.get('num_cliente'),
+            bairro_cliente=data.get('bairro_cliente'),
+            cidade_cliente=data.get('cidade_cliente'),
+            uf_cliente=data.get('uf_cliente'),
+            cep_cliente=data.get('cep_cliente'),
+            telefone_cliente=data.get('telefone_cliente'),
+            telefone_rec_cliente=data.get('telefone_rec_cliente'),
+            whatsapp_cliente=data.get('whatsapp_cliente'),
+            fornecedor_cliente=data.get('fornecedor_cliente'),
+            email_funcionario=data.get('email_funcionario'),
+            acao=data.get('acao'),
+            usuario_id=usuario_id  # Atribuindo o usuário ao cliente
+        )
 
-        # Retorna os dados do cliente criado
-        return jsonify(cliente), 201
+        # Adicionando o cliente à sessão do banco de dados
+        g.db_session.add(cliente)
+        g.db_session.commit()  # Commitando a transação
+
+        # Retornando o cliente com os dados serializados
+        return cliente.to_json()  # Usando o método to_json para retorno
+
+    except ValueError as e:
+        # Retornar erro específico de validação
+        g.db_session.rollback()  # Rollback em caso de erro
+        return jsonify({"error": str(e)}), 400
 
     except Exception as e:
-        # Retorna erro genérico com a mensagem de exceção
+        # Erro geral
+        g.db_session.rollback()  # Rollback em caso de erro
         return jsonify({"error": f"Erro ao criar cliente: {str(e)}"}), 500
 
 # Rota para atualizar um cliente
