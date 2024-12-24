@@ -4,13 +4,42 @@ import { Cliente } from '../types/Cliente';
 
 // Variável para a URL base do cliente
 const url_cliente = 'https://northcromocontrole.com.br/api/cliente';
-const url_criar_cliente = 'https://northcromocontrole.com.br/api/cliente/clientes';
+
+// URL para listar todos os clientes
+const url_listar_clientes = `${url_cliente}/`;  // Usando / no final
+
+// URL para criar um novo cliente
+const url_criar_cliente = `${url_cliente}/clientes`;  // Usando /clientes
+
+// Função para listar todos os clientes
+export const listarClientes = async (): Promise<Cliente[]> => {
+  try {
+    const response = await fetch(url_listar_clientes, {
+      method: 'GET', // Requisição GET para listar clientes
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text(); // Captura texto de erro do backend
+      throw new Error(`Erro ao listar clientes: ${errorText}`);
+    }
+
+    const clientes = await response.json();
+    console.log('Lista de clientes:', clientes);
+    return clientes; // Retorna a lista de clientes
+  } catch (error) {
+    console.error('Falha ao listar clientes:', error);
+    throw error;
+  }
+};
 
 // Função para enviar cliente para o backend
 export const enviarParaBackend = async (cliente: Cliente) => {
   try {
     // Ajusta os dados para enviar conforme os campos esperados pelo backend
-     const clienteParaEnviar = {
+    const clienteParaEnviar = {
       nome_cliente: cliente.nome_cliente,  // Nome do cliente
       email_funcionario: cliente.email_funcionario,  // Email do cliente
       telefone_cliente: cliente.telefone_cliente,  // Telefone do cliente
@@ -28,12 +57,12 @@ export const enviarParaBackend = async (cliente: Cliente) => {
       doc_cliente: cliente.doc_cliente || ""  // Se 'doc_cliente' for null, substitua por uma string vazia
     };
 
-    // Verificar se o tipo_cliente está vazio ou nulo antes de enviarsw
+    // Verificar se o tipo_cliente está vazio ou nulo antes de enviar
     if (!cliente.tipo_cliente) {
       cliente.tipo_cliente = 'default'; // Substitua 'default' por um valor adequado ou obrigatório
     }
 
-    console.log('envio backend:', cliente);
+    console.log('Enviando ao backend:', cliente);
 
     // Envia os dados para o backend
     const response = await fetch(url_criar_cliente, {
@@ -46,13 +75,12 @@ export const enviarParaBackend = async (cliente: Cliente) => {
 
     if (!response.ok) {
       const errorText = await response.text();  // Captura texto de erro do backend
-      //console.error('Erro ao enviar para o backend:', errorText);
       throw new Error(`Erro ao enviar para o backend: ${errorText}`);
     }
 
     const result = await response.json();
     console.log('Resposta do servidor:', result);
-    return result;
+    return result; // Retorna a resposta do backend
   } catch (error) {
     console.error('Falha ao enviar para backend:', error);
   }
@@ -86,8 +114,7 @@ export const editarClienteNoBackend = async (clienteId: number, clienteData: Cli
   }
 };
 
-// src/api/clientes.ts
-// src/api/clientes.ts
+// Função para deletar um cliente no backend
 export const deleteCliente = async (clienteId: number) => {
   const response = await fetch(`${url_cliente}/${clienteId}`, {
     method: 'DELETE',
@@ -99,7 +126,3 @@ export const deleteCliente = async (clienteId: number) => {
 
   return await response.json();
 };
-
-
-  
-
