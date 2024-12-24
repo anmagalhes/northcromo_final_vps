@@ -1,4 +1,4 @@
-# app/models/cliente
+# app/models/cliente.py
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
 from datetime import datetime
@@ -41,3 +41,29 @@ class Cliente(db.Model):
 
     def __repr__(self):
         return f'<Cliente {self.nome_cliente}>'
+
+    def to_json(self):
+        # Retorna um dicionário com os dados do cliente (para serializar para JSON)
+        return {
+            "id": self.id,
+            "tipo_cliente": self.tipo_cliente,
+            "nome_cliente": self.nome_cliente,
+            "doc_cliente": self.doc_cliente,
+            "endereco_cliente": self.endereco_cliente,
+            "num_cliente": self.num_cliente,
+            "bairro_cliente": self.bairro_cliente,
+            "cidade_cliente": self.cidade_cliente,
+            "uf_cliente": self.uf_cliente,
+            "cep_cliente": self.cep_cliente,
+            "telefone_cliente": self.telefone_cliente,
+            "telefone_rec_cliente": self.telefone_rec_cliente,
+            "whatsapp_cliente": self.whatsapp_cliente,
+            "data_cadastro_cliente": self.data_cadastro_cliente,
+            "fornecedor_cliente": self.fornecedor_cliente,
+            "email_funcionario": self.email_funcionario,
+            "acao": self.acao,
+            "usuario_id": self.usuario_id,
+            "created_at": self.created_at,
+            "updated_at": self.updated_at
+        }
+

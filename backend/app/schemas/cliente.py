@@ -26,8 +26,9 @@ class ClienteSchema(Schema):
     telefone_cliente = fields.Str(allow_none=True)
     telefone_rec_cliente = fields.Str(allow_none=True)
     whatsapp_cliente = fields.Str(allow_none=True)
-    
-    data_cadastro_cliente = fields.DateTime(dump_only=True, default=datetime.utcnow)
+
+    # Timestamps
+    data_cadastro_cliente = fields.DateTime(dump_only=True, default=datetime.utcnow)  # Usado para exibir apenas
     fornecedor_cliente = fields.Str(allow_none=True)
     email_funcionario = fields.Str(allow_none=True)
     acao = fields.Str(allow_none=True)
@@ -45,6 +46,5 @@ class ClienteSchema(Schema):
     @post_load
     def make_cliente(self, data, **kwargs):
         """Converte o schema em um objeto da model Cliente"""
+        # Cria o cliente a partir dos dados que passaram pela validação
         return Cliente(**data)
-
-
