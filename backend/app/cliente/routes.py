@@ -25,7 +25,7 @@ def get_cliente_details(id):
 @cliente_blueprint.route('/cliente', methods=['POST'])
 def criar_cliente():
     try:
-        # Recebe os dados JSON da requisição
+        # Recebe os dados JSON da requisiçãod
         data = request.get_json()
 
         # Valida os dados usando o Marshmallow

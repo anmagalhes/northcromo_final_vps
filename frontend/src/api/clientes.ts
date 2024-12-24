@@ -28,7 +28,7 @@ export const enviarParaBackend = async (cliente: Cliente) => {
       doc_cliente: cliente.doc_cliente || ""  // Se 'doc_cliente' for null, substitua por uma string vazia
     };
 
-    // Verificar se o tipo_cliente está vazio ou nulo antes de enviar
+    // Verificar se o tipo_cliente está vazio ou nulo antes de enviarsw
     if (!cliente.tipo_cliente) {
       cliente.tipo_cliente = 'default'; // Substitua 'default' por um valor adequado ou obrigatório
     }
