@@ -3,7 +3,7 @@ from . import cliente_blueprint
 from .services import list_clientes, get_cliente, create_cliente, update_cliente, delete_cliente
 from app.schemas.cliente import ClienteSchema
 
-# Instância do schema
+# Instância do schema teste
 cliente_schema = ClienteSchema()  # Para operações com um único cliente
 clientes_schema = ClienteSchema(many=True)  # Para listar múltiplos clientes
 
