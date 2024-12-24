@@ -5,7 +5,7 @@ import { Cliente } from '../types/Cliente';
 // Variável para a URL base do cliente
 const url_cliente = 'https://northcromocontrole.com.br/api/cliente';
 
-// URL para listar todos os clientes
+// URL para listar tourl_clientedos os clientes
 const url_listar_clientes = `${url_cliente}/`;  // Usando / no final
 
 // URL para criar um novo cliente
@@ -91,7 +91,7 @@ export const editarClienteNoBackend = async (clienteId: number, clienteData: Cli
   try {
     console.log('Atualizando cliente no backend:', clienteData);
 
-    const response = await fetch(`${url_cliente}/${clienteId}`, {
+    const response = await fetch(`${url_criar_cliente}/${clienteId}`, {
       method: 'PUT', // Usando o método PUT para atualização
       headers: {
         'Content-Type': 'application/json',
@@ -116,7 +116,7 @@ export const editarClienteNoBackend = async (clienteId: number, clienteData: Cli
 
 // Função para deletar um cliente no backend
 export const deleteCliente = async (clienteId: number) => {
-  const response = await fetch(`${url_cliente}/${clienteId}`, {
+  const response = await fetch(`${url_criar_cliente}/${clienteId}`, {
     method: 'DELETE',
   });
 
