@@ -1,16 +1,16 @@
 from datetime import datetime
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
-from app import db    # Importando a instância do db
+from app.database import Base  # Agora importa a base do SQLAlchemy de 'datapy'
 
-class Defeito(db.Model):
+class Defeito(Base):
     __tablename__ = 'defeito'  # Nome da tabela no banco de dados
     __table_args__ = {'extend_existing': True}  # Permite redefinir, não cria nova tabela
     
-    id = db.Column(db.Integer, primary_key=True)
-    nome = db.Column(db.String(40), unique=True, nullable=False)
-    usuario_id = db.Column(db.Integer, ForeignKey('usuario.id'))  # Chave estrangeira para 'usuario'
-    componente_id = db.Column(db.Integer, ForeignKey('componente.id'))  # Chave estrangeira para 'componente'
+    id = Column(Integer, primary_key=True)
+    nome = Column(String(40), unique=True, nullable=False)
+    usuario_id = Column(Integer, ForeignKey('usuario.id'))  # Chave estrangeira para 'usuario'
+    componente_id = Column(Integer, ForeignKey('componente.id'))  # Chave estrangeira para 'componente'
 
     # Relacionamento com 'User' (certifique-se de que a classe seja 'User' e não 'Usuario')
     usuario = relationship("User", back_populates='defeitos', foreign_keys=[usuario_id], lazy='joined')
@@ -19,9 +19,9 @@ class Defeito(db.Model):
     componente = relationship("Componente", back_populates='defeitos', lazy='joined')
 
     # Adicionando as colunas de data e hora
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)  # Data de criação
-    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)  # Data de última atualização
-    deleted_at = db.Column(db.DateTime, nullable=True)  # Data de exclusão (opcional para soft delete)
+    created_at = Column(DateTime, default=datetime.utcnow)  # Data de criação
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)  # Data de última atualização
+    deleted_at = Column(DateTime, nullable=True)  # Data de exclusão (opcional para soft delete)
 
     def __repr__(self):
         return f'<Defeito id={self.id} nome={self.nome}>'

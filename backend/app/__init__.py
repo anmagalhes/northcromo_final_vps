@@ -1,29 +1,22 @@
 # app/__init__.py
-from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
-from app.config import DevelopmentConfig
+from fastapi import FastAPI
+from app.cliente.routes import router as cliente_router
+from app.database import engine, Base
 
+# Criar as tabelas no banco de dados
+Base.metadata.create_all(bind=engine)
 
-# Inicializando as instâncias de db e migrate globalmente
-db = SQLAlchemy()
-migrate = Migrate()
+# Criar a instância do FastAPI
+app = FastAPI()
 
-def create_app():
-    # Cria a instância da aplicação Flask
-    app = Flask(__name__)
-    
-    # Configura a aplicação com as variáveis do arquivo de configuração
-    app.config.from_object(DevelopmentConfig)  # Carrega as configurações do arquivo de configuração
+# Registrar as rotas
+app.include_router(cliente_router, prefix="/api/cliente", tags=["cliente"])
 
-    # Inicializa o banco de dados com a aplicação Flask
-    db.init_app(app)  # Inicializa o banco de dados com a configuração
+# Dependência para o banco de dados (passando a sessão)
+from app.database import get_db
+from fastapi import Depends
 
-    # Inicializa o Migrate com a aplicação e db
-    migrate.init_app(app, db)  # Inicializa o Flask-Migrate
-
-    # Registre os blueprints (rotas)
-    from app.cliente.routes import cliente_blueprint
-    app.register_blueprint(cliente_blueprint, url_prefix='/api/cliente')
-
-    return app
+@app.get("/")
+def read_root(db: Session = Depends(get_db)):
+    # Exemplo simples de rota usando o banco de dados
+    return {"message": "Olá, Mundo!"}

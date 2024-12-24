@@ -1,6 +1,6 @@
 # Exemplo de função no services.py
 from ..models.grupo_produto import Grupo_Produto
-from app import db
+from ..main import db
 from app.grupo_produto import Grupo_Produto
 
 grupo_produto_schema = Grupo_Produto()

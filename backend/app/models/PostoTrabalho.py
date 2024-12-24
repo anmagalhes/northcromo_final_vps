@@ -2,14 +2,14 @@
 from datetime import datetime
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
-from app import db    # Importando a instância do db
+from app.database import Base  # Agora importa a base do SQLAlchemy de 'datapy'
 
-class PostoTrabalho(db.Model):
+class PostoTrabalho(Base):
     __tablename__ = 'posto_trabalho'
 
-    id = db.Column(db.Integer, primary_key=True)
-    nome = db.Column(db.String(40), unique=True, nullable=False)
-    usuario_id = db.Column(db.Integer, ForeignKey('usuario.id'))
+    id = Column(Integer, primary_key=True)
+    nome = Column(String(40), unique=True, nullable=False)
+    usuario_id = Column(Integer, ForeignKey('usuario.id'))
 
     usuario = relationship("User", back_populates='posto_trabalho', foreign_keys=[usuario_id], lazy='joined')
 
@@ -28,9 +28,9 @@ class PostoTrabalho(db.Model):
         lazy='joined'
     )
 
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-    deleted_at = db.Column(db.DateTime, nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    deleted_at = Column(DateTime, nullable=True)
 
     def __repr__(self):
         return f'<PostoTrabalho id={self.id} nome={self.nome}>'

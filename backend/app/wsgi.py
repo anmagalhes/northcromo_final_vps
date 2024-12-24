@@ -1,6 +1,6 @@
 # wsgi.py
 
-from app import create_app
+from backend.app.main import create_app
 
 # Cria a instância da aplicação com a função 'create_app'
 #application = create_app()

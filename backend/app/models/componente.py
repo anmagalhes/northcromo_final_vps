@@ -2,15 +2,15 @@
 from datetime import datetime
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
-from app import db  
+from app.database import Base  # Agora importa a base do SQLAlchemy de 'datapy'
 
-class Componente(db.Model):
+class Componente(Base):
     __tablename__ = 'componente'  # Nome da tabela no banco de dados
 
-    id = db.Column(db.Integer, primary_key=True)
-    nome = db.Column(db.String(40), unique=True, nullable=False)  # Alterado de 'name' para 'nome'
-    usuario_id = db.Column(db.Integer, ForeignKey('usuario.id'))  # Chave estrangeira para 'usuario'
-    grupo_produto_id = db.Column(db.Integer, ForeignKey('grupo_produto.id'))  # Relacionamento com 'Grupo_Produto'
+    id = Column(Integer, primary_key=True)
+    nome = Column(String(40), unique=True, nullable=False)  # Alterado de 'name' para 'nome'
+    usuario_id = Column(Integer, ForeignKey('usuario.id'))  # Chave estrangeira para 'usuario'
+    grupo_produto_id = Column(Integer, ForeignKey('grupo_produto.id'))  # Relacionamento com 'Grupo_Produto'
     
     # Relacionamento com 'User'
     usuario = relationship("User", back_populates="componentes", foreign_keys=[usuario_id], lazy='joined')
@@ -18,14 +18,14 @@ class Componente(db.Model):
     # Relacionamento com 'Grupo_Produto'
     grupo_produto = relationship("Grupo_Produto", back_populates="componentes", lazy='joined')
     
-    defeitos = db.relationship(
+    defeitos = relationship(
     "Defeito", 
     back_populates="componente",  # Referenciar 'componente' no modelo Defeito
     lazy='joined'
 )
     
     # Relacionamento com 'Produto'
-    produtos = db.relationship(
+    produtos = relationship(
     "Produto", 
     back_populates="componente",  # Referência a "componente" no modelo Produto
     uselist=True,  # Indica que é uma relação de um-para-muitos
@@ -33,9 +33,9 @@ class Componente(db.Model):
 )
 
     # Colunas de controle de data
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)  # Data de criação
-    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)  # Data de última atualização
-    deleted_at = db.Column(db.DateTime, nullable=True)  # Data de exclusão (opcional para soft delete)
+    created_at = Column(DateTime, default=datetime.utcnow)  # Data de criação
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)  # Data de última atualização
+    deleted_at = Column(DateTime, nullable=True)  # Data de exclusão (opcional para soft delete)
 
     def __repr__(self):
         return f'<Componente id={self.id} nome={self.nome if self.nome else "Unnamed"}>'

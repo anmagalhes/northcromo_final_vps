@@ -1,5 +1,5 @@
 from ..models.funcionario import Funcionario
-from app import db
+from ..main import db
 
 # Função para listar todos os funcionários
 def list_funcionarios():

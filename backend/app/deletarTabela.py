@@ -1,4 +1,4 @@
-from app import app  # Seu app Flask
+from backend.app.main import app  # Seu app Flask
 from models import db  # Instância do banco de dados
 from models.user import User  # Importe o modelo 'Usuarios'
 

@@ -1,7 +1,6 @@
 from flask import Flask
 from marshmallow import Schema, fields
 from models import StoreModel, ItemModel
-from db import db
 
 # Schema para a loja (Store)
 class StoreSchema(Schema):

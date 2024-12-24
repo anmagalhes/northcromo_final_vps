@@ -1,22 +1,25 @@
 # app/database.py
-from sqlalchemy import text
-#from sqlalchemy import create_engine, text
-#from app import db
+from sqlalchemy import create_engine
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
+from app.config import DevelopmentConfig  # ou outro arquivo de configuração
 
+# URL do banco de dados
+DATABASE_URL = DevelopmentConfig.SQLALCHEMY_DATABASE_URI
 
-# Função para inicializar o banco de dados com a aplicação Flask
-# def init_db(app):
- #   """Inicializa o banco de dados com a aplicação Flask"""
- #   db.init_app(app)  # Apenas garante que o db esteja inicializado com a aplicação
+# Criação do engine para se conectar ao banco de dados
+engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
 
+# Sessão do banco de dados
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-# Função para testar a conexão com o banco de dados
-def test_connection(db, app):
+# Base para os modelos (todas as classes de modelo herdam de 'Base')
+Base = declarative_base()
+
+# Função para obter a sessão do banco de dados
+def get_db():
+    db = SessionLocal()
     try:
-        with app.app_context():
-            with db.engine.connect() as conn:  # Usando a engine do db
-                result = conn.execute(text('SELECT 1'))  # Executando uma consulta simples
-                print(f"Conexão bem-sucedida: {result.fetchone()}")  # Imprime o resultado
-    except Exception as e:
-        print(f"Erro ao conectar com o banco de dados: {e}")
-        raise e
+        yield db  # Isso é usado no FastAPI para passar a sessão para as dependências
+    finally:
+        db.close()

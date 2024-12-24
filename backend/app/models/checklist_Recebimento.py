@@ -1,23 +1,23 @@
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Numeric
 from sqlalchemy.orm import relationship
-from datetime import datetime
-from app import db  
+from datetime import datetime 
+from app.database import Base  # Agora importa a base do SQLAlchemy de 'datapy'
 
-class ChecklistRecebimento(db.Model):
+class ChecklistRecebimento(Base):
     __tablename__ = 'checklist_recebimento'
 
-    id = db.Column(db.Integer, primary_key=True)
-    id_Recebimento = db.Column(db.Integer, ForeignKey('recebimentos.id'), nullable=False)  # ID do recebimento
-    id_cliente = db.Column(db.Integer, ForeignKey('clientes.id'), nullable=False)  # ID do cliente
-    qtd_Produto = db.Column(Numeric(10, 2), nullable=False)  # Quantidade do produto
-    cod_Produto = db.Column(db.Integer, ForeignKey('produtos.id'), nullable=False)  # Código do produto
-    referencia_Produto = db.Column(db.String(50), nullable=False)  # Referência do produto
-    notaInterna = db.Column(db.String(50), nullable=True)  # Nota interna (opcional)
-    qUEIXA_CLIENTE = db.Column(db.String(255), nullable=True)  # Queixa do cliente (opcional)
-    dataChecklist_OrdemServicos = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)  # Data do checklist
-    usuario_id = db.Column(db.Integer, ForeignKey('usuario.id'))  # Chave estrangeira de usuários
-    LINK_PDF_CHECKLIST = db.Column(db.String(255), nullable=True)  # Link do PDF do checklist
-    Status_Checklist = db.Column(db.String(50), nullable=False)  # Status do checklist (ex: 'Concluído', 'Em andamento', etc.)
+    id = Column(Integer, primary_key=True)
+    id_Recebimento = Column(Integer, ForeignKey('recebimentos.id'), nullable=False)  # ID do recebimento
+    id_cliente = Column(Integer, ForeignKey('clientes.id'), nullable=False)  # ID do cliente
+    qtd_Produto = Column(Numeric(10, 2), nullable=False)  # Quantidade do produto
+    cod_Produto = Column(Integer, ForeignKey('produtos.id'), nullable=False)  # Código do produto
+    referencia_Produto = Column(String(50), nullable=False)  # Referência do produto
+    notaInterna = Column(String(50), nullable=True)  # Nota interna (opcional)
+    qUEIXA_CLIENTE = Column(String(255), nullable=True)  # Queixa do cliente (opcional)
+    dataChecklist_OrdemServicos = Column(DateTime, nullable=False, default=datetime.utcnow)  # Data do checklist
+    usuario_id = Column(Integer, ForeignKey('usuario.id'))  # Chave estrangeira de usuários
+    LINK_PDF_CHECKLIST = Column(String(255), nullable=True)  # Link do PDF do checklist
+    Status_Checklist = Column(String(50), nullable=False)  # Status do checklist (ex: 'Concluído', 'Em andamento', etc.)
 
     # Relacionamentos
     recebimento = relationship("Recebimento", back_populates="checklists")
@@ -29,9 +29,9 @@ class ChecklistRecebimento(db.Model):
     impressao_checklists = relationship("ImpressaoChecklistRecebimento", lazy=True)
 
     # Colunas de data e hora
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)  # Data de criação
-    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)  # Data de última atualização
-    deleted_at = db.Column(db.DateTime, nullable=True)  # Data de exclusão (opcional para soft delete)
+    created_at = Column(DateTime, default=datetime.utcnow)  # Data de criação
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)  # Data de última atualização
+    deleted_at = Column(DateTime, nullable=True)  # Data de exclusão (opcional para soft delete)
 
     def __repr__(self):
         # Acessando o nome do produto carregado (mesmo com o lazy load)

@@ -1,6 +1,4 @@
 # app/models/__init__.py
-from app import db    # Importando a instância db para vincular os modelos
-
 from .user import User                      #OK
 from .grupo_produto import Grupo_Produto    #OK
 from .operacao import Operacao              #OK
