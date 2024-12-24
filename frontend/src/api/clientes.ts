@@ -5,7 +5,7 @@ import { Cliente } from '../types/Cliente';
 // Variável para a URL base do cliente
 const url_cliente = 'https://northcromocontrole.com.br/api/cliente';
 
-// URL para listar tourl_clientedos os clientes
+// URL para listar todos os clientes
 const url_listar_clientes = `${url_cliente}/`;  // Usando / no final
 
 // URL para criar um novo cliente
