@@ -19,10 +19,13 @@ def get_cliente(id):
     cliente = Cliente.query.get(id)  # Encontra o cliente pelo ID
     return cliente_schema.dump(cliente) if cliente else None  # Serializa o cliente ou retorna None
 
-# Criar um novo cliente
 # Função para criar um novo cliente
 def create_cliente(data):
     try:
+        # Validando se todos os campos obrigatórios estão presentes
+        if not data.get('nome_cliente'):
+            raise ValueError("Os campos tipo_cliente, nome_cliente e doc_cliente são obrigatórios!")
+        
         # Atribuindo o ID do usuário (como admin, por exemplo) para o cliente
         usuario_id = data.get('usuario_id', 1)  # 1 é o ID do usuário admin, ou ID padrão
 
@@ -49,13 +52,20 @@ def create_cliente(data):
         # Adicionando o cliente à sessão do banco de dados
         g.db_session.add(cliente)
         g.db_session.commit()  # Commitando a transação no banco de dados
-
+        
         # Serializando e retornando o cliente criado
         return cliente_schema.dump(cliente)  # Usando o schema para serializar o cliente
 
-    except Exception as e:
+    except ValueError as e:
+        # Retornar erro específico de validação
         g.db_session.rollback()  # Em caso de erro, faz rollback
-        raise e  # Levanta o erro para ser tratado mais tarde
+        return jsonify({"error": str(e)}), 400
+    
+    except Exception as e:
+        # Tratar exceções inesperadas
+        g.db_session.rollback()
+        return jsonify({"error": f"Erro ao criar cliente: {str(e)}"}), 500
+    
 
 # Atualizar um cliente existente
 def update_cliente(id, data):
