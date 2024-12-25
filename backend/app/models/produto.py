@@ -6,6 +6,7 @@ from app.database import Base  # Agora importa a base do SQLAlchemy de 'database
 
 class Produto(Base):
     __tablename__ = 'produtos'
+    __table_args__ = {'extend_existing': True} 
 
     id = Column(Integer, primary_key=True)
     cod_produto = Column(Integer, unique=True, nullable=False)

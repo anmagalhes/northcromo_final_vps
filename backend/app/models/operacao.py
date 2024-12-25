@@ -5,6 +5,7 @@ from app.database import Base  # Agora importa a base do SQLAlchemy de 'datapy'
 
 class Operacao(Base):
     __tablename__ = 'operacao'  # Nome da tabela no banco de dados
+    __table_args__ = {'extend_existing': True} 
 
     id = Column(Integer, primary_key=True)
     grupo_processo = Column(String(5), unique=True, nullable=False)

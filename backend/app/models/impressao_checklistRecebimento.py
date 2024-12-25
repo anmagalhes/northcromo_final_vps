@@ -5,6 +5,7 @@ from app.database import Base  # Agora importa a base do SQLAlchemy de 'datapy'
 
 class ImpressaoChecklistRecebimento(Base):
     __tablename__ = 'impressao_checklist_recebimento'
+    __table_args__ = {'extend_existing': True} 
 
     id = Column(Integer, primary_key=True)  # Chave primária
     id_checklist = Column(Integer, ForeignKey('checklist_recebimento.id'), nullable=False)  # Chave estrangeira para 'checklist_recebimento'

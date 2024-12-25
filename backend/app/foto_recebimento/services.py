@@ -1,5 +1,4 @@
 from ..models.foto_recebimento import FotoRecebimento
-from ..main import db
 
 # Função para listar todas as fotos de recebimento
 def list_fotos():

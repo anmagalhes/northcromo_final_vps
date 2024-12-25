@@ -5,6 +5,8 @@ from app.database import Base  # Agora importa a base do SQLAlchemy de 'datapy'
 
 class ChecklistRecebimento(Base):
     __tablename__ = 'checklist_recebimento'
+    __table_args__ = {'extend_existing': True}  # Permite redefinir a tabela
+
 
     id = Column(Integer, primary_key=True)
     id_Recebimento = Column(Integer, ForeignKey('recebimentos.id'), nullable=False)  # ID do recebimento

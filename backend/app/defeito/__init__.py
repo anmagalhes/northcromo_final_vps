@@ -1,7 +1,7 @@
-from flask import Blueprint
+from fastapi import APIRouter
 
-# Cria o blueprint para o módulo defeitos
-defeito_blueprint = Blueprint('defeito', __name__)
+# Criar um roteador para o módulo 'cliente'
+defeito_router = APIRouter()
 
-# Importa as rotas que serão registradas no blueprint
+# Importar as rotas
 from . import routes

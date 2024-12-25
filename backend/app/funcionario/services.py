@@ -1,6 +1,4 @@
 from ..models.funcionario import Funcionario
-from ..main import db
-
 # Função para listar todos os funcionários
 def list_funcionarios():
     funcionarios = Funcionario.query.all()

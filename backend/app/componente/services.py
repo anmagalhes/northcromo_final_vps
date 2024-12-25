@@ -1,5 +1,4 @@
 from ..models.componente import Componente
-from ..main import db
 
 # Listar todos os componentes
 def list_componentes():

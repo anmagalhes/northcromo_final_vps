@@ -1,17 +1,32 @@
 # app/criar_tabelas.py
-from flask_migrate import Migrate  # Importando a classe Migrate corretamente
-from backend.app.main import create_app, db  # Importa a função create_app e o banco de dados
-from app.models import (User)  # Inclua os modelos desejados
+import sys
+import os
+import asyncio
+from sqlmodel import SQLModel, create_engine
+from sqlalchemy.ext.asyncio import create_async_engine
+from sqlalchemy.orm import sessionmaker
 
-def criar_tabelas():
-    app = create_app()  # Cria a instância do Flask
-    migrate = Migrate(app, db)  # Agora você pode usar a instância 'migrate'
-    with app.app_context():  # Cria o contexto da aplicação para que o db.create_all() funcione
-        print("Conectando ao banco de dados:", app.config['SQLALCHEMY_DATABASE_URI'])
-        
-        # Criação das tabelas
-        db.create_all()  # Cria todas as tabelas definidas nos modelos importados
-        print("Tabelas criadas com sucesso!")
+# Ajuste do Python Path para garantir que o diretório correto seja encontrado
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+# Configuração do banco de dados (ajuste conforme sua configuração)
+DATABASE_URL = "postgresql+asyncpg://flask_user:tonyteste@147.93.12.171:5432/northcromo"
+
+# Criação do engine assíncrono
+engine = create_async_engine(DATABASE_URL, echo=True)
+
+# Função assíncrona para criar as tabelas
+async def criar_tabelas() -> None:
+    # Importa os modelos para garantir que eles sejam registrados
+    import models  # Isso importa todos os modelos definidos no arquivo __init__.py
+
+    # Criação das tabelas no banco de dados
+    async with engine.begin() as conn:
+        # Cria as tabelas no banco de dados se não existirem
+        await conn.run_sync(SQLModel.metadata.create_all, checkfirst=True)
+
+    print("Tabelas criadas com sucesso!")
 
 if __name__ == "__main__":
-    criar_tabelas()  # Chama a função para criar as tabelas
+    # Executa a função de criação das tabelas de forma assíncrona
+    asyncio.run(criar_tabelas())

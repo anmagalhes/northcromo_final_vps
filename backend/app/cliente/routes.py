@@ -2,11 +2,9 @@
 from http import HTTPStatus
 from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.orm import Session
-from app.schemas.cliente import ClienteSchema
-from app.services import list_clientes, get_cliente, create_cliente, update_cliente, delete_cliente
-from http import HTTPStatus
+from app.cliente.services import list_clientes, get_cliente, create_cliente, update_cliente, delete_cliente
 
-# Instanciando o roteador do FastAPI
+# Instanciando o APIRouter
 cliente_router = APIRouter()
 
 # Dependência para obter a sessão do banco de dados

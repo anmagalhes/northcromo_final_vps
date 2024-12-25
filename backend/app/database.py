@@ -8,7 +8,7 @@ from app.config import DevelopmentConfig  # ou outro arquivo de configuração
 DATABASE_URL = DevelopmentConfig.SQLALCHEMY_DATABASE_URI
 
 # Criação do engine para se conectar ao banco de dados
-engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
+engine = create_engine(DATABASE_URL)
 
 # Sessão do banco de dados
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)

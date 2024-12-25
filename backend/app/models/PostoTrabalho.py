@@ -6,6 +6,7 @@ from app.database import Base  # Agora importa a base do SQLAlchemy de 'datapy'
 
 class PostoTrabalho(Base):
     __tablename__ = 'posto_trabalho'
+    __table_args__ = {'extend_existing': True} 
 
     id = Column(Integer, primary_key=True)
     nome = Column(String(40), unique=True, nullable=False)

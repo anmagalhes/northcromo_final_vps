@@ -1,7 +1,7 @@
-from flask import Blueprint
+from fastapi import APIRouter
 
-# Criar o Blueprint para usuários
-users_blueprint = Blueprint('user', __name__)
+# Criar um roteador para o módulo 'cliente'
+users_router = APIRouter()
 
-# Importar as rotas do arquivo routes.pyss
+# Importar as rotas
 from . import routes

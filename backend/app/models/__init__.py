@@ -13,6 +13,7 @@ from .recebimento import Recebimento        #OK
 from .foto_recebimento import FotoRecebimento  #OK
 from .checklist_Recebimento import ChecklistRecebimento #OK
 from .impressao_checklistRecebimento import ImpressaoChecklistRecebimento #OK
+from .teste import Teste
 
 # Função auxiliar para carregar alguma função dos modelos sem gerar ciclos de importação
 def load_some_function():

@@ -1,3 +1,8 @@
+from http import HTTPStatus
+from fastapi import APIRouter, HTTPException, Depends
+from sqlalchemy.orm import Session
+
+
 from flask import jsonify, request
 from app.models.defeito import Defeito
 from app.schemas.defeito import DefeitoSchema

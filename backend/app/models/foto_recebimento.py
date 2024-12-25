@@ -5,6 +5,8 @@ from app.database import Base  # Agora importa a base do SQLAlchemy de 'datapy'
 
 class FotoRecebimento(Base):
     __tablename__ = 'foto_recebimento'  # Nome da tabela
+    __table_args__ = {'extend_existing': True}  # Permite redefinir a tabela
+
 
     id = Column(Integer, primary_key=True)  # ID da Foto
     id_ordem = Column(String(50), nullable=False)  # ID da ordem (chave estrangeira)

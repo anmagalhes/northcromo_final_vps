@@ -1,4 +1,3 @@
-from ..main import db
 from app.models.checklist_Recebimento import ChecklistRecebimento
 
 def list_checklist():

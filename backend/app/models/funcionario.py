@@ -5,6 +5,8 @@ from app.database import Base  # Agora importa a base do SQLAlchemy de 'datapy'
 
 class Funcionario(Base):
     __tablename__ = 'funcionarios'  # Nome da tabela no banco de dados
+    __table_args__ = {'extend_existing': True}  # Permite redefinir a tabela
+
 
     id = Column(Integer, primary_key=True)
     nome = Column(String(100), nullable=False)

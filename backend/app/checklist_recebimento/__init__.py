@@ -1,9 +1,9 @@
 # checklist_recebimento/__init__.py
-from flask import Blueprint
+from fastapi import APIRouter
 
-# Cria o blueprint para checklist_recebimento
-checklist_recebimento_blueprint = Blueprint('checklist_recebimento', __name__)
+# Criar um roteador para o módulo 'cliente'
+checklist_recebimento_router = APIRouter()
 
-# Importa as rotas que serão registradas no blueprint
+# Importar as rotas
 from . import routes
 

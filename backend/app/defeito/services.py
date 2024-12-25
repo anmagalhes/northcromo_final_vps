@@ -1,4 +1,3 @@
-from ..main import db
 from app.models.defeito import Defeito
 
 # Função para listar todos os defeitos

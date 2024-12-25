@@ -1,7 +1,7 @@
-from flask import Blueprint
+from fastapi import APIRouter
 
-# Criação do Blueprint para Componente
-componente_blueprint = Blueprint('componente', __name__)
+# Criar um roteador para o módulo 'cliente'
+componente_router = APIRouter()
 
-# Importa as rotas para o blueprint
+# Importar as rotas
 from . import routes
