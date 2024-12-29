@@ -11,9 +11,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from jose import jwt, JWTError
 
-from ..models.user import User
-from ..core.config import settings
-from ..core.security import verificar_senha
+from app.models.user import User
+from app.core.config import settings
+from app.core.security import verificar_senha
 
 from pydantic import EmailStr
 

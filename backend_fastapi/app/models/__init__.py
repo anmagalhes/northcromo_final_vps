@@ -6,3 +6,4 @@ from .etapa_producao import EtapaProducao
 from .checklist import Checklist
 from .ordem_producao import OrdemProducao
 from .order import Order
+from .artigo import ArtigoModel

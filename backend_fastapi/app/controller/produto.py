@@ -8,7 +8,6 @@ from pydantic import BaseModel
 
 router = APIRouter()
 
-
 class ProdutoCreate(BaseModel):
     nome: str
     descricao: str

@@ -16,8 +16,8 @@ class UserSchemaBase(SCBaseModel):
     created_at: Optional[datetime]  # Data de criação (preenchida automaticamente)
     updated_at: Optional[datetime]  # Data de última atualização (preenchida automaticamente)
 
-class Config:
-    orm_mode = True
+    class Config:
+        orm_mode = True
 
 class UserSchemaCreate(UserSchemaBase):
     password: str
@@ -47,3 +47,11 @@ class UserSchemaWithGrupoProduto(UserSchemaBase):
 
     class Config:
         orm_mode = True
+
+class UserPublicSchema(UserSchemaBase):
+    nome: str
+
+    class Config:
+        orm_mode = True
+
+        
