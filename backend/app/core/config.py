@@ -1,5 +1,13 @@
 # app/cors/config.py
+from typing import List
+from typing import ClassVar
+from pathlib import Path
+import secrets
+from datetime import datetime, timedelta
 from pydantic_settings import BaseSettings
+from sqlalchemy.ext.declarative import declarative_base
+
+from pathlib import Path
 from dotenv import load_dotenv
 import os
 
@@ -7,6 +15,8 @@ import os
 load_dotenv()
 
 class Settings(BaseSettings):
+    Base: ClassVar = declarative_base()
+    #MEDIA = Path = Path('Media')
     # As variáveis de ambiente para conexão com o banco de dados
     DATABASE_USER: str
     DATABASE_PASSWORD: str
@@ -18,6 +28,17 @@ class Settings(BaseSettings):
     API_V1_STR: str = "/api/V1"  # Rota base da API
     VITE_API_URL: str = "https://northcromocontrole.com.br/api"
     LOG_LEVEL: str = "INFO"
+
+
+    JWT_SECRET: str = '3eNCsWDVzwssk2qG7CVwGp21QIeAGmn5floDDQ3nj8w'
+    """
+    import secret
+    token str = secrets.token_urlsafe(32)
+    """
+    ALGORITHM: str = 'HS256'
+    # Validação token o tempo
+    ACESS_TOKEN_EXPIRE_MINUTES: int =60 * 24 * 30
+    REFRESH_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 365  # 1 ano
     
     class Config:
         env_file = ".env"  # O arquivo .env será carregado automaticamente

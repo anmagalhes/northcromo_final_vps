@@ -3,9 +3,9 @@ from typing import List
 from fastapi import HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlmodel import select
-from models.teste import Teste
+from app.models.teste import Teste
 
-class CursoService:
+class UsuarioService:
     def __init__(self, db: AsyncSession):
         self.db = db
 

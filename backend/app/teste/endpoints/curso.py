@@ -10,8 +10,8 @@ from fastapi import Response
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlmodel import select
 
-from models.teste import Teste
-from core.desp import get_session
+from app.models.teste import Teste
+from app.core.desp import get_session
 
 # BYpass warning SQLModel select
 from sqlmodel.sql.expression import Select, SelectofScalar

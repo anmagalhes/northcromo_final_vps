@@ -1,6 +1,6 @@
-from backend.app.main_validado import app  # Seu app Flask
+from app.main_validado import app  # Seu app Flask
 from models import db  # Instância do banco de dados
-from models.user import User  # Importe o modelo 'Usuarios'
+from app.models.user import User  # Importe o modelo 'Usuarios'
 
 # Função para deletar a tabela 'usuarios'
 def deletar_tabela():

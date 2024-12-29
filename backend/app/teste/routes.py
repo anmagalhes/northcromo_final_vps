@@ -3,9 +3,9 @@ from typing import List
 from fastapi import APIRouter, status, Depends, HTTPException, Response
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlmodel import select
-from models.teste import Teste
+from app.models.teste import Teste
 from app.teste.services import CursoService
-from core.desp import get_session
+from app.core.desp import get_session
 
 # BYpass warning SQLModel select
 from sqlmodel.sql.expression import Select, SelectOfScalar

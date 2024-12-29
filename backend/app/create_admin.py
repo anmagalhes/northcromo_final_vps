@@ -1,4 +1,4 @@
-from backend.app.main_validado import create_app, db
+from app.main_validado import create_app, db
 from app.models import User
 from werkzeug.security import generate_password_hash
 

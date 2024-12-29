@@ -1,17 +1,18 @@
 # app/models/__init__.py
 from .user import User                      #OK
-from .grupo_produto import Grupo_Produto    #OK
-from .operacao import Operacao              #OK
-from .componente import Componente          #OK
-from .cliente import Cliente                #OK
-from .funcionario import Funcionario        #OK
+from .grupo_produto_model import Grupo_Produto    #OK
+from .operacaos_model import Operacao              #OK
+from .componente_model import Componente          #OK
+#from .cliente_model import Cliente, ChecklistRecebimento
+from .cliente_model import Cliente
+from .funcionario_model import Funcionario        #OK
 from .tarefa_produto import TarefaProduto   #OK
 from .PostoTrabalho import PostoTrabalho    #OK
-from .defeito import Defeito                #OK
+from .defeito_model import Defeito                #OK
 from .produto import Produto                #OK
 from .recebimento import Recebimento        #OK
-from .foto_recebimento import FotoRecebimento  #OK
-from .checklist_Recebimento import ChecklistRecebimento #OK
+from .foto_recebimento_model import FotoRecebimento  #OK
+from .checklist_Recebimento_model import ChecklistRecebimento #OK
 from .impressao_checklistRecebimento import ImpressaoChecklistRecebimento #OK
 from .teste import Teste
 

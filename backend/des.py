@@ -1,6 +1,6 @@
 from typing import Generator
 from sqlalchemy.ext.asyncio import AsyncSession
-from core.database import Session  # Assumindo que você tenha um Session configurado corretamente
+from app.core.database import Session  # Assumindo que você tenha um Session configurado corretamente
 
 # Função para obter a sessão assíncrona
 async def get_session() -> Generator:
