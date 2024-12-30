@@ -1,6 +1,8 @@
 # app/schemas/order_schema.py
-from pydantic import BaseModel
 from typing import List, Optional
+
+from pydantic import BaseModel
+
 from schema.task_schema import TaskSchema
 
 

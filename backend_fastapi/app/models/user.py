@@ -1,30 +1,40 @@
 # app/user/models.py
 from datetime import datetime
-from sqlalchemy import Column, Integer, String, DateTime, Boolean, JSON, ForeignKey
-from sqlalchemy.orm import relationship, Mapped, mapped_column
-from sqlalchemy.orm import validates
-from werkzeug.security import generate_password_hash, check_password_hash
-from app.core.config import settings
-from app.models.artigo import ArtigoModel
+import pytz
 
+from sqlalchemy import JSON, Boolean, DateTime, Integer, String
+from sqlalchemy.orm import Mapped, mapped_column
+
+from app.core.config import settings
+
+# Criando um timezone para São Paulo (UTC-3)
+SP_TZ = pytz.timezone("America/Sao_Paulo")
+
+#index=True - Melhora a busca caso não seja direto atualizada muitas vezes 
 
 class User(settings.Base):  # Substituímos db.Model por Base
-    __tablename__ = 'usuario'
-    __table_args__ = {'extend_existing': True}  # Permite redefinir a tabela
+    __tablename__ = "usuario"
+    __table_args__ = {"extend_existing": True}  # Permite redefinir a tabela
 
-      # Usando Mapped e mapped_column para definir as colunas
+    # Usando Mapped e mapped_column para definir as colunas
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
-    username: Mapped[str] = mapped_column(String(80), unique=True, nullable=False)
-    email: Mapped[str] = mapped_column(String(120), unique=True, nullable=False, index=True)
+    username: Mapped[str] = mapped_column(String(80), unique=True, nullable=False, index=True)
+    email: Mapped[str] = mapped_column(
+        String(120), unique=True, nullable=False, index=True
+    )
     password: Mapped[str] = mapped_column(String(128), nullable=False)
     en_admin: Mapped[bool] = mapped_column(Boolean, default=False)
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
-    updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-    deleted_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)  # Permite que seja None
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(SP_TZ))
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime, default=lambda: datetime.now(SP_TZ), onupdate=lambda: datetime.now(SP_TZ)
+    )
+    deleted_at: Mapped[datetime | None] = mapped_column(
+        DateTime, nullable=True
+    )  # Permite que seja None
 
     # Relacionamentos com outras tabelas
-    #grupo_produto_id: Mapped[int] = mapped_column(Integer, ForeignKey('grupo_produto.id'))  # Relacionamento com GrupoProduto
-    #artigo_id: Mapped[int] = mapped_column(Integer, ForeignKey('artigo.id'))  # Relacionamento com ArtigoModel
+    # grupo_produto_id: Mapped[int] = mapped_column(Integer, ForeignKey('grupo_produto.id'))  # Relacionamento com GrupoProduto
+    # artigo_id: Mapped[int] = mapped_column(Integer, ForeignKey('artigo.id'))  # Relacionamento com ArtigoModel
 
     # Relacionamentos (se houver)
     # grupo_produto: Mapped["GrupoProdutoModel"] = relationship("GrupoProdutoModel", backref="usuarios")
@@ -35,21 +45,22 @@ class User(settings.Base):  # Substituímos db.Model por Base
     extra_info: Mapped[dict | None] = mapped_column(JSON, nullable=True)
 
     # Definindo o relacionamento com o modelo Artigo
-    #artigos = relationship(
+    # artigos = relationship(
     #    "ArtigoModel",  # Isso refere-se a classe ArtigoModel
     #    back_populates="criador",
     #    lazy='joined'
-    #)
+    # )
 
-    #grupo_produtos = relationship(
+    # grupo_produtos = relationship(
     #    "Grupo_Produto",
     #    back_populates="usuario",
     #    foreign_keys=[grupo_produto_id],
-     #   lazy='joined'
-    #)
+    #   lazy='joined'
+    # )
 
     def __repr__(self):
-        return f'<User {self.username}>'
+        return f"<User {self.username}>"
+
 
 """
     # Relacionamentos

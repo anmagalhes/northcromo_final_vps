@@ -1,15 +1,15 @@
 # app/controllers/order_controller.py
 from typing import List
-from fastapi import APIRouter, Depends, status, HTTPException, Response
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import Session
 
-from app.services import order_service
-from app.schema.order_schem import OrderSchema
-from app.core.desp import get_session, get_current_user
+from fastapi import APIRouter, Depends, HTTPException, Response, status
+from sqlalchemy.ext.asyncio import AsyncSession
 
 # BYpass warning SQLModel select
 from sqlmodel.sql.expression import Select, SelectOfScalar
+
+from app.core.desp import get_session
+from app.schema.order_schem import OrderSchema
+from app.services import order_service
 
 # Corrigindo o nome do método `inherit_cache` (ao invés de `inrerit_cache`)
 SelectOfScalar.inherit_cache = True
@@ -21,7 +21,9 @@ router = APIRouter()
 # Função de dependência para obter a sessão do banco de dados
 
 
-@router.post("/orders/", response_model=OrderSchema, status_code=status.HTTP_201_CREATED)
+@router.post(
+    "/orders/", response_model=OrderSchema, status_code=status.HTTP_201_CREATED
+)
 async def create_order(order: OrderSchema, db: AsyncSession = Depends(get_session)):
     """
     Cria um novo pedido (order) na base de dados.
@@ -40,7 +42,9 @@ async def create_order(order: OrderSchema, db: AsyncSession = Depends(get_sessio
 
 
 @router.get("/orders/", response_model=List[OrderSchema])
-async def get_orders(skip: int = 0, limit: int = 10, db: AsyncSession = Depends(get_session)):
+async def get_orders(
+    skip: int = 0, limit: int = 10, db: AsyncSession = Depends(get_session)
+):
     """
     Recupera a lista de pedidos com base na paginação definida pelos parâmetros `skip` e `limit`.
 
@@ -72,14 +76,22 @@ async def get_order_by_id(order_id: int, db: AsyncSession = Depends(get_session)
         # Chamando o serviço para obter um pedido pelo ID
         order = await order_service.get_order_by_id(db=db, order_id=order_id)
         if not order:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Order not found")
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="Order not found"
+            )
         return order
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
 
-@router.put("/orders/{order_id}", response_model=OrderSchema, status_code=status.HTTP_202_ACCEPTED)
-async def update_order(order_id: int, order: OrderSchema, db: AsyncSession = Depends(get_session)):
+@router.put(
+    "/orders/{order_id}",
+    response_model=OrderSchema,
+    status_code=status.HTTP_202_ACCEPTED,
+)
+async def update_order(
+    order_id: int, order: OrderSchema, db: AsyncSession = Depends(get_session)
+):
     """
     Atualiza os dados de um pedido específico com base no `order_id`.
 
@@ -91,9 +103,13 @@ async def update_order(order_id: int, order: OrderSchema, db: AsyncSession = Dep
     """
     try:
         # Chamando o serviço para atualizar o pedido
-        updated_order = await order_service.update_order(db=db, order_id=order_id, order=order)
+        updated_order = await order_service.update_order(
+            db=db, order_id=order_id, order=order
+        )
         if not updated_order:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Order not found")
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="Order not found"
+            )
         return updated_order
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
@@ -113,7 +129,11 @@ async def delete_order(order_id: int, db: AsyncSession = Depends(get_session)):
         # Chamando o serviço para deletar o pedido
         deleted = await order_service.delete_order(db=db, order_id=order_id)
         if not deleted:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Order not found")
-        return Response(status_code=status.HTTP_204_NO_CONTENT)  # Sem conteúdo na resposta
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="Order not found"
+            )
+        return Response(
+            status_code=status.HTTP_204_NO_CONTENT
+        )  # Sem conteúdo na resposta
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))

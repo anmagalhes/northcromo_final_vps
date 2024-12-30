@@ -1,8 +1,10 @@
 # app/services/order_service.py
+from typing import List
+
+from sqlalchemy.orm import Session
+
 from app.models.order import Order
 from app.schema.order_schem import OrderSchema
-from sqlalchemy.orm import Session
-from typing import List
 
 
 def create_order(db: Session, order: OrderSchema) -> Order:

@@ -1,16 +1,16 @@
-#from app.core.database import init_db
-from uuid import uuid4
+# from app.core.database import init_db
+import os
+import sys
 from enum import Enum
 from typing import List, Optional
-from pydantic import BaseModel
-from fastapi import FastAPI, HTTPException
-import sys
-import os
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), 'app')))
+from uuid import uuid4
 
-from app.routes import (
-    user, todo
-)
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "app")))
+
+from app.routes import todo, user
 
 # Definição do FastAPI
 app = FastAPI()
@@ -18,17 +18,21 @@ app = FastAPI()
 # Registra os controladores de rotas
 app.include_router(user.router)
 app.include_router(todo.router)
-#app.include_router(produto.router)
-#app.include_router(order_controller.router)
-#app.include_router(tarefa.router)
-#app.include_router(checklist_recebimento.router)
-#app.include_router(artigo.router)
+
+
+# app.include_router(produto.router)
+# app.include_router(order_controller.router)
+# app.include_router(tarefa.router)
+# app.include_router(checklist_recebimento.router)
+# app.include_router(artigo.router)
+
 
 # Enum para o Status da Tarefa
 class TaskStatus(str, Enum):
     pending = "Pending"
     in_progress = "In Progress"
     completed = "Completed"
+
 
 # Modelo de Tarefa
 
@@ -37,6 +41,7 @@ class Task(BaseModel):
     title: str
     description: Optional[str] = None
     status: TaskStatus = TaskStatus.pending
+
 
 # Modelo de Ordem de Serviço
 
@@ -59,12 +64,14 @@ async def create_order(order: ServiceOrder):
     db_service_orders.append({"id": order_id, **order.dict()})
     return {**order.dict(), "id": order_id}
 
+
 # Rota para listar todas as ordens de serviço
 
 
 @app.get("/orders/", response_model=List[ServiceOrder])
 async def get_orders():
     return db_service_orders
+
 
 # Rota para obter uma ordem de serviço específica
 
@@ -76,6 +83,7 @@ async def get_order(order_id: str):
             return order
     raise HTTPException(status_code=404, detail="Order not found")
 
+
 # Rota para adicionar uma tarefa a uma ordem de serviço
 
 
@@ -86,6 +94,7 @@ async def add_task_to_order(order_id: str, task: Task):
             order["tasks"].append(task.dict())
             return task
     raise HTTPException(status_code=404, detail="Order not found")
+
 
 # Rota para atualizar o status de uma tarefa
 

@@ -1,26 +1,19 @@
 # app/core/auth.py
-from pytz import timezone
-
-from typing import Optional, List
 from datetime import datetime, timedelta
+from typing import Optional
 
 from fastapi.security import OAuth2PasswordBearer
-
-from sqlalchemy.future import select
+from jose import jwt
+from pydantic import EmailStr
+from pytz import timezone
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.future import select
 
-from jose import jwt, JWTError
-
-from app.models.user import User
 from app.core.config import settings
 from app.core.security import verificar_senha
+from app.models.user import User
 
-from pydantic import EmailStr
-
-oauth2_schema = OAuth2PasswordBearer(
-    tokenUrl=f"{settings.API_V1_STR}/usuarios/login"
-)
-
+oauth2_schema = OAuth2PasswordBearer(tokenUrl=f"{settings.API_V1_STR}/usuarios/login")
 
 async def autenticar(email: EmailStr, senha: str, db: AsyncSession) -> Optional[User]:
     async with db as session:
@@ -31,7 +24,7 @@ async def autenticar(email: EmailStr, senha: str, db: AsyncSession) -> Optional[
         if not usuario:
             return None
 
-        if not verificar_senha(senha, usuario.senha):
+        if not verificar_senha(senha, usuario.password):
             return None
         return usuario
 
@@ -41,7 +34,7 @@ def _criar_token(tipo_token: str, tempo_vida: timedelta, sub: str) -> str:
     payload = {}
 
     # Definindo o fuso horário de São Paulo
-    sp = timezone('America/Sao_Paulo')
+    sp = timezone("America/Sao_Paulo")
 
     # Calculando o tempo de expiração do token
     expira = datetime.now(tz=sp) + tempo_vida  # Tempo atual + tempo de vida do token
@@ -60,7 +53,9 @@ def _criar_token(tipo_token: str, tempo_vida: timedelta, sub: str) -> str:
 
 def criar_token_acesso(sub: str) -> str:
     return _criar_token(
-        tipo_token='access_token',  # Tipo do token
-        tempo_vida=timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES),  # Correção de "minutos" para "minutes"
-        sub=sub  # Subject do token (geralmente o ID do usuário ou outra chave única)
+        tipo_token="access_token",  # Tipo do token
+        tempo_vida=timedelta(
+            minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES
+        ),  # Correção de "minutos" para "minutes"
+        sub=sub,  # Subject do token (geralmente o ID do usuário ou outra chave única)
     )

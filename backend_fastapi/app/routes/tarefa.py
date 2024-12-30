@@ -1,17 +1,13 @@
 # app/controllers/tarefa_controller.py
 
+from core.desp import get_session
 from fastapi import APIRouter, Depends
+from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.future import select
-
-from sqlalchemy.orm import Session
-
-from core.desp import get_session, get_current_user
 
 from app.models.tarefa import Tarefa
-from pydantic import BaseModel
 
-router = APIRouter(prefix='/todos', tags=['tarefa'])
+router = APIRouter(prefix="/todos", tags=["tarefa"])
 
 
 class TarefaCreate(BaseModel):
