@@ -2,7 +2,7 @@
 from pydantic import BaseModel, EmailStr
 from typing import Optional
 from typing import List
-from pydantic import BaseModel as SCBaseModel, EmailStr
+from pydantic import BaseModel as SCBaseModel, EmailStr , ConfigDict
 from datetime import datetime
 
 from app.schema.order_schem import OrderSchema
@@ -16,12 +16,9 @@ class UserSchemaBase(SCBaseModel):
     created_at: Optional[datetime]  # Data de criação (preenchida automaticamente)
     updated_at: Optional[datetime]  # Data de última atualização (preenchida automaticamente)
 
-    class Config:
-        from_attributes = True
 
 class UserSchemaCreate(UserSchemaBase):
     password: str
-
 
 class UsuarioSchemaGrupoProduto(UserSchemaBase):
     grupo_produtos:Optional[List[OrderSchema]]
@@ -52,14 +49,15 @@ class UserSchemaWithGrupoProduto(UserSchemaBase):
     class Config:
         from_attributes = True
 
-class UserPublicSchema(UserSchemaBase):
+class UserPublicSchema(SCBaseModel):
     id: int
     username: str
     email: EmailStr
     nome: Optional[str] = None  # O campo 'nome' pode ser opcional
     eh_admin: Optional[bool] = None  # O campo 'eh_admin' pode ser opcional
+    model_config = ConfigDict(from_attributes = True)
 
-    class Config:
-        from_attributes = True
+    
+
 
         

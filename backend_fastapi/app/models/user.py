@@ -1,34 +1,38 @@
 # app/user/models.py
 from datetime import datetime
 from sqlalchemy import Column, Integer, String, DateTime, Boolean, JSON, ForeignKey
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, Mapped, mapped_column
 from sqlalchemy.orm import validates
 from werkzeug.security import generate_password_hash, check_password_hash
 from app.core.config import settings
 from app.models.artigo import ArtigoModel
 
-from sqlalchemy.orm import(
-    registry, Mapped, MappedColumn
-)
 
 class User(settings.Base):  # Substituímos db.Model por Base
     __tablename__ = 'usuario'
     __table_args__ = {'extend_existing': True}  # Permite redefinir a tabela
 
-    id = Column(Integer, primary_key=True, index=True)
-    username = Column(String(80), unique=True, nullable=False)
-    email = Column(String(120), unique=True, nullable=False, index=True)
-    password = Column(String(128), nullable=False)
-    en_admin = Column(Boolean, default=False)
-    created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-    deleted_at = Column(DateTime, nullable=True)
-    #grupo_produto_id = Column(Integer, ForeignKey('grupo_produto.id'))  # Alterar para 'grupo_produto.id'
-   # artigo_id = Column(Integer, ForeignKey('artigo.id'))
+      # Usando Mapped e mapped_column para definir as colunas
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    username: Mapped[str] = mapped_column(String(80), unique=True, nullable=False)
+    email: Mapped[str] = mapped_column(String(120), unique=True, nullable=False, index=True)
+    password: Mapped[str] = mapped_column(String(128), nullable=False)
+    en_admin: Mapped[bool] = mapped_column(Boolean, default=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    deleted_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)  # Permite que seja None
 
-    # Coluna para armazenar permissões ou configurações adicionais
-    permissions = Column(JSON, default=[])
-    extra_info = Column(JSON, nullable=True)
+    # Relacionamentos com outras tabelas
+    #grupo_produto_id: Mapped[int] = mapped_column(Integer, ForeignKey('grupo_produto.id'))  # Relacionamento com GrupoProduto
+    #artigo_id: Mapped[int] = mapped_column(Integer, ForeignKey('artigo.id'))  # Relacionamento com ArtigoModel
+
+    # Relacionamentos (se houver)
+    # grupo_produto: Mapped["GrupoProdutoModel"] = relationship("GrupoProdutoModel", backref="usuarios")
+    # artigo: Mapped["ArtigoModel"] = relationship("ArtigoModel", backref="usuarios")
+
+    # Colunas para armazenar permissões ou configurações adicionais
+    permissions: Mapped[list] = mapped_column(JSON, default=[])
+    extra_info: Mapped[dict | None] = mapped_column(JSON, nullable=True)
 
     # Definindo o relacionamento com o modelo Artigo
     #artigos = relationship(

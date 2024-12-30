@@ -85,17 +85,3 @@ async def get_usuario(user_id: int, db: AsyncSession = Depends(get_session)):
         )
 
     return user  # Retorna o usuário com apenas os campos definidos em UserPublicSchema
-
-
-@router.post("/register")
-async def register_user(name: str, username: str, password: str):
-    if not create_user(name, username, password):
-        raise HTTPException(status_code=400, detail="Usuário já existe!")
-    return {"message": "Usuário criado com sucesso!"}
-
-
-@router.post("/login")
-async def login(username: str, password: str):
-    if not login_user(username, password):
-        raise HTTPException(status_code=401, detail="Credenciais inválidas!")
-    return {"message": "Login bem-sucedido!"}
