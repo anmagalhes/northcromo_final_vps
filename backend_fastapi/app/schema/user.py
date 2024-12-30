@@ -16,6 +16,8 @@ class UserSchemaBase(SCBaseModel):
     created_at: Optional[datetime]  # Data de criação (preenchida automaticamente)
     updated_at: Optional[datetime]  # Data de última atualização (preenchida automaticamente)
 
+    class Config:
+        from_attributes = True
 
 class UserSchemaCreate(UserSchemaBase):
     password: str
@@ -29,12 +31,6 @@ class UserSchemaUP(UserSchemaBase):
     email: Optional[EmailStr] = None
     password: Optional[str] = None
     eh_admin: Optional[bool] = None
-
-    class Config:
-        from_attributes = True
-
-
-    # You can also define schemas for the related 'GrupoProduto' model, if needed:
 
 class GrupoProdutoSchema(SCBaseModel):
     id: int
@@ -53,8 +49,6 @@ class UserPublicSchema(SCBaseModel):
     id: int
     username: str
     email: EmailStr
-    nome: Optional[str] = None  # O campo 'nome' pode ser opcional
-    eh_admin: Optional[bool] = None  # O campo 'eh_admin' pode ser opcional
     model_config = ConfigDict(from_attributes = True)
 
     

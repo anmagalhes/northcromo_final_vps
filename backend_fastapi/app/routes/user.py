@@ -26,7 +26,7 @@ def get_logado(usuario_logado: User = Depends(get_current_user)):
     return  usuario_logado
 
 # POST /signup
-@router.post('/signup', status_code=status.HTTP_201_CREATED, response_model=UserSchemaBase)
+@router.post('/signup', status_code=status.HTTP_201_CREATED, response_model=UserPublicSchema)
 async def post_usuario(usuario: UserSchemaCreate, db: AsyncSession = Depends(get_session)):
 
     # Verifica se o username já existe
@@ -57,7 +57,7 @@ async def post_usuario(usuario: UserSchemaCreate, db: AsyncSession = Depends(get
     return novo_usuario
 
 
-@router.get('/users', response_model=List[UserSchemaBase])
+@router.get('/users', response_model=List[UserPublicSchema])
 async def get_usuarios(limit: int = 10, skip: int = 0, db: AsyncSession = Depends(get_session)):
     stmt = select(User).offset(skip).limit(limit)
     result = await db.execute(stmt)
