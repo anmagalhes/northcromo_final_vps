@@ -7,6 +7,10 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from app.core.config import settings
 from app.models.artigo import ArtigoModel
 
+from sqlalchemy.orm import(
+    registry, Mapped, MappedColumn
+)
+
 class User(settings.Base):  # Substituímos db.Model por Base
     __tablename__ = 'usuario'
     __table_args__ = {'extend_existing': True}  # Permite redefinir a tabela

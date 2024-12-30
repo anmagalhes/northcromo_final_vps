@@ -1,9 +1,13 @@
 # app/controllers/produto_controller.py
-
 from fastapi import APIRouter, Depends
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.future import select
+
 from sqlalchemy.orm import Session
-from app.database import get_db
-from app.models import produto, grupo_produto
+
+from core.desp import get_session, get_current_user
+
+from app.models import produto
 from pydantic import BaseModel
 
 router = APIRouter()
@@ -16,7 +20,7 @@ class ProdutoCreate(BaseModel):
 
 
 @router.post("/produtos/")
-def create_produto(produto: ProdutoCreate, db: Session = Depends(get_db)):
+def create_produto(produto: ProdutoCreate, db: AsyncSession = Depends(get_session)):
     db_produto = produto(**produto.dict())
     db.add(db_produto)
     db.commit()

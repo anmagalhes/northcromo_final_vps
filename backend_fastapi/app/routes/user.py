@@ -18,7 +18,7 @@ from core.desp import get_session, get_current_user
 from core.security import gerar_hash_senha
 from core.auth import autenticar, criar_token_acesso
 
-router = APIRouter()
+router = APIRouter(prefix='/todos', tags=['usuario'])
 
 # GET LOGADO
 @router.get('/logado',response_model=UserSchemaBase)

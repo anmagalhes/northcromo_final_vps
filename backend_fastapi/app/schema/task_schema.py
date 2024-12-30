@@ -9,4 +9,4 @@ class TaskSchema(BaseModel):
     status: str = "Pending"
 
     class Config:
-        orm_mode = True
+        from_attributes = True

@@ -17,7 +17,7 @@ class UserSchemaBase(SCBaseModel):
     updated_at: Optional[datetime]  # Data de última atualização (preenchida automaticamente)
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 class UserSchemaCreate(UserSchemaBase):
     password: str
@@ -34,7 +34,7 @@ class UserSchemaUP(UserSchemaBase):
     eh_admin: Optional[bool] = None
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
     # You can also define schemas for the related 'GrupoProduto' model, if needed:
@@ -44,13 +44,13 @@ class GrupoProdutoSchema(SCBaseModel):
     nome: str
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 class UserSchemaWithGrupoProduto(UserSchemaBase):
     grupo_produto: Optional[GrupoProdutoSchema]  # Include the related object
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 class UserPublicSchema(UserSchemaBase):
     id: int
@@ -60,6 +60,6 @@ class UserPublicSchema(UserSchemaBase):
     eh_admin: Optional[bool] = None  # O campo 'eh_admin' pode ser opcional
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
         

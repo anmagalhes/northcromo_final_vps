@@ -8,8 +8,8 @@ import sys
 import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), 'app')))
 
-from app.controller import (
-    produto, order_controller, tarefa, checklist_recebimento,artigo, user
+from app.routes import (
+    user, todo
 )
 
 # Definição do FastAPI
@@ -17,11 +17,12 @@ app = FastAPI()
 
 # Registra os controladores de rotas
 app.include_router(user.router)
-app.include_router(produto.router)
-app.include_router(order_controller.router)
-app.include_router(tarefa.router)
-app.include_router(checklist_recebimento.router)
-app.include_router(artigo.router)
+app.include_router(todo.router)
+#app.include_router(produto.router)
+#app.include_router(order_controller.router)
+#app.include_router(tarefa.router)
+#app.include_router(checklist_recebimento.router)
+#app.include_router(artigo.router)
 
 # Enum para o Status da Tarefa
 class TaskStatus(str, Enum):

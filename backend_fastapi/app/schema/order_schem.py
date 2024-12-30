@@ -10,4 +10,4 @@ class OrderSchema(BaseModel):
     tasks: List[TaskSchema] = []
 
     class Config:
-        orm_mode = True
+        from_attributes = True

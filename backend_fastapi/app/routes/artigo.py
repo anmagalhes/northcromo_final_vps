@@ -9,7 +9,7 @@ from models.artigo import ArtigoModel
 from models.user import User
 from app.schema.artigo__schema import ArtigoSchema
 
-router = APIRouter()
+router = APIRouter(prefix='/artigo', tags=['artigo'])
 
 @router.post('/', status_code=status.HTTP_201_CREATED, response_model=ArtigoSchema)
 async def teste_artigo(artigo: ArtigoSchema, usuario_logado: User = Depends(get_current_user), db: AsyncSession = Depends(get_session)):

@@ -14,10 +14,6 @@ from dotenv import load_dotenv
 # Carregar as variáveis de ambiente do arquivo .env
 load_dotenv()
 
-# Verifique se as variáveis estão sendo carregadas corretamente
-print(os.getenv("DATABASE_HOST"))
-
-
 class Settings(BaseSettings):
     Base: ClassVar = declarative_base()
 
@@ -27,13 +23,6 @@ class Settings(BaseSettings):
     DATABASE_HOST: str
     DATABASE_PORT: int
     DATABASE_NAME: str
-
-
-    print("DATABASE_USER:", os.getenv("DATABASE_USER"))
-    print("DATABASE_PASSWORD:", os.getenv("DATABASE_PASSWORD"))
-    print("DATABASE_HOST:", os.getenv("DATABASE_HOST"))
-    print("DATABASE_PORT:", os.getenv("DATABASE_PORT"))
-    print("DATABASE_NAME:", os.getenv("DATABASE_NAME"))
 
     # Configurações de API e log
     API_V1_STR: str = "/api/V1"  # Rota base da API
@@ -64,7 +53,6 @@ def get_database_url() -> str:
     settings = Settings()  # Criação da instância das configurações
     print("DATABASE_URL:", settings.DATABASE_URL)  # Verificando se a URL está correta
     return settings.DATABASE_URL
-
 
 # Instanciação das configurações
 settings: Settings = Settings()  # Criação da instância para ser utilizada em outros arquivos

@@ -10,7 +10,7 @@ from pydantic import BaseModel
 from app.core.database import Session
 from app.core.auth import oauth2_schema
 from app.core.config import settings
-from app.models import User
+from app.models.user import User
 
 
 class TokenData(BaseModel):

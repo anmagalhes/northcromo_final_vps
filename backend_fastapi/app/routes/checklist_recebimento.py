@@ -1,9 +1,12 @@
 # app/controllers/checklist_controller.py
-
 from fastapi import APIRouter, Depends
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.future import select
+
 from sqlalchemy.orm import Session
-from app.database import get_db
-from app.models import checklist_Recebimento
+
+from core.desp import get_session, get_current_user
+
 from pydantic import BaseModel
 
 router = APIRouter()
@@ -16,7 +19,7 @@ class ChecklistCreate(BaseModel):
 
 
 @router.post("/checklists/")
-def create_checklist(checklist: ChecklistCreate, db: Session = Depends(get_db)):
+def create_checklist(checklist: ChecklistCreate,  db: AsyncSession = Depends(get_session)):
     db_checklist = checklist(**checklist.dict())
     db.add(db_checklist)
     db.commit()
