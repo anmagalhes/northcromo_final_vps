@@ -2,10 +2,10 @@
 
 from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship
-from app.database import Base
+from app.core.config import settings
 
 
-class Produto(Base):
+class Produto(settings.Base):
     __tablename__ = "produto"
     __table_args__ = {'extend_existing': True} 
 

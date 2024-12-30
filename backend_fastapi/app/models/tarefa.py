@@ -1,10 +1,9 @@
 # app/models/Tarefa.py
 from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship
-from app.database import Base
+from app.core.config import settings
 
-
-class Tarefa(Base):
+class Tarefa(settings.Base):
     __tablename__ = "tarefa"
     __table_args__ = {'extend_existing': True} 
 

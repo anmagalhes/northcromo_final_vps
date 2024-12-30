@@ -3,6 +3,8 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
+from app.models import checklist_Recebimento
+
 # URL de conexão do banco de dados
 # O SQLite usará um arquivo chamado 'test.db' para armazenar os dados localmente.
 SQLALCHEMY_DATABASE_URL = "sqlite:///./test.db"  # SQLite armazena localmente
@@ -19,7 +21,7 @@ Base = declarative_base()
 
 def init_db():
     """ Criação das tabelas no banco de dados """
-    from app.models import grupo_produto, checklist, ordem_producao, tarefa, checklist, impressao_checklist
+    from app.models import grupo_produto, ordem_producao, tarefa, impressao_checklist
     Base.metadata.create_all(bind=engine)
 
 

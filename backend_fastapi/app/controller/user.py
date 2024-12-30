@@ -71,11 +71,12 @@ async def get_usuarios(limit: int = 10, skip: int = 0, db: AsyncSession = Depend
 
     return users  # Retorna a lista de usuários com apenas username e email
 
-@router.get('/users/{user_id}', response_model=UserSchemaBase)
+@router.get('/users/{user_id}', response_model=UserPublicSchema)
 async def get_usuario(user_id: int, db: AsyncSession = Depends(get_session)):
+    # Consulta para buscar o usuário pelo ID
     stmt = select(User).filter(User.id == user_id)
     result = await db.execute(stmt)
-    user = result.scalars().first()
+    user = result.scalars().first()  # Retorna o primeiro usuário encontrado, ou None
 
     if not user:
         raise HTTPException(
@@ -83,7 +84,7 @@ async def get_usuario(user_id: int, db: AsyncSession = Depends(get_session)):
             detail="User not found"
         )
 
-    return user  # Retorna o usuário com username e email
+    return user  # Retorna o usuário com apenas os campos definidos em UserPublicSchema
 
 
 @router.post("/register")

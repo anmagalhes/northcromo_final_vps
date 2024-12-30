@@ -1,10 +1,14 @@
 # app/models/OrdemProducao.py
-from sqlalchemy import Column, Integer, String, DateTime
+from datetime import datetime
+from sqlalchemy import Column, Integer, String, DateTime, Boolean, JSON, ForeignKey, Numeric, Boolean
+from typing import List, Optional
+
 from sqlalchemy.orm import relationship
-from app.database import Base
+from sqlalchemy.orm import validates
 
+from app.core.config import settings
 
-class OrdemProducao(Base):
+class OrdemProducao(settings.Base):
     __tablename__ = "ordem_producao"
     __table_args__ = {'extend_existing': True} 
 

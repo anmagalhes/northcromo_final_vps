@@ -33,6 +33,10 @@ class UserSchemaUP(UserSchemaBase):
     password: Optional[str] = None
     eh_admin: Optional[bool] = None
 
+    class Config:
+        orm_mode = True
+
+
     # You can also define schemas for the related 'GrupoProduto' model, if needed:
 
 class GrupoProdutoSchema(SCBaseModel):
@@ -49,7 +53,11 @@ class UserSchemaWithGrupoProduto(UserSchemaBase):
         orm_mode = True
 
 class UserPublicSchema(UserSchemaBase):
-    nome: str
+    id: int
+    username: str
+    email: EmailStr
+    nome: Optional[str] = None  # O campo 'nome' pode ser opcional
+    eh_admin: Optional[bool] = None  # O campo 'eh_admin' pode ser opcional
 
     class Config:
         orm_mode = True

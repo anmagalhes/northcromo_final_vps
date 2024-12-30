@@ -1,11 +1,14 @@
 # app/models.py
+from datetime import datetime
+from sqlalchemy import Column, Integer, String, DateTime, Boolean, JSON, ForeignKey, Numeric
+from typing import List, Optional
 
-from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship
-from app.database import Base
+from sqlalchemy.orm import validates
 
+from app.core.config import settings
 
-class EtapaProducao(Base):
+class EtapaProducao(settings.Base):
     __tablename__ = "etapa_producao"
     __table_args__ = {'extend_existing': True} 
 

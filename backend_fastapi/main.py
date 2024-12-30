@@ -1,4 +1,4 @@
-from app.database import init_db
+#from app.core.database import init_db
 from uuid import uuid4
 from enum import Enum
 from typing import List, Optional
@@ -14,12 +14,6 @@ from app.controller import (
 
 # Definição do FastAPI
 app = FastAPI()
-
-
-@app.on_event("startup")
-def on_startup():
-    init_db()  # Cria as tabelas no banco de dados
-
 
 # Registra os controladores de rotas
 app.include_router(user.router)

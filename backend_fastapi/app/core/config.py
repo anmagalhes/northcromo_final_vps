@@ -8,22 +8,32 @@ from pydantic_settings import BaseSettings
 from sqlalchemy.ext.declarative import declarative_base
 
 from pathlib import Path
-from dotenv import load_dotenv
 import os
+from dotenv import load_dotenv
 
 # Carregar as variáveis de ambiente do arquivo .env
 load_dotenv()
 
+# Verifique se as variáveis estão sendo carregadas corretamente
+print(os.getenv("DATABASE_HOST"))
+
 
 class Settings(BaseSettings):
     Base: ClassVar = declarative_base()
-    # MEDIA = Path = Path('Media')
-    # As variáveis de ambiente para conexão com o banco de dados
+
+    # Variáveis de ambiente para conexão com o banco de dados
     DATABASE_USER: str
     DATABASE_PASSWORD: str
     DATABASE_HOST: str
     DATABASE_PORT: int
     DATABASE_NAME: str
+
+
+    print("DATABASE_USER:", os.getenv("DATABASE_USER"))
+    print("DATABASE_PASSWORD:", os.getenv("DATABASE_PASSWORD"))
+    print("DATABASE_HOST:", os.getenv("DATABASE_HOST"))
+    print("DATABASE_PORT:", os.getenv("DATABASE_PORT"))
+    print("DATABASE_NAME:", os.getenv("DATABASE_NAME"))
 
     # Configurações de API e log
     API_V1_STR: str = "/api/V1"  # Rota base da API
@@ -48,11 +58,7 @@ class Settings(BaseSettings):
 
     @property
     def DATABASE_URL(self) -> str:
-        # Construa a URL do banco de dados usando as variáveis de ambiente carregadas
-        return f"postgresql+asyncpg://{self.DATABASE_USER}:{self.DATABASE_PASSWORD}@{self.DATABASE_HOST}:{self.DATABASE_PORT}/{self.DATABASE_NAME}"
-
-# Função para obter a URL do banco de dados
-
+         return f"postgresql+asyncpg://{self.DATABASE_USER}:{self.DATABASE_PASSWORD}@{self.DATABASE_HOST}:{self.DATABASE_PORT}/{self.DATABASE_NAME}"
 
 def get_database_url() -> str:
     settings = Settings()  # Criação da instância das configurações

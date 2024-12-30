@@ -1,11 +1,11 @@
 # app/models/task.py
 from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship
-from app.database import Base
+from app.core.config import settings
 from app.models.order import Order
 
 
-class Task(Base):
+class Task(settings.Base):
     __tablename__ = 'tasks'
     __table_args__ = {'extend_existing': True} 
 

@@ -1,10 +1,10 @@
 # app/models/order.py
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import relationship
-from app.database import Base
+from app.core.config import settings
 
 
-class Order(Base):
+class Order(settings.Base):
     __tablename__ = 'orders'
     __table_args__ = {'extend_existing': True} 
 
