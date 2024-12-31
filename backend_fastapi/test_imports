@@ -1,0 +1,27 @@
+from sqlalchemy import create_engine
+from sqlalchemy.orm import declarative_base, Mapped, mapped_column, relationship
+from sqlalchemy import Integer, String
+
+# Criação de uma base declarativa
+Base = declarative_base()
+
+# Definição de uma tabela simples 'User'
+class User(Base):
+    __tablename__ = 'user'
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    name: Mapped[str] = mapped_column(String)
+
+# Definição de uma tabela com relacionamento 'Grupo_Produto'
+class Grupo_Produto(Base):
+    __tablename__ = 'grupo_produto'
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    name: Mapped[str] = mapped_column(String)
+    usuario: Mapped["User"] = relationship("User")
+
+# Criando um banco de dados SQLite em memória
+engine = create_engine('sqlite:///:memory:')
+Base.metadata.create_all(engine)
+
+print("Importação e criação de tabelas bem-sucedidas!")

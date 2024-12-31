@@ -8,12 +8,11 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.schema.todo import TodoPublic, TodoSchema
 
-router = APIRouter(prefix="/todos", tags=["todos"])
+router = APIRouter(prefix="/todo", tags=["todo"])
 
 # Criando uma variável para a dependência com Annotated
 DbSession = Annotated[AsyncSession, Depends(get_session)]
 Current_user = Annotated[User, Depends(get_current_user)]
-
 
 @router.post("/", response_model=TodoPublic)
 async def create_todo(

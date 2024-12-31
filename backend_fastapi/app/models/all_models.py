@@ -1,1 +1,5 @@
-# app/models/__init__.py
+# app/models/all_models.py
+from .cliente import Cliente
+from .grupo_produto import Grupo_Produto
+from .user import User
+from .artigo import ArtigoModel

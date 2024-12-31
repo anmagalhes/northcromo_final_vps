@@ -15,12 +15,10 @@ from sqlalchemy.future import select
 from app.models.user import User
 from app.schema.user import UserPublicSchema, UserSchemaBase, UserSchemaCreate, UserSchemaUP
 
-router = APIRouter(prefix="/todos", tags=["usuario"])
-
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/usuarios/login")
+router = APIRouter(prefix="/api/usuario", tags=["usuario"])
 
 # GET LOGADO
-@router.get("/logado", response_model=UserSchemaBase)
+@router.get("/logado", response_model=UserPublicSchema)
 def get_logado(usuario_logado: User = Depends(get_current_user)):
     return usuario_logado
 

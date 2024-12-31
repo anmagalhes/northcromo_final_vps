@@ -1,3 +1,4 @@
+# app/criar_tabelas.py
 import os
 import sys
 
@@ -6,10 +7,9 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")
 
 import asyncio
 
-from app.core.config import settings
-from app.core.database import engine  # Use o engine para execução DDL
-from app.models.all_models import *  # Certifique-se de importar seus modelos aqui
-
+from app.core.config import settings  # Certifique-se de que Base esteja aqui
+from app.core.database import engine  # Usando o engine para execução DDL
+from app.models.all_models import *  # Importe os modelos de fato
 
 # Função assíncrona para criar as tabelas
 async def criar_tabelas() -> None:
@@ -19,7 +19,6 @@ async def criar_tabelas() -> None:
         await conn.run_sync(settings.Base.metadata.create_all, checkfirst=True)
 
     print("Tabelas criadas com sucesso!")
-
 
 # Chama a função para executar a criação das tabelas
 if __name__ == "__main__":

@@ -67,7 +67,6 @@ class UserPublicSchema(SCBaseModel):
     id: int
     username: str
     email: EmailStr
-    password: str
     model_config = ConfigDict(from_attributes=True)
 
 class TokenData(SCBaseModel):

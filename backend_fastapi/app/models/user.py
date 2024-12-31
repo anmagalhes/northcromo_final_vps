@@ -1,157 +1,50 @@
-# app/user/models.py
+# app/models/user.py
 from datetime import datetime
 import pytz
 
-from sqlalchemy import JSON, Boolean, DateTime, Integer, String
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy import JSON, Boolean, DateTime, ForeignKey, Integer, String
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.config import settings
 
+from typing import Optional 
+
+#from models.clientes import clientes
+#from app.models.grupo_produto import Grupo_Produto
+
 # Criando um timezone para São Paulo (UTC-3)
 SP_TZ = pytz.timezone("America/Sao_Paulo")
-
-#index=True - Melhora a busca caso não seja direto atualizada muitas vezes 
 
 class User(settings.Base):  # Substituímos db.Model por Base
     __tablename__ = "usuario"
     __table_args__ = {"extend_existing": True}  # Permite redefinir a tabela
 
     # Usando Mapped e mapped_column para definir as colunas
-    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
-    username: Mapped[str] = mapped_column(String(80), unique=True, nullable=False, index=True)
-    email: Mapped[str] = mapped_column(
-        String(120), unique=True, nullable=False, index=True
-    )
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    username: Mapped[str] = mapped_column(String(80), unique=True, nullable=False)
+    email: Mapped[str] = mapped_column(String(120), unique=True, nullable=False)
     password: Mapped[str] = mapped_column(String(128), nullable=False)
     en_admin: Mapped[bool] = mapped_column(Boolean, default=False)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(SP_TZ))
     updated_at: Mapped[datetime] = mapped_column(
         DateTime, default=lambda: datetime.now(SP_TZ), onupdate=lambda: datetime.now(SP_TZ)
     )
-    deleted_at: Mapped[datetime | None] = mapped_column(
-        DateTime, nullable=True
-    )  # Permite que seja None
+    deleted_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)  # Permite que seja None
 
-    # Relacionamentos com outras tabelas
-    # grupo_produto_id: Mapped[int] = mapped_column(Integer, ForeignKey('grupo_produto.id'))  # Relacionamento com GrupoProduto
-    # artigo_id: Mapped[int] = mapped_column(Integer, ForeignKey('artigo.id'))  # Relacionamento com ArtigoModel
+     # Relacionamento com Grupo_Produto
+    grupo_produto_id: Mapped[int] = mapped_column(Integer, ForeignKey('grupo_produto.id', name='fk_usuario_grupo_produto'))
+    grupo_produto: Mapped["Grupo_Produto"] = relationship("Grupo_Produto", back_populates="usuarios", lazy='joined')
 
-    # Relacionamentos (se houver)
-    # grupo_produto: Mapped["GrupoProdutoModel"] = relationship("GrupoProdutoModel", backref="usuarios")
-    # artigo: Mapped["ArtigoModel"] = relationship("ArtigoModel", backref="usuarios")
+    # Relacionamentos com o modelo clientes
+    clientes_id: Mapped[Optional[int]] = mapped_column(Integer, ForeignKey('clientes.id', name='fk_usuario_clientes'), nullable=True)
+    clientes: Mapped["cliente"] = relationship("cliente", back_populates="usuario", lazy="joined")
+
+    # Relacionamento com o modelo Recebimento (importação tardia)
+    recebimentos: Mapped[list] = relationship("Recebimento", back_populates="usuario", lazy="joined")
 
     # Colunas para armazenar permissões ou configurações adicionais
     permissions: Mapped[list] = mapped_column(JSON, default=[])
     extra_info: Mapped[dict | None] = mapped_column(JSON, nullable=True)
 
-    # Definindo o relacionamento com o modelo Artigo
-    # artigos = relationship(
-    #    "ArtigoModel",  # Isso refere-se a classe ArtigoModel
-    #    back_populates="criador",
-    #    lazy='joined'
-    # )
-
-    # grupo_produtos = relationship(
-    #    "Grupo_Produto",
-    #    back_populates="usuario",
-    #    foreign_keys=[grupo_produto_id],
-    #   lazy='joined'
-    # )
-
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"<User {self.username}>"
-
-
-"""
-    # Relacionamentos
-    clientes = relationship(
-        "Cliente", 
-        back_populates="usuario", 
-        uselist=True,
-        lazy='joined'
-    )
-
-    # A chave estrangeira do relacionamento foi especificada explicitamente
-    #grupo_produtos = relationship(
-    #    "Grupo_Produto",
-    #    back_populates="usuario",
-    #    foreign_keys=[grupo_produto_id],  # Explicitly specify the foreign key
-    #    lazy='joined'
-    #)
-
-    componentes = relationship(
-        "Componente", 
-        back_populates='usuario', 
-        lazy='joined'
-    )
-
-    operacao = relationship(
-        "Operacao", 
-        back_populates='usuario', 
-        lazy='joined'
-    )
-
-    posto_trabalho = relationship(
-        "PostoTrabalho", 
-        back_populates="usuario", 
-        lazy='joined'
-    )
-
-    defeitos = relationship(
-        "Defeito", 
-        back_populates='usuario', 
-        lazy='joined'
-    )
-
-    tarefa_produto = relationship(
-        "TarefaProduto", 
-        back_populates="usuario", 
-        lazy='joined'
-    )
-    
-    recebimentos = relationship(
-        "Recebimento", 
-        back_populates='usuario', 
-        lazy='joined'
-    )
-
-    produtos = relationship(
-        "Produto", 
-        back_populates='usuario', 
-        lazy='joined'
-    )
-
-    checklists = relationship(
-        "ChecklistRecebimento", 
-        back_populates='usuario', 
-        lazy='joined'
-    )
-
-    impressao_checklists = relationship(
-        "ImpressaoChecklistRecebimento", 
-        back_populates="usuario",  
-        lazy='joined'
-    )
-
-    funcionarios = relationship(
-        "Funcionario", 
-        back_populates="usuario",  
-        lazy='joined'
-    )
-
-    # Métodos para senha
-    def set_password(self, password):
-        self.password = generate_password_hash(password)
-    
-    def check_password(self, password):
-        return check_password_hash(self.password, password)
-
-    @validates('created_at')
-    def validate_created_at(self, key, value):
-        return value or datetime.utcnow()
-
-    @validates('updated_at')
-    def validate_updated_at(self, key, value):
-        return value or datetime.utcnow()
-
-"""

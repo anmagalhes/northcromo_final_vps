@@ -20,7 +20,7 @@ class Settings(BaseSettings):
     DATABASE_NAME: str
 
     # Configurações de API e log
-    API_V1_STR: str = "/api/V1"  # Rota base da API
+    API_V1_STR: str = "/api"  # Rota base da API
     VITE_API_URL: str = "https://northcromocontrole.com.br/api"
     LOG_LEVEL: str = "INFO"
 
