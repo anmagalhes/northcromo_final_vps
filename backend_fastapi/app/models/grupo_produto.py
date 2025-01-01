@@ -6,11 +6,9 @@ from sqlalchemy import JSON, Boolean, DateTime, ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.config import settings
-from models.user import User
 
 # Criando um timezone para São Paulo (UTC-3)
 SP_TZ = pytz.timezone("America/Sao_Paulo")
-
 
 class Grupo_Produto(settings.Base):
     __tablename__: str = 'grupo_produto'  # Nome da tabela no banco de dados
@@ -18,12 +16,12 @@ class Grupo_Produto(settings.Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     name: Mapped[str] = mapped_column(String(20), unique=True, nullable=False)
-    usuario_id: Mapped[str] = mapped_column(Integer, ForeignKey('usuario.id')) # Tabela Campo
+    usuario_id: Mapped[int] = mapped_column(Integer, ForeignKey('usuario.id')) # Tabela Campo
     
-    # Relacionamento com 'User'
-    usuario: Mapped["User"] = relationship(  # Aqui você usa a string "User"
-        "User",  # A classe 'User'
-        back_populates="grupos_produto",  # Relacionamento bidirecional
+    # Relacionamento MANY-TO-ONE de Grupo_Produto para User (não 'Usuario')
+    usuario: Mapped["User"] = relationship(
+        "User",  # Referência correta à classe 'User'
+        back_populates="grupo_produtos",  # Nome do campo de volta no User
         lazy='joined'
     )
 

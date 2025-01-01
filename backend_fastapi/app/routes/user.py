@@ -12,10 +12,16 @@ from app.core.auth import autenticar, criar_token_acesso
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
-from app.models.user import User
-from app.schema.user import UserPublicSchema, UserSchemaBase, UserSchemaCreate, UserSchemaUP
+from app.models.user_model import User
+from app.schema.user import (
+    UserPublicSchema,
+    UserSchemaBase,
+    UserSchemaCreate,
+    UserSchemaUP,
+)
 
 router = APIRouter(prefix="/api/usuario", tags=["usuario"])
+
 
 # GET LOGADO
 @router.get("/logado", response_model=UserPublicSchema)
@@ -98,31 +104,34 @@ async def login(
 ):
     # Autentica o usuário (verifica email e senha)
     usuario = await autenticar(form_data.username, form_data.password, db)
-    
+
     # Se o usuário não for encontrado ou a senha estiver incorreta
     if not usuario:
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED, 
-            detail="Dados de acesso incorretos."  # Mensagem de erro personalizada
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Dados de acesso incorretos.",  # Mensagem de erro personalizada
         )
 
     # Gera o token de acesso, passando o ID do usuário como 'sub'
-    access_token = criar_token_acesso(sub=usuario.id)  # O 'sub' normalmente é o ID ou username do usuário
+    access_token = criar_token_acesso(
+        sub=usuario.id
+    )  # O 'sub' normalmente é o ID ou username do usuário
 
     # Retorna o token de acesso em formato JSON
     return JSONResponse(
         content={
             "access_token": access_token,  # O token gerado
-            "token_type": "bearer"  # Tipo de token (bearer)
+            "token_type": "bearer",  # Tipo de token (bearer)
         },
-        status_code=status.HTTP_200_OK  # Código de resposta 200 OK
+        status_code=status.HTTP_200_OK,  # Código de resposta 200 OK
     )
+
 
 @router.put("/update_user/{user_id}", response_model=UserPublicSchema)
 async def update_usuario(
     user_id: int,
     usuario: UserSchemaUP,  # Usando o schema para dados de atualização
-    db: AsyncSession = Depends(get_session)
+    db: AsyncSession = Depends(get_session),
 ):
     # Consulta para buscar o usuário pelo ID
     stmt = select(User).filter(User.id == user_id)
@@ -155,7 +164,7 @@ async def update_usuario(
         await db.rollback()  # Reverte a transação em caso de erro
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="An error occurred while updating the user"
+            detail="An error occurred while updating the user",
         )
 
     # Retorna o usuário atualizado, sem a senha

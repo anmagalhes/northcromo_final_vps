@@ -1,4 +1,4 @@
-#app/core/security.py
+# app/core/security.py
 from passlib.context import CryptContext
 
 CRIPTO = CryptContext(schemes=["bcrypt"], deprecated="auto")

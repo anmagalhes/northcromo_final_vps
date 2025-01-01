@@ -12,13 +12,17 @@ import pytz
 # Fuso horário de São Paulo
 SP_TZ = pytz.timezone("America/Sao_Paulo")
 
+
 class SCBaseModel(BaseModel):
     class Config:
         # Adiciona o comportamento padrão de conversão para json
         json_encoders = {
-            datetime: lambda v: v.astimezone(SP_TZ).isoformat() if v else None  # Converte datetime para string ISO com o fuso horário de SP
+            datetime: lambda v: (
+                v.astimezone(SP_TZ).isoformat() if v else None
+            )  # Converte datetime para string ISO com o fuso horário de SP
         }
-        
+
+
 class UserSchemaBase(SCBaseModel):
     id: Optional[int] = None
     username: str
@@ -48,6 +52,7 @@ class UserSchemaUP(UserSchemaBase):
     password: Optional[str] = None
     eh_admin: Optional[bool] = None
 
+
 class GrupoProdutoSchema(SCBaseModel):
     id: int
     nome: str
@@ -68,6 +73,7 @@ class UserPublicSchema(SCBaseModel):
     username: str
     email: EmailStr
     model_config = ConfigDict(from_attributes=True)
+
 
 class TokenData(SCBaseModel):
     username: Optional[str] = None

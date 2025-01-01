@@ -1,6 +1,7 @@
 import asyncio
 import asyncpg
 
+
 # Função para listar tabelas e colunas
 async def listar_tabelas_e_colunas():
     # Conectar ao banco de dados PostgreSQL
@@ -26,7 +27,8 @@ async def listar_tabelas_e_colunas():
             SELECT column_name, data_type
             FROM information_schema.columns
             WHERE table_name = $1;
-            """, tabela_nome
+            """,
+            tabela_nome,
         )
 
         # Exibe todas as colunas da tabela

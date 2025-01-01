@@ -13,8 +13,10 @@ from sqlalchemy.future import select
 from app.core.auth import oauth2_schema
 from app.core.config import settings
 from app.core.database import Session
-from app.models.user import User
+from app.models.user_model import User
+
 from app.schema.user import TokenData
+
 
 async def get_session() -> Generator[AsyncSession, None, None]:
     async with Session() as session:  # Usando async with para garantir que a sessão seja fechada automaticamente
@@ -65,11 +67,10 @@ async def get_current_user(
             raise credential_exception
 
         return usuario
-    
 
 
 async def valida_login(request: Request) -> Optional[User]:
-    context = {"request": request,"ano":datetime.now().year}
+    context = {"request": request, "ano": datetime.now().year}
 
     usuario_id: int = get_current_user(request=request)
 
