@@ -31,7 +31,7 @@ from app.models import (
     ChecklistRecebimento,
     ImpressaoChecklistRecebimento,
     FotoRecebimento,
-    funcionario
+    funcionario,
 )
 
 
@@ -44,6 +44,7 @@ class StatusOrdem(str, PyEnum):
     EM_ANDAMENTO = "Em andamento"
     CONCLUIDO = "Concluído"
     CANCELADO = "Cancelado"
+
 
 class TipoOrdemEnum(str, Enum):
     NAO = "NÃO"
@@ -60,14 +61,16 @@ class Recebimento(settings.Base):  # Substituímos db.Model por Base
     tipo_ordem: Mapped[TipoOrdemEnum] = mapped_column(
         Enum(TipoOrdemEnum), nullable=False, index=True, default=TipoOrdemEnum.NOVO
     )  # Tipo da ordem: 'NÃO' ou 'NOVO'
-    
+
     id_cliente: Mapped[int] = mapped_column(
         Integer, ForeignKey("clientes.id"), nullable=False
     )  # Chave estrangeira para Cliente
     cliente: Mapped[Cliente] = relationship("Cliente", back_populates="recebimentos")
 
     funcionario_id: Mapped[int] = mapped_column(ForeignKey("funcionario.id"))
-    funcionario: Mapped[Funcionario] = relationship("Funcionario", back_populates="recebimentos")
+    funcionario: Mapped[Funcionario] = relationship(
+        "Funcionario", back_populates="recebimentos"
+    )
 
     qtd_produto: Mapped[float] = mapped_column(
         DECIMAL(10, 2), nullable=False

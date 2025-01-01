@@ -25,8 +25,9 @@ from app.schema.user import (
 # Configuração do router com o prefixo dinâmico
 router = APIRouter(
     prefix=f"{settings.API_V1_STR}/usuario",  # Utiliza o valor configurado em API_V1_STR
-    tags=["usuario"]
+    tags=["usuario"],
 )
+
 
 # GET LOGADO
 @router.get("/logado", response_model=UserPublicSchema)

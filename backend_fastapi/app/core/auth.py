@@ -16,6 +16,7 @@ from app.models.user import User
 # Define o esquema OAuth2 para o login
 oauth2_schema = OAuth2PasswordBearer(tokenUrl=f"{settings.API_V1_STR}/usuario/login")
 
+
 async def autenticar(username: str, senha: str, db: AsyncSession) -> Optional[User]:
     async with db as session:
         query = select(User).filter(User.username == username)

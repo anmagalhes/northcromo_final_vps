@@ -25,11 +25,15 @@ def get_current_time_in_sp() -> datetime:
     return datetime.now(SP_TZ).astimezone(
         SP_TZ
     )  # Garante que a data e hora sejam "aware"
+
+
 # TESTE
+
 
 # Alternativa: utilizar UTC
 def get_current_time_in_utc() -> datetime:
     return datetime.now(pytz.utc)  # Retorna o datetime no UTC
+
 
 class Grupo_Produto(settings.Base):
     __tablename__ = "grupo_produto"  # Nome da tabela no banco de dados

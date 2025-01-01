@@ -12,7 +12,7 @@ from sqlalchemy import (
     ForeignKey,
     Table,
     Column,
-    Enum as SAEnum
+    Enum as SAEnum,
 )
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.core.config import settings
@@ -27,11 +27,15 @@ def get_current_time_in_sp() -> datetime:
     return datetime.now(SP_TZ).astimezone(
         SP_TZ
     )  # Garante que a data e hora sejam "aware"
+
+
 # TESTE
+
 
 # Alternativa: utilizar UTC
 def get_current_time_in_utc() -> datetime:
     return datetime.now(pytz.utc)  # Retorna o datetime no UTC
+
 
 class TodoState(str, Enum):
     draf = "draft"
@@ -40,11 +44,12 @@ class TodoState(str, Enum):
     done = "done"
     trash = "trash"
 
+
 class Todo(settings.Base):  # Substituímos db.Model por Base
     __tablename__ = "todos"
     __table_args__ = {"extend_existing": True}  # Permite redefinir a tabela
 
-    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True) #a
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)  # a
     titulo: Mapped[str] = mapped_column(String, unique=True, nullable=False)
     descricao: Mapped[str] = mapped_column(String, unique=True, nullable=False)
     status: Mapped[TodoState] = mapped_column(SAEnum(TodoState), nullable=True)
@@ -73,5 +78,6 @@ class Todo(settings.Base):  # Substituímos db.Model por Base
         back_populates="todos",  # Nome do campo de volta no User
         lazy="joined",
     )
+
     def __repr__(self):
         return f"Todo(id={self.id}, titulo={self.titulo}, status={self.status})"

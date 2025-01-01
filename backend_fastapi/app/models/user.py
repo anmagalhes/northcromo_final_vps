@@ -28,11 +28,15 @@ def get_current_time_in_sp() -> datetime:
     return datetime.now(SP_TZ).astimezone(
         SP_TZ
     )  # Garante que a data e hora sejam "aware"
+
+
 # TESTE
+
 
 # Alternativa: utilizar UTC
 def get_current_time_in_utc() -> datetime:
     return datetime.now(pytz.utc)  # Retorna o datetime no UTC
+
 
 class User(settings.Base):  # Substituímos db.Model por Base
     __tablename__ = "usuario"
@@ -57,10 +61,10 @@ class User(settings.Base):  # Substituímos db.Model por Base
     )  # Permite que seja None
 
     # Colunas para armazenar permissões ou configurações adicionais
-    #permissions: Mapped[List[str]] = mapped_column(
+    # permissions: Mapped[List[str]] = mapped_column(
     #    JSON, default=list, nullable=True
-    #)  # Usando list() em vez de []
-    #extra_info: Mapped[Optional[dict]] = mapped_column(JSON, nullable=True)
+    # )  # Usando list() em vez de []
+    # extra_info: Mapped[Optional[dict]] = mapped_column(JSON, nullable=True)
 
     # Relacionamento ONE-TO-MANY de Usuario para Grupo_Produto
     grupo_produtos: Mapped[List["Grupo_Produto"]] = relationship(
@@ -72,16 +76,16 @@ class User(settings.Base):  # Substituímos db.Model por Base
 
     # Relacionamentos com o modelo clientes
     clientes: Mapped[List["Cliente"]] = relationship(
-        "Cliente", 
-        back_populates="usuario", 
+        "Cliente",
+        back_populates="usuario",
         lazy="joined",
         uselist=True,  # Permite que seja uma lista vazia
     )
 
     # Relacionamentos com o modelo clientes
     todos: Mapped[List["Todo"]] = relationship(
-        "Todo", 
-        back_populates="usuario", 
+        "Todo",
+        back_populates="usuario",
         lazy="joined",
         uselist=True,  # Permite que seja uma lista vazia
     )
