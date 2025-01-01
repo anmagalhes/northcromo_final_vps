@@ -31,6 +31,7 @@ from app.models import (
     ChecklistRecebimento,
     ImpressaoChecklistRecebimento,
     FotoRecebimento,
+    funcionario
 )
 
 
@@ -39,10 +40,14 @@ SP_TZ = pytz.timezone("America/Sao_Paulo")
 
 
 # Definir a enumeração para os status da ordem
-class StatusOrdem(PyEnum):
+class StatusOrdem(str, PyEnum):
     EM_ANDAMENTO = "Em andamento"
     CONCLUIDO = "Concluído"
     CANCELADO = "Cancelado"
+
+class TipoOrdemEnum(str, Enum):
+    NAO = "NÃO"
+    NOVO = "NOVO"
 
 
 class Recebimento(settings.Base):  # Substituímos db.Model por Base
@@ -52,12 +57,18 @@ class Recebimento(settings.Base):  # Substituímos db.Model por Base
     # Usando Mapped e mapped_column para definir as colunas
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     id_ordem: Mapped[int] = mapped_column(String(9), nullable=False)  # Número da ordem
-    tipo_ordem: Mapped[int] = mapped_column(
-        String(4), nullable=False, index=True
-    )  # Tipo da ordem
+    tipo_ordem: Mapped[TipoOrdemEnum] = mapped_column(
+        Enum(TipoOrdemEnum), nullable=False, index=True, default=TipoOrdemEnum.NOVO
+    )  # Tipo da ordem: 'NÃO' ou 'NOVO'
+    
     id_cliente: Mapped[int] = mapped_column(
         Integer, ForeignKey("clientes.id"), nullable=False
     )  # Chave estrangeira para Cliente
+    cliente: Mapped[Cliente] = relationship("Cliente", back_populates="recebimentos")
+
+    funcionario_id: Mapped[int] = mapped_column(ForeignKey("funcionario.id"))
+    funcionario: Mapped[Funcionario] = relationship("Funcionario", back_populates="recebimentos")
+
     qtd_produto: Mapped[float] = mapped_column(
         DECIMAL(10, 2), nullable=False
     )  # Quantidade do produto
@@ -77,8 +88,8 @@ class Recebimento(settings.Base):  # Substituímos db.Model por Base
         Text, nullable=False
     )  # Queixa do cliente (opcional)
     status_ordem: Mapped[StatusOrdem] = mapped_column(
-        Enum(StatusOrdem), nullable=False, default=StatusOrdem.EM_ANDAMENTO
-    )  # Usando Enum
+        Enum(StatusOrdem), nullable=False, index=True
+    )  # Status da ordem: 'Em andamento', 'Concluído', 'Cancelado'
 
     # usuario_id: Mapped[int] = mapped_column(
     #    Integer, ForeignKey("usuario.id"), nullable=False
@@ -106,10 +117,6 @@ class Recebimento(settings.Base):  # Substituímos db.Model por Base
         lazy="joined",
     )
 
-    # Relacionamentos
-    cliente: Mapped["Cliente"] = relationship(
-        "Cliente", back_populates="recebimentos", lazy="joined"
-    )
     produto: Mapped["Produto"] = relationship(
         "Produto",
         back_populates="recebimentos",
@@ -123,9 +130,6 @@ class Recebimento(settings.Base):  # Substituímos db.Model por Base
     #    lazy="joined",
     # )
 
-    funcionario: Mapped["Funcionario"] = relationship(
-        "Funcionario", back_populates="recebimentos_cadastrados", lazy="joined"
-    )
     checklists: Mapped["ChecklistRecebimento"] = relationship(
         "ChecklistRecebimento", back_populates="recebimento", lazy="joined"
     )

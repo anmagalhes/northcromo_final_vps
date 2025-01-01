@@ -3,17 +3,17 @@ from typing import Annotated
 
 from core.desp import get_current_user, get_session
 from fastapi import APIRouter, Depends, HTTPException, status
-from app.models.user_model import User
+from app.models.user import User
+from app.models.todo import Todo, TodoState
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.schema.todo import TodoPublic, TodoSchema
 
-router = APIRouter(prefix="/todo", tags=["todo"])
+router = APIRouter(prefix="/todo", tags=["todos"])
 
 # Criando uma variável para a dependência com Annotated
 DbSession = Annotated[AsyncSession, Depends(get_session)]
 Current_user = Annotated[User, Depends(get_current_user)]
-
 
 @router.post("/", response_model=TodoPublic)
 async def create_todo(
@@ -31,7 +31,7 @@ async def create_todo(
         titulo=todo.titulo,
         descricao=todo.descricao,
         status=todo.status,
-        owner_id=user.id,  # Associando o Todo ao usuário autenticado
+        usuario_id=user.id,  # Associando o Todo ao usuário autenticado
     )
 
     db.add(db_todo)  # Adicionando o Todo à sessão do banco

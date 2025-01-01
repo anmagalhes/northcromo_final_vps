@@ -13,7 +13,7 @@ from sqlalchemy.future import select
 from app.core.auth import oauth2_schema
 from app.core.config import settings
 from app.core.database import Session
-from app.models.user_model import User
+from app.models.user import User
 
 from app.schema.user import TokenData
 

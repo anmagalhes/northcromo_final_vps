@@ -1,14 +1,32 @@
 # app/models/cliente.py
 from datetime import datetime
 import pytz
+from sqlalchemy import (
+    JSON,
+    Boolean,
+    DateTime,
+    Integer,
+    String,
+    ForeignKey,
+    Table,
+    Column,
+)
 
-from sqlalchemy import Integer, String, DateTime, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.core.config import settings
+from typing import Optional, List
+
+
 
 # Criando um timezone para São Paulo (UTC-3)
 SP_TZ = pytz.timezone("America/Sao_Paulo")
 
+
+# Função auxiliar para garantir o uso correto do timezone
+def get_current_time_in_sp() -> datetime:
+    return datetime.now(SP_TZ).astimezone(
+        SP_TZ
+    )  
 
 class Cliente(settings.Base):  # Substituímos db.Model por Base
     __tablename__ = "clientes"
@@ -73,16 +91,16 @@ class Cliente(settings.Base):  # Substituímos db.Model por Base
         lazy="joined",
     )
 
-    # Colunas de datas
     created_at: Mapped[datetime] = mapped_column(
-        DateTime, default=lambda: datetime.now(SP_TZ)
+        DateTime(timezone=True),
+        default=get_current_time_in_sp,  # timezone=True garante que seja "aware"
     )
     updated_at: Mapped[datetime] = mapped_column(
-        DateTime,
-        default=lambda: datetime.now(SP_TZ),
-        onupdate=lambda: datetime.now(SP_TZ),
+        DateTime(timezone=True),
+        default=get_current_time_in_sp,
+        onupdate=get_current_time_in_sp,
     )
-    deleted_at: Mapped[datetime | None] = mapped_column(
+    deleted_at: Mapped[Optional[datetime]] = mapped_column(
         DateTime, nullable=True
     )  # Permite que seja None
 

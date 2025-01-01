@@ -1,6 +1,8 @@
 # app/controller/user.py
 from typing import List
 
+from app.core.config import settings
+
 from core.desp import get_current_user, get_session
 from core.security import gerar_hash_senha, verificar_senha
 from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
@@ -12,7 +14,7 @@ from app.core.auth import autenticar, criar_token_acesso
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
-from app.models.user_model import User
+from app.models.user import User
 from app.schema.user import (
     UserPublicSchema,
     UserSchemaBase,
@@ -20,8 +22,11 @@ from app.schema.user import (
     UserSchemaUP,
 )
 
-router = APIRouter(prefix="/api/usuario", tags=["usuario"])
-
+# Configuração do router com o prefixo dinâmico
+router = APIRouter(
+    prefix=f"{settings.API_V1_STR}/usuario",  # Utiliza o valor configurado em API_V1_STR
+    tags=["usuario"]
+)
 
 # GET LOGADO
 @router.get("/logado", response_model=UserPublicSchema)

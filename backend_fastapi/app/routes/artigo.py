@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from models.artigo import ArtigoModel
-from app.models.user_model import User
+from app.models.user import User
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select

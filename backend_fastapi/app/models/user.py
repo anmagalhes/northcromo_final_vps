@@ -15,6 +15,10 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.core.config import settings
 from typing import Optional, List
 
+from app.models.grupo_produto import Grupo_Produto
+from app.models.cliente import Cliente
+from app.models.todo import Todo
+
 # Criando um timezone para São Paulo (UTC-3)
 SP_TZ = pytz.timezone("America/Sao_Paulo")
 
@@ -29,7 +33,6 @@ def get_current_time_in_sp() -> datetime:
 # Alternativa: utilizar UTC
 def get_current_time_in_utc() -> datetime:
     return datetime.now(pytz.utc)  # Retorna o datetime no UTC
-
 
 class User(settings.Base):  # Substituímos db.Model por Base
     __tablename__ = "usuario"
@@ -55,7 +58,7 @@ class User(settings.Base):  # Substituímos db.Model por Base
 
     # Colunas para armazenar permissões ou configurações adicionais
     #permissions: Mapped[List[str]] = mapped_column(
-    #    JSON, default=list
+    #    JSON, default=list, nullable=True
     #)  # Usando list() em vez de []
     #extra_info: Mapped[Optional[dict]] = mapped_column(JSON, nullable=True)
 
@@ -68,8 +71,16 @@ class User(settings.Base):  # Substituímos db.Model por Base
     )
 
     # Relacionamentos com o modelo clientes
-    clientes: Mapped["Cliente"] = relationship(
+    clientes: Mapped[List["Cliente"]] = relationship(
         "Cliente", 
+        back_populates="usuario", 
+        lazy="joined",
+        uselist=True,  # Permite que seja uma lista vazia
+    )
+
+    # Relacionamentos com o modelo clientes
+    todos: Mapped[List["Todo"]] = relationship(
+        "Todo", 
         back_populates="usuario", 
         lazy="joined",
         uselist=True,  # Permite que seja uma lista vazia

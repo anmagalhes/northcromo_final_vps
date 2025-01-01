@@ -1,7 +1,7 @@
 # app/criar_tabelas.py ou app/main.py (ou qualquer script de sua escolha)
 from sqlalchemy.orm import Session
 from app.core.config import SessionLocal  # importando a sessão
-from app.models.user_model import User  # Importando o modelo User
+from app.models.user import User  # Importando o modelo User
 
 
 # Função para buscar todos os usuários

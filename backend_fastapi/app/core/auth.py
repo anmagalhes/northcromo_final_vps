@@ -11,10 +11,10 @@ from sqlalchemy.future import select
 
 from app.core.config import settings
 from app.core.security import verificar_senha
-from app.models.user_model import User
+from app.models.user import User
 
-oauth2_schema = OAuth2PasswordBearer(tokenUrl=f"{settings.API_V1_STR}/usuarios/login")
-
+# Define o esquema OAuth2 para o login
+oauth2_schema = OAuth2PasswordBearer(tokenUrl=f"{settings.API_V1_STR}/usuario/login")
 
 async def autenticar(email: EmailStr, senha: str, db: AsyncSession) -> Optional[User]:
     async with db as session:

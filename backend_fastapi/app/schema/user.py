@@ -12,7 +12,6 @@ import pytz
 # Fuso horário de São Paulo
 SP_TZ = pytz.timezone("America/Sao_Paulo")
 
-
 class SCBaseModel(BaseModel):
     class Config:
         # Adiciona o comportamento padrão de conversão para json
@@ -21,7 +20,6 @@ class SCBaseModel(BaseModel):
                 v.astimezone(SP_TZ).isoformat() if v else None
             )  # Converte datetime para string ISO com o fuso horário de SP
         }
-
 
 class UserSchemaBase(SCBaseModel):
     id: Optional[int] = None
