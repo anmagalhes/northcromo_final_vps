@@ -26,6 +26,7 @@ class Grupo_Produto(settings.Base):
         "User",  # Referência correta à classe 'User'
         back_populates="grupo_produtos",  # Nome do campo de volta no User
         lazy="joined",
+        uselist=True,
     )
 
     created_at: Mapped[datetime] = mapped_column(

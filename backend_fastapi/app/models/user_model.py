@@ -54,21 +54,25 @@ class User(settings.Base):  # Substituímos db.Model por Base
     )  # Permite que seja None
 
     # Colunas para armazenar permissões ou configurações adicionais
-    permissions: Mapped[List[str]] = mapped_column(
-        JSON, default=list
-    )  # Usando list() em vez de []
-    extra_info: Mapped[Optional[dict]] = mapped_column(JSON, nullable=True)
+    #permissions: Mapped[List[str]] = mapped_column(
+    #    JSON, default=list
+    #)  # Usando list() em vez de []
+    #extra_info: Mapped[Optional[dict]] = mapped_column(JSON, nullable=True)
 
     # Relacionamento ONE-TO-MANY de Usuario para Grupo_Produto
     grupo_produtos: Mapped[List["Grupo_Produto"]] = relationship(
         "Grupo_Produto",  # Nome da classe de destino
         back_populates="usuario",  # Nome do campo de volta no Grupo_Produto
         lazy="joined",  # Pode ajustar para o comportamento de carregamento desejado
+        uselist=True,  # Permite que seja uma lista vazia
     )
 
     # Relacionamentos com o modelo clientes
     clientes: Mapped["Cliente"] = relationship(
-        "Cliente", back_populates="usuario", lazy="joined"
+        "Cliente", 
+        back_populates="usuario", 
+        lazy="joined",
+        uselist=True,  # Permite que seja uma lista vazia
     )
 
     def __repr__(self) -> str:

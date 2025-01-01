@@ -69,7 +69,8 @@ async def post_usuario(
 async def get_usuarios(
     limit: int = 10, skip: int = 0, db: AsyncSession = Depends(get_session)
 ):
-    stmt = select(User).offset(skip).limit(limit)
+    # Criando a consulta para garantir que os usuários sejam únicos (DISTINCT)
+    stmt = select(User).distinct().offset(skip).limit(limit)
     result = await db.execute(stmt)
     users = result.scalars().all()
 
