@@ -3,11 +3,14 @@ from typing import Annotated
 
 from core.desp import get_current_user, get_session
 from fastapi import APIRouter, Depends, HTTPException, status
+
 from app.models.user import User
 from app.models.todo import Todo, TodoState
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.future import select
+from sqlalchemy.orm import selectinload
 
-from app.schema.todo import TodoPublic, TodoSchema
+from app.schema.todo import TodoPublic, TodoSchema, TodoList
 
 router = APIRouter(prefix="/todo", tags=["todos"])
 
@@ -41,3 +44,49 @@ async def create_todo(
     )  # Atualizando o objeto com os dados persistidos (como o ID)
 
     return db_todo  # Retornando o Todo criado
+
+
+@router.get("/", response_model=TodoList)
+async def list_todos( 
+    db: DbSession,  # Sessão do banco de dados
+    user: Current_user,  # Usuário atual autenticado
+    titulo: str | None = None,
+    descricao: str | None = None,
+    status: str | None = None,
+    offset: int = 0,  # Valor padrão para a paginação
+    limit: int = 10,  # Valor padrão para a paginação
+): 
+    if offset < 0:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Offset não pode ser negativo.")
+    if limit <= 0:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Limite deve ser maior que zero.")
+    if limit > 100:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Limite não pode ser maior que 100.")
+
+    # Criando a consulta para pegar todos os Todos, não mais filtrando pelo usuário
+    query = select(Todo) # Apenas os todos do usuário autenticado
+
+    # Filtros de busca
+    if titulo:
+        query = query.filter(Todo.titulo.ilike(f"%{titulo}%"))
+    
+    if descricao:
+        query = query.filter(Todo.descricao.ilike(f"%{descricao}%"))
+    
+    if status:
+        query = query.filter(Todo.status == status)
+
+    # Paginação
+    query = query.offset(offset).limit(limit)
+
+    # Executando a consulta
+    result = await db.execute(query)
+    todos = result.unique().scalars().all()   # Pega todos os resultados como objetos Todo
+
+    if not todos:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Nenhum Todo encontrado"
+        )
+
+    # Retorno dos resultados paginados
+    return {"todos": todos, "offset": offset, "limit": limit}
