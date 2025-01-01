@@ -1,6 +1,6 @@
-from .cliente import Cliente                                             #VALIDADO
-from .grupo_produto import Grupo_Produto                                # VALIDADO
-from .user_model import User                                                   #VALIDADO
+from .cliente import Cliente  # VALIDADO
+from .grupo_produto import Grupo_Produto  # VALIDADO
+from .user_model import User  # VALIDADO
 
 # from .recebimento import Recebimento
 # from .checklist_Recebimento import ChecklistRecebimento

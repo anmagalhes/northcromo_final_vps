@@ -62,14 +62,16 @@ class Cliente(settings.Base):  # Substituímos db.Model por Base
     )  # Fornecedor associado ao cliente
 
     # Relacionamento com o modelo User (usando tipagem de string)
-    usuario_id: Mapped[int] = mapped_column(Integer, ForeignKey('usuario.id')) # Tabela Campo
-       
+    usuario_id: Mapped[int] = mapped_column(
+        Integer, ForeignKey("usuario.id"), nullable=True
+    )  # Tabela Campo
+
     # Relacionamento MANY-TO-ONE de Grupo_Produto para User (não 'Usuario')
     usuario: Mapped["User"] = relationship(
-            "User",  # Referência correta à classe 'User'
-            back_populates="clientes",  # Nome do campo de volta no User
-            lazy='joined'
-        )
+        "User",  # Referência correta à classe 'User'
+        back_populates="clientes",  # Nome do campo de volta no User
+        lazy="joined",
+    )
 
     # Colunas de datas
     created_at: Mapped[datetime] = mapped_column(
@@ -85,9 +87,9 @@ class Cliente(settings.Base):  # Substituímos db.Model por Base
     )  # Permite que seja None
 
     # Relacionamento com Recebimento - Importação tardia
-    #recebimentos: Mapped[list["Recebimento"]] = relationship(
+    # recebimentos: Mapped[list["Recebimento"]] = relationship(
     #    "Recebimento", back_populates="clientes", lazy="joined"
-   # )
+    # )
 
     def __repr__(self):
         return f"<clientes {self.nome_cliente}>"

@@ -23,11 +23,20 @@ from app.core.config import settings
 from typing import Optional, List
 
 from enum import Enum as PyEnum
-from app.models import User, Cliente, Produto, Funcionario, ChecklistRecebimento, ImpressaoChecklistRecebimento, FotoRecebimento
+from app.models import (
+    User,
+    Cliente,
+    Produto,
+    Funcionario,
+    ChecklistRecebimento,
+    ImpressaoChecklistRecebimento,
+    FotoRecebimento,
+)
 
 
 # Criando um timezone para São Paulo (UTC-3)
 SP_TZ = pytz.timezone("America/Sao_Paulo")
+
 
 # Definir a enumeração para os status da ordem
 class StatusOrdem(PyEnum):
@@ -70,10 +79,10 @@ class Recebimento(settings.Base):  # Substituímos db.Model por Base
     status_ordem: Mapped[StatusOrdem] = mapped_column(
         Enum(StatusOrdem), nullable=False, default=StatusOrdem.EM_ANDAMENTO
     )  # Usando Enum
-    
-    #usuario_id: Mapped[int] = mapped_column(
+
+    # usuario_id: Mapped[int] = mapped_column(
     #    Integer, ForeignKey("usuario.id"), nullable=False
-    #)  # Chave estrangeira para Usuario
+    # )  # Chave estrangeira para Usuario
 
     # Colunas de data e hora
     created_at: Mapped[datetime] = mapped_column(
@@ -107,12 +116,12 @@ class Recebimento(settings.Base):  # Substituímos db.Model por Base
         foreign_keys=[cod_produto],
         lazy="joined",
     )
-    
-    #usuario: Mapped["User"] = relationship(
+
+    # usuario: Mapped["User"] = relationship(
     #    "User",  # A classe 'User' está referenciada como uma string para evitar problemas de importação circular
     #    back_populates="grupos_produto",  # Relacionamento bidirecional
     #    lazy="joined",
-    #)
+    # )
 
     funcionario: Mapped["Funcionario"] = relationship(
         "Funcionario", back_populates="recebimentos_cadastrados", lazy="joined"
