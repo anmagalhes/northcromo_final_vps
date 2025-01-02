@@ -19,7 +19,7 @@ DbSession = Annotated[AsyncSession, Depends(get_session)]
 Current_user = Annotated[User, Depends(get_current_user)]
 
 
-# CRIAR 
+# CRIAR
 @router.post("/", response_model=TodoPublic)
 async def create_todo(
     todo: TodoSchema,  # Dados de entrada para criar o Todo
@@ -46,6 +46,7 @@ async def create_todo(
     )  # Atualizando o objeto com os dados persistidos (como o ID)
 
     return db_todo  # Retornando o Todo criado
+
 
 # LISTA
 @router.get("/", response_model=TodoList)
@@ -130,7 +131,7 @@ async def update_todo(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Todo não encontrado ou você não tem permissão para alterá-lo.",
         )
-    
+
     # Atualiza os campos com os dados enviados na requisição, se presentes
     update_data = todo_update.dict(exclude_unset=True)  # Pega os dados que não são None
     for key, value in update_data.items():

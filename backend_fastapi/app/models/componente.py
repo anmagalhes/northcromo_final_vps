@@ -1,58 +1,57 @@
 # app/models/componente.py
 from datetime import datetime
-from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
+import pytz
+from sqlalchemy import (
+    Integer,
+    String,
+    ForeignKey,
+    DateTime,
+)
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy import relationship
-from app.database import Base  # Agora importa a base do SQLAlchemy de 'datapy'
+from app.core.config import settings
+from typing import Optional
+
+# Criando um timezone para São Paulo (UTC-3)
+SP_TZ = pytz.timezone("America/Sao_Paulo")
 
 
-class Componente(Base):
-    __tablename__ = "componente"  # Nome da tabela no banco de dados
-    __table_args__ = {"extend_existing": True}  # Permite redefinir a tabela
+# Função auxiliar para garantir o uso correto do timezone
+def get_current_time_in_sp() -> datetime:
+    return datetime.now(SP_TZ).astimezone(
+        SP_TZ
+    )  # Garante que a data e hora sejam "aware"
 
-    id = Column(Integer, primary_key=True)
-    nome = Column(
-        String(40), unique=True, nullable=False
-    )  # Alterado de 'name' para 'nome'
-    usuario_id = Column(
-        Integer, ForeignKey("usuario.id")
-    )  # Chave estrangeira para 'usuario'
-    grupo_produto_id = Column(
-        Integer, ForeignKey("grupo_produto.id")
-    )  # Relacionamento com 'Grupo_Produto'
 
-    # Relacionamento com 'User'
-    usuario = relationship(
-        "User", back_populates="componentes", foreign_keys=[usuario_id], lazy="joined"
-    )
+class Componente(settings.Base):
+    __tablename__ = "componentes"
+    __table_args__ = {"extend_existing": True}
 
-    # Relacionamento com 'Grupo_Produto'
-    grupo_produto = relationship(
-        "Grupo_Produto", back_populates="componentes", lazy="joined"
-    )
-
-    defeitos = relationship(
-        "Defeito",
-        back_populates="componente",  # Referenciar 'componente' no modelo Defeito
-        lazy="joined",
-    )
-
-    # Relacionamento com 'Produto'
-    produtos = relationship(
-        "Produto",
-        back_populates="componente",  # Referência a "componente" no modelo Produto
-        uselist=True,  # Indica que é uma relação de um-para-muitos
-        lazy="joined",
-    )
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    name: Mapped[str] = mapped_column(String(40), unique=True, nullable=False)
+    usuario_id: Mapped[int] = mapped_column(ForeignKey("usuario.id"))
 
     # Colunas de controle de data
-    created_at = Column(DateTime, default=datetime.utcnow)  # Data de criação
-    updated_at = Column(
-        DateTime, default=datetime.utcnow, onupdate=datetime.utcnow
-    )  # Data de última atualização
-    deleted_at = Column(
-        DateTime, nullable=True
-    )  # Data de exclusão (opcional para soft delete)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=get_current_time_in_sp
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        default=get_current_time_in_sp,
+        onupdate=get_current_time_in_sp,
+    )
+    deleted_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
+
+     # Relacionamento com o modelo User (usando tipagem de string)
+    usuario_id: Mapped[int] = mapped_column(
+        Integer, ForeignKey("usuario.id"), nullable=True
+    )  # Tabela Campo
+
+    # Relacionamento MANY-TO-ONE de Grupo_Produto para User (não 'Usuario')
+    usuario: Mapped["User"] = relationship(
+        "User",  # Referência correta à classe 'User'
+        back_populates="componentes",  # Nome do campo de volta no User
+        lazy="joined",
+    )
 
     def __repr__(self):
-        return f'<Componente id={self.id} nome={self.nome if self.nome else "Unnamed"}>'
+        return f'<Componente id={self.id} name={self.name if self.name else "Unnamed"}>'

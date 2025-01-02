@@ -29,9 +29,6 @@ def get_current_time_in_sp() -> datetime:
     )  # Garante que a data e hora sejam "aware"
 
 
-# TESTE
-
-
 # Alternativa: utilizar UTC
 def get_current_time_in_utc() -> datetime:
     return datetime.now(pytz.utc)  # Retorna o datetime no UTC
