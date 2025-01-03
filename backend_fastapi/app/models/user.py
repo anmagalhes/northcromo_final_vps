@@ -24,15 +24,18 @@ from app.models.postotrabalho import Postotrabalho
 # Criando um timezone para São Paulo (UTC-3)
 SP_TZ = pytz.timezone("America/Sao_Paulo")
 
+
 # Função auxiliar para garantir o uso correto do timezone
 def get_current_time_in_sp() -> datetime:
     return datetime.now(SP_TZ).astimezone(
         SP_TZ
     )  # Garante que a data e hora sejam "aware"
 
+
 # Alternativa: utilizar UTC
 def get_current_time_in_utc() -> datetime:
     return datetime.now(pytz.utc)  # Retorna o datetime no UTC
+
 
 class User(settings.Base):  # Substituímos db.Model por Base
     __tablename__ = "usuario"

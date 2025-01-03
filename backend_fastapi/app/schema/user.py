@@ -77,3 +77,9 @@ class UserPublicSchema(SCBaseModel):
 
 class TokenData(SCBaseModel):
     username: Optional[str] = None
+
+
+class UserList(BaseModel):
+    usuarios: list[UserPublicSchema]
+    offset: int
+    limit: int

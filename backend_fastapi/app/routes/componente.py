@@ -6,7 +6,12 @@ from sqlalchemy.future import select
 
 from app.models.componente import Componente
 from app.models.user import User
-from app.schema.componente import ComponentePublic, ComponenteSchema,  ComponenteList, ComponenteUpdate
+from app.schema.componente import (
+    ComponentePublic,
+    ComponenteSchema,
+    ComponenteList,
+    ComponenteUpdate,
+)
 from core.desp import get_current_user, get_session
 
 router = APIRouter(prefix="/componente", tags=["componente"])
@@ -36,9 +41,12 @@ async def create_componente(
 
     db.add(db_componente)  # Adicionando o Componente à sessão do banco
     await db.commit()  # Persistindo a transação
-    await db.refresh(db_componente)  # Atualizando o objeto com os dados persistidos (como o ID)
+    await db.refresh(
+        db_componente
+    )  # Atualizando o objeto com os dados persistidos (como o ID)
 
     return db_componente  # Retornando o Componente criado
+
 
 # LISTAR Componentes
 # LISTAR Componentes
@@ -80,7 +88,7 @@ async def list_componentes(
     # Executando a consulta
     result = await db.execute(query)
     componentes = result.unique().scalars().all()
-    
+
     if not componentes:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Nenhum Componente encontrado"
@@ -88,6 +96,7 @@ async def list_componentes(
 
     # Retorno dos resultados paginados com o campo 'componentes'
     return {"componentes": componentes, "offset": offset, "limit": limit}
+
 
 # ALTERAR
 @router.patch("/{componente_id}", response_model=ComponentePublic)
@@ -115,7 +124,9 @@ async def update_componente(
         )
 
     # Atualiza os campos com os dados enviados na requisição, se presentes
-    update_data = componente_update.dict(exclude_unset=True)  # Pega os dados que não são None
+    update_data = componente_update.dict(
+        exclude_unset=True
+    )  # Pega os dados que não são None
     for key, value in update_data.items():
         setattr(db_componente, key, value)
 

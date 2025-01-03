@@ -24,10 +24,10 @@ def get_current_time_in_sp() -> datetime:
 
 class Postotrabalho(settings.Base):
     __tablename__ = "Postotrabalhos"
+    __table_args__ = {"extend_existing": True}
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     name: Mapped[str] = mapped_column(String(40), unique=True, nullable=False)
-    usuario_id: Mapped[int] = mapped_column(ForeignKey("usuario.id"))
 
     # Colunas de controle de data
     created_at: Mapped[datetime] = mapped_column(
@@ -40,7 +40,7 @@ class Postotrabalho(settings.Base):
     )
     deleted_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
 
-     # Relacionamento com o modelo User (usando tipagem de string)
+    # Relacionamento com o modelo User (usando tipagem de string)
     usuario_id: Mapped[int] = mapped_column(
         Integer, ForeignKey("usuario.id"), nullable=True
     )  # Tabela Campo
@@ -53,4 +53,6 @@ class Postotrabalho(settings.Base):
     )
 
     def __repr__(self):
-        return f'<Postotrabalho id={self.id} name={self.name if self.name else "Unnamed"}>'
+        return (
+            f'<Postotrabalho id={self.id} name={self.name if self.name else "Unnamed"}>'
+        )

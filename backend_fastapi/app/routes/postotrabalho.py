@@ -6,7 +6,12 @@ from sqlalchemy.future import select
 
 from app.models.postotrabalho import Postotrabalho
 from app.models.user import User
-from app.schema.postotrabalho import PostotrabalhoPublic, PostotrabalhoSchema,  PostotrabalhoList, PostotrabalhoUpdate
+from app.schema.postotrabalho import (
+    PostotrabalhoPublic,
+    PostotrabalhoSchema,
+    PostotrabalhoList,
+    PostotrabalhoUpdate,
+)
 from core.desp import get_current_user, get_session
 
 router = APIRouter(prefix="/postotrabalho", tags=["postotrabalho"])
@@ -36,9 +41,12 @@ async def create_postotrabalho(
 
     db.add(db_postotrabalho)  # Adicionando o Componente à sessão do banco
     await db.commit()  # Persistindo a transação
-    await db.refresh(db_postotrabalho)  # Atualizando o objeto com os dados persistidos (como o ID)
+    await db.refresh(
+        db_postotrabalho
+    )  # Atualizando o objeto com os dados persistidos (como o ID)
 
     return db_postotrabalho  # Retornando o Componente criado
+
 
 # LISTAR Componentes
 @router.get("/", response_model=PostotrabalhoList)
@@ -79,7 +87,7 @@ async def list_componentes(
     # Executando a consulta
     result = await db.execute(query)
     postotrabalhos = result.unique().scalars().all()
-    
+
     if not postotrabalhos:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Nenhum Componente encontrado"
@@ -87,6 +95,7 @@ async def list_componentes(
 
     # Retorno dos resultados paginados com o campo 'componentes'
     return {"postotrabalhos": postotrabalhos, "offset": offset, "limit": limit}
+
 
 # ALTERAR
 @router.patch("/{postotrabalho_id}", response_model=PostotrabalhoPublic)
@@ -114,7 +123,9 @@ async def update_componente(
         )
 
     # Atualiza os campos com os dados enviados na requisição, se presentes
-    update_data = componente_update.dict(exclude_unset=True)  # Pega os dados que não são None
+    update_data = componente_update.dict(
+        exclude_unset=True
+    )  # Pega os dados que não são None
     for key, value in update_data.items():
         setattr(db_postotrabalho, key, value)
 

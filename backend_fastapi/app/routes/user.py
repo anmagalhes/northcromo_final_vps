@@ -75,8 +75,12 @@ async def post_usuario(
 async def get_usuarios(
     limit: int = 10, skip: int = 0, db: AsyncSession = Depends(get_session)
 ):
-    # Criando a consulta para garantir que os usuários sejam únicos (DISTINCT)
-    stmt = select(User).distinct().offset(skip).limit(limit)
+    stmt = (
+        select(User)  # Consulta para selecionar todos os usuários
+        .offset(skip)
+        .limit(limit)
+    )
+
     result = await db.execute(stmt)
     users = result.scalars().all()
 
@@ -85,23 +89,33 @@ async def get_usuarios(
             status_code=status.HTTP_404_NOT_FOUND, detail="No users found"
         )
 
-    return users  # Retorna a lista de usuários com apenas username e email
+    return users
 
+@router.get("/users", response_model=List[UserPublicSchema])
+async def get_usuarios(
+    limit: int = 10, skip: int = 0, db: AsyncSession = Depends(get_session)
+):
+    stmt = (
+        select(User)
+        .join(User.grupo_produtos, isouter=True)
+        .join(User.clientes, isouter=True)
+        .join(User.todos, isouter=True)
+        .join(User.componentes, isouter=True)
+        .join(User.Postotrabalhos, isouter=True)
+        .offset(skip)
+        .limit(limit)
+        .distinct()  # Garante que os usuários sejam únicos
+    )
 
-@router.get("/users/{user_id}", response_model=UserPublicSchema)
-async def get_usuario(user_id: int, db: AsyncSession = Depends(get_session)):
-    # Consulta para buscar o usuário pelo ID
-    stmt = select(User).filter(User.id == user_id)
     result = await db.execute(stmt)
-    user = result.scalars().first()  # Retorna o primeiro usuário encontrado, ou None
+    users = result.scalars().all()
 
-    if not user:
+    if not users:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="User not found"
+            status_code=status.HTTP_404_NOT_FOUND, detail="No users found"
         )
 
-    return user  # Retorna o usuário com apenas os campos definidos em UserPublicSchema
-
+    return users
 
 # POST /login
 @router.post("/login", response_model=UserPublicSchema)

@@ -28,7 +28,6 @@ class Componente(settings.Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     name: Mapped[str] = mapped_column(String(40), unique=True, nullable=False)
-    usuario_id: Mapped[int] = mapped_column(ForeignKey("usuario.id"))
 
     # Colunas de controle de data
     created_at: Mapped[datetime] = mapped_column(
@@ -41,7 +40,7 @@ class Componente(settings.Base):
     )
     deleted_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
 
-     # Relacionamento com o modelo User (usando tipagem de string)
+    # Relacionamento com o modelo User (usando tipagem de string)
     usuario_id: Mapped[int] = mapped_column(
         Integer, ForeignKey("usuario.id"), nullable=True
     )  # Tabela Campo
