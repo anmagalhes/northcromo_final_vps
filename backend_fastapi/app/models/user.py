@@ -19,10 +19,10 @@ from app.models.grupo_produto import Grupo_Produto
 from app.models.cliente import Cliente
 from app.models.todo import Todo
 from app.models.componente import Componente
+from app.models.postotrabalho import Postotrabalho
 
 # Criando um timezone para São Paulo (UTC-3)
 SP_TZ = pytz.timezone("America/Sao_Paulo")
-
 
 # Função auxiliar para garantir o uso correto do timezone
 def get_current_time_in_sp() -> datetime:
@@ -89,6 +89,14 @@ class User(settings.Base):  # Substituímos db.Model por Base
     # Relacionamentos com o modelo clientes
     componentes: Mapped[List["Componente"]] = relationship(
         "Componente",
+        back_populates="usuario",
+        lazy="joined",
+        uselist=True,  # Permite que seja uma lista vazia
+    )
+
+    # Relacionamentos com o modelo clientes
+    Postotrabalhos: Mapped[List["Postotrabalho"]] = relationship(
+        "Postotrabalho",
         back_populates="usuario",
         lazy="joined",
         uselist=True,  # Permite que seja uma lista vazia

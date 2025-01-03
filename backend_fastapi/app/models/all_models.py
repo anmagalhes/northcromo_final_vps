@@ -4,3 +4,4 @@ from .grupo_produto import Grupo_Produto
 from .user import User
 from .todo import Todo
 from .componente import Componente
+from .postotrabalho import Postotrabalho

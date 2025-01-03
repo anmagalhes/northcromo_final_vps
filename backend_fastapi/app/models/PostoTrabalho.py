@@ -1,44 +1,56 @@
-# app/models/PostoTrabalho.py
+# app/models/componente.py
 from datetime import datetime
-from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
+import pytz
+from sqlalchemy import (
+    Integer,
+    String,
+    ForeignKey,
+    DateTime,
+)
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy.orm import relationship
-from app.database import Base  # Agora importa a base do SQLAlchemy de 'datapy'
+from app.core.config import settings
+from typing import Optional
+
+# Criando um timezone para São Paulo (UTC-3)
+SP_TZ = pytz.timezone("America/Sao_Paulo")
 
 
-class PostoTrabalho(Base):
-    __tablename__ = "posto_trabalho"
-    __table_args__ = {"extend_existing": True}
+# Função auxiliar para garantir o uso correto do timezone
+def get_current_time_in_sp() -> datetime:
+    return datetime.now(SP_TZ).astimezone(
+        SP_TZ
+    )  # Garante que a data e hora sejam "aware"
 
-    id = Column(Integer, primary_key=True)
-    nome = Column(String(40), unique=True, nullable=False)
-    usuario_id = Column(Integer, ForeignKey("usuario.id"))
 
-    usuario = relationship(
-        "User",
-        back_populates="posto_trabalho",
-        foreign_keys=[usuario_id],
+class Postotrabalho(settings.Base):
+    __tablename__ = "Postotrabalhos"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    name: Mapped[str] = mapped_column(String(40), unique=True, nullable=False)
+    usuario_id: Mapped[int] = mapped_column(ForeignKey("usuario.id"))
+
+    # Colunas de controle de data
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=get_current_time_in_sp
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        default=get_current_time_in_sp,
+        onupdate=get_current_time_in_sp,
+    )
+    deleted_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
+
+     # Relacionamento com o modelo User (usando tipagem de string)
+    usuario_id: Mapped[int] = mapped_column(
+        Integer, ForeignKey("usuario.id"), nullable=True
+    )  # Tabela Campo
+
+    # Relacionamento MANY-TO-ONE de Grupo_Produto para User (não 'Usuario')
+    usuario: Mapped["User"] = relationship(
+        "User",  # Referência correta à classe 'User'
+        back_populates="Postotrabalhos",  # Nome do campo de volta no User
         lazy="joined",
     )
-
-    # Relacionamentos com produtos
-    produtos = relationship(
-        "Produto",
-        back_populates="posto_trabalho",
-        foreign_keys="Produto.id_posto_trabalho",  # Especificando qual coluna usar para o relacionamento
-        lazy="joined",
-    )
-
-    operacao_servico = relationship(
-        "Produto",
-        back_populates="posto_trabalho",
-        foreign_keys="Produto.id_operacao_servico",  # Especificando qual coluna usar para o relacionamento
-        lazy="joined",
-    )
-
-    created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-    deleted_at = Column(DateTime, nullable=True)
 
     def __repr__(self):
-        return f"<PostoTrabalho id={self.id} nome={self.nome}>"
+        return f'<Postotrabalho id={self.id} name={self.name if self.name else "Unnamed"}>'
