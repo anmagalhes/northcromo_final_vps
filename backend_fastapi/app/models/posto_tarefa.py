@@ -22,8 +22,8 @@ def get_current_time_in_sp() -> datetime:
     )  # Garante que a data e hora sejam "aware"
 
 
-class Postotrabalho(settings.Base):
-    __tablename__ = "Postotrabalhos"
+class Postotarefa(settings.Base):
+    __tablename__ = "posto_tarefas"
     __table_args__ = {"extend_existing": True}
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
@@ -48,11 +48,11 @@ class Postotrabalho(settings.Base):
     # Relacionamento MANY-TO-ONE de Grupo_Produto para User (não 'Usuario')
     usuario: Mapped["User"] = relationship(
         "User",  # Referência correta à classe 'User'
-        back_populates="Postotrabalhos",  # Nome do campo de volta no User
+        back_populates="Postotarefas",  # Nome do campo de volta no User
         lazy="joined",
     )
 
     def __repr__(self):
         return (
-            f'<Postotrabalho id={self.id} name={self.name if self.name else "Unnamed"}>'
+            f'<Postotarefa id={self.id} name={self.name if self.name else "Unnamed"}>'
         )

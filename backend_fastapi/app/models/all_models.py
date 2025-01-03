@@ -5,3 +5,4 @@ from .user import User
 from .todo import Todo
 from .componente import Componente
 from .postotrabalho import Postotrabalho
+from .posto_tarefa import Postotarefa
