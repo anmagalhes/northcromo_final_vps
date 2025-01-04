@@ -23,11 +23,12 @@ def get_current_time_in_sp() -> datetime:
 
 
 class Postotarefa(settings.Base):
-    __tablename__ = "posto_tarefas"
+    __tablename__ = "posto_tarefa"
     __table_args__ = {"extend_existing": True}
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     name: Mapped[str] = mapped_column(String(40), unique=True, nullable=False)
+    codigo: Mapped[int] = mapped_column(Integer, unique=True, nullable=False)
 
     # Colunas de controle de data
     created_at: Mapped[datetime] = mapped_column(

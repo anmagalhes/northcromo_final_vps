@@ -21,6 +21,8 @@ from app.models.todo import Todo
 from app.models.componente import Componente
 from app.models.postotrabalho import Postotrabalho
 from app.models.posto_tarefa import Postotarefa
+from app.models.operacao import Operacao
+from app.models.defeito import Defeito
 
 # Criando um timezone para São Paulo (UTC-3)
 SP_TZ = pytz.timezone("America/Sao_Paulo")
@@ -106,13 +108,30 @@ class User(settings.Base):  # Substituímos db.Model por Base
         uselist=True,  # Permite que seja uma lista vazia
     )
 
-    # Relacionamentos com o modelo clientes
+   # Relacionamento com Postotarefa
     Postotarefas: Mapped[List["Postotarefa"]] = relationship(
-        "Postotarefa",
-        back_populates="usuario",
+        "Postotarefa",  # Nome da classe de destino
+        back_populates="usuario",  # Nome do campo de volta no Postotarefa
         lazy="joined",
         uselist=True,  # Permite que seja uma lista vazia
     )
+
+    # Relacionamento com 'Operacao' (caso esteja faltando)
+    Operacoes: Mapped[List["Operacao"]] = relationship(
+        "Operacao",  # Nome da classe de destino
+        back_populates="usuario",  # Nome do campo de volta em Operacao
+        lazy="joined",  # Carregamento desejado
+        uselist=True  # Isso permite que seja uma lista de objetos Operacao
+    )
+
+    # Relacionamento com 'Operacao' (caso esteja faltando)
+    Defeitos: Mapped[List["Defeito"]] = relationship(
+        "Defeito",  # Nome da classe de destino
+        back_populates="usuario",  # Nome do campo de volta em Operacao
+        lazy="joined",  # Carregamento desejado
+        uselist=True  # Isso permite que seja uma lista de objetos Operacao
+    )
+
 
     def __repr__(self) -> str:
         return f"<User {self.username}>"

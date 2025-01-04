@@ -19,7 +19,6 @@ from typing import Optional, List
 # Criando um timezone para São Paulo (UTC-3)
 SP_TZ = pytz.timezone("America/Sao_Paulo")
 
-
 # Função auxiliar para garantir o uso correto do timezone
 def get_current_time_in_sp() -> datetime:
     return datetime.now(SP_TZ).astimezone(

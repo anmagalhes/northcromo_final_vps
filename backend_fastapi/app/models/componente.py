@@ -9,7 +9,7 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.core.config import settings
-from typing import Optional
+from typing import Optional, List
 
 # Criando um timezone para São Paulo (UTC-3)
 SP_TZ = pytz.timezone("America/Sao_Paulo")
@@ -49,6 +49,14 @@ class Componente(settings.Base):
         "User",  # Referência correta à classe 'User'
         back_populates="componentes",  # Nome do campo de volta no User
         lazy="joined",
+    )
+
+    # Relacionamento com 'Operacao' (caso esteja faltando)
+    Defeitos: Mapped[List["Defeito"]] = relationship(
+        "Defeito",  # Nome da classe de destino
+        back_populates="componentes",  # Nome do campo de volta em Operacao
+        lazy="joined",  # Carregamento desejado
+        uselist=True  # Isso permite que seja uma lista de objetos Operacao
     )
 
     def __repr__(self):
