@@ -53,6 +53,14 @@ class Grupo_Produto(settings.Base):
         uselist=True,  # Cada Grupo_Produto tem um único User
     )
 
+   # Relacionamento com Produto
+    produtos: Mapped[List["Produto"]] = relationship(
+        "Produto",  # Nome da classe de destino
+        back_populates="grupo_produtos",  # Nome do campo de volta em Produto
+        lazy="joined",  # Carregamento desejado
+        uselist=True  # Isso permite que seja uma lista de objetos Produto
+    )
+
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         default=get_current_time_in_sp,  # timezone=True garante que seja "aware"
@@ -65,6 +73,9 @@ class Grupo_Produto(settings.Base):
     deleted_at: Mapped[Optional[datetime]] = mapped_column(
         DateTime, nullable=True
     )  # Permite que seja None
+
+
+     
 
     def __repr__(self) -> str:
         return f"<Grupo_Produto {self.name}>"

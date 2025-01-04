@@ -23,6 +23,7 @@ from app.models.postotrabalho import Postotrabalho
 from app.models.posto_tarefa import Postotarefa
 from app.models.operacao import Operacao
 from app.models.defeito import Defeito
+from app.models.produto import Produto
 
 # Criando um timezone para São Paulo (UTC-3)
 SP_TZ = pytz.timezone("America/Sao_Paulo")
@@ -127,6 +128,14 @@ class User(settings.Base):  # Substituímos db.Model por Base
     # Relacionamento com 'Operacao' (caso esteja faltando)
     Defeitos: Mapped[List["Defeito"]] = relationship(
         "Defeito",  # Nome da classe de destino
+        back_populates="usuario",  # Nome do campo de volta em Operacao
+        lazy="joined",  # Carregamento desejado
+        uselist=True  # Isso permite que seja uma lista de objetos Operacao
+    )
+
+     # Relacionamento com Produto
+    produtos: Mapped[List["Produto"]] = relationship(
+        "Produto",  # Nome da classe de destino
         back_populates="usuario",  # Nome do campo de volta em Operacao
         lazy="joined",  # Carregamento desejado
         uselist=True  # Isso permite que seja uma lista de objetos Operacao

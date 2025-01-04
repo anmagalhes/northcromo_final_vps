@@ -59,5 +59,13 @@ class Componente(settings.Base):
         uselist=True  # Isso permite que seja uma lista de objetos Operacao
     )
 
+     # Relacionamento com Produto
+    produtos: Mapped[List["Produto"]] = relationship(
+        "Produto",  # Nome da classe de destino
+        back_populates="componentes",  # Nome do campo de volta em Operacao
+        lazy="joined",  # Carregamento desejado
+        uselist=True  # Isso permite que seja uma lista de objetos Operacao
+    )
+
     def __repr__(self):
         return f'<Componente id={self.id} name={self.name if self.name else "Unnamed"}>'
