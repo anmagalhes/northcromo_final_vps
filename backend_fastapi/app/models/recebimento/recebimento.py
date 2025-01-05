@@ -32,6 +32,25 @@ class SimNaoEnum(enum.Enum):
     SIM = "SIM"
     NAO = "NAO"
 
+# Definindo o Enum para tipo_ordem
+class TipoOrdemEnum(enum.Enum):
+    NOVO = "NOVO"
+    NAO = "NAO"
+
+
+# Definindo o Enum de StatusOrdem
+class StatusOrdem(PyEnum):
+    PENDENTE = 1  # Status 1 - Pendente
+    FINALIZADO = 5  # Status 5 - Finalizado
+    CANCELADO = 3  # Status 3 - Cancelado
+    EM_ANDAMENTO = 2  # Status 2 - Em Andamento
+
+# Enum para Status da Tarefa
+class StatusTarefaEnum(enum.Enum):
+    PENDENTE = "PENDENTE"
+    EM_ANDAMENTO = "EM_ANDAMENTO"
+    FINALIZADO = "FINALIZADO"
+
 
 class Recebimento(settings.Base):
     __tablename__ = "recebimentos"
@@ -39,9 +58,12 @@ class Recebimento(settings.Base):
 
     # Campos básicos
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    tipo_ordem: Mapped[str] = mapped_column(String(20), nullable=False)
-    recebimento_ordem: Mapped[int] = mapped_column(String(12), nullable=False)
-    Referencia_Produto: Mapped[str | None] = mapped_column(Text, nullable=False)
+    tipo_ordem: Mapped[TipoOrdemEnum] = mapped_column(
+        Enum(TipoOrdemEnum), nullable=False, default=TipoOrdemEnum.NAO
+    )
+    numero_ordem: Mapped[int] = mapped_column(Integer, nullable=False)                   # NUMERO DA ORDEM NOVO
+    recebimento_ordem: Mapped[str | None] = mapped_column(String(12), nullable=False)
+    
     queixa_cliente: Mapped[str | None] = mapped_column(Text, nullable=False)
     data_prazo_desmont: Mapped[Optional[datetime]] = mapped_column(Date, nullable=False)
 
@@ -150,8 +172,46 @@ class Recebimento(settings.Base):
         "Checklist_Recebimento",  # Relacionamento com Recebimento (um-para-muitos)
         back_populates="recebimento",  # Referência ao campo `usuario` em Recebimento
         lazy="joined",
-        uselist=True,  # Isso permite que seja uma lista de objetos Operacao
+        uselist=False,  # Isso permite que seja uma lista de objetos Operacao
     )
+
+    def criar_item_inicial(self):
+        """
+        Cria o primeiro item de recebimento automaticamente após criar o recebimento.
+        O item é deixado vazio para ser preenchido pelo usuário depois.
+        """
+        from app.models.recebimento.itens_recebimento import ItensRecebimento
+        item = ItensRecebimento(
+            recebimento_id=self.id,
+            status_ordem=StatusOrdem.PENDENTE,  # Status inicial
+            qtd_Produto=0,  # Inicialmente a quantidade é 0
+            preco_unitario=0.0,  # Inicialmente o preço unitário é 0
+            preco_total=0.0,  # Preço total é 0
+            referencia_produto=None  # Inicialmente sem referência
+            )
+        self.itens.append(item)  # Adicionando o item à lista de itens do recebimento
+
+    def criar_checklist_inicial(self):
+        """
+        Cria o checklist inicial automaticamente após criar o recebimento.
+        O checklist é relacionado a este recebimento com informações gerais.
+        """
+        from app.models.checklist_recebimento.checklist_recebimento import Checklist_Recebimento
+
+        # Criar o checklist único para o recebimento
+        checklist_item = Checklist_Recebimento(
+            recebimento_id=self.id,
+            datarec_ordem_servicos=self.data_rec_ordem,
+            hora_inicial_ordem=self.hora_inicial_ordem,
+            referencia_produto="Referência geral",  # Pode ser um dado genérico
+            nota_interna=f"Nota {self.numero_nota_fiscal}",
+            observacao_checklist="Observação inicial",  # Pode ser preenchido depois
+            status_tarefa=StatusTarefaEnum.PENDENTE,
+            data_checklist_ordem_servicos=self.data_rec_ordem,
+            cliente_id=self.cliente_id,
+            usuario_id=self.usuario_id
+        )
+        self.checklists.append(checklist_item)  # Adiciona o checklist ao recebimento
 
     def __repr__(self):
         return f"<Recebimento id={self.id} tipo_ordem={self.tipo_ordem or 'Unnamed'} recebimento_ordem={self.recebimento_ordem or 'Unnamed'}>"

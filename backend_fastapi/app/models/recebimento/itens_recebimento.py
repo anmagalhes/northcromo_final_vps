@@ -61,9 +61,10 @@ class ItensRecebimento(settings.Base):
     )
 
     # Campos adicionais para armazenar a quantidade, preço unitário e preço total
-    quantidade: Mapped[int] = mapped_column(Integer, nullable=False)
+    qtd_Produto: Mapped[int] = mapped_column(Integer, nullable=False)
     preco_unitario: Mapped[float] = mapped_column(Float, nullable=False)
     preco_total: Mapped[float] = mapped_column(Float, nullable=False)
+    Referencia_Produto: Mapped[str | None] = mapped_column(Text, nullable=False)
 
     # Adicionando o campo status_ordem como ENUM, mas armazenando o valor inteiro no banco
     status_ordem: Mapped[StatusOrdem] = mapped_column(
