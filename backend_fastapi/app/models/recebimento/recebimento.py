@@ -8,7 +8,8 @@ from sqlalchemy import (
     ForeignKey,
     DateTime,
     Boolean,
-
+    Text,
+    Date,
 )
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.core.config import settings
@@ -38,7 +39,10 @@ class Recebimento(settings.Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     tipo_ordem: Mapped[str] = mapped_column(String(20), nullable=False)
     recebimento_ordem: Mapped[int] = mapped_column(String(12), nullable=False)
-    
+    Referencia_Produto: Mapped[str | None] = mapped_column(Text, nullable=False)
+    queixa_cliente: Mapped[str | None] = mapped_column(Text, nullable=False)
+    data_prazo_desmont: Mapped[Optional[datetime]] = mapped_column(Date, nullable=False)
+
     # Para o checklist
     sv_desmontagem_ordem: Mapped[SimNaoEnum] = mapped_column(Enum(SimNaoEnum), default=SimNaoEnum.NAO)
     sv_montagem_teste_ordem: Mapped[SimNaoEnum] = mapped_column(Enum(SimNaoEnum), default=SimNaoEnum.NAO)
@@ -46,19 +50,17 @@ class Recebimento(settings.Base):
     laudo_tecnico_ordem: Mapped[SimNaoEnum] = mapped_column(Enum(SimNaoEnum), default=SimNaoEnum.NAO)
     desmontagem_ordem: Mapped[SimNaoEnum] = mapped_column(Enum(SimNaoEnum), default=SimNaoEnum.NAO)
 
-
     # Campos de data e hora
     data_rec_ordem: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=get_current_time_in_sp)
     hora_inicial_ordem: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=True)
-    data_final_ordem: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=True)
-    hora_final_ordem: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=True)
+    data_final_ordem: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    hora_final_ordem: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
 
     # Imagens relacionadas à ordem (Opcional)
-    img1_ordem: Mapped[Optional[str]] = mapped_column(String(500), nullable=True)  # Caminho para a imagem 1
-    img2_ordem: Mapped[Optional[str]] = mapped_column(String(500), nullable=True)  # Caminho para a imagem 2
-    img3_ordem: Mapped[Optional[str]] = mapped_column(String(500), nullable=True)  # Caminho para a imagem 3
-    img4_ordem: Mapped[Optional[str]] = mapped_column(String(500), nullable=True)  # Caminho para a imagem 4
-
+    img1_ordem: Mapped[Optional[str]] = mapped_column(String(500), nullable=False)  # Caminho para a imagem 1
+    img2_ordem: Mapped[Optional[str]] = mapped_column(String(500), nullable=False)  # Caminho para a imagem 2
+    img3_ordem: Mapped[Optional[str]] = mapped_column(String(500), nullable=False)  # Caminho para a imagem 3
+    img4_ordem: Mapped[Optional[str]] = mapped_column(String(500), nullable=False)  # Caminho para a imagem 4
 
     # Relacionamento com Produto (muitos para muitos)
     produtos: Mapped[List["Produto"]] = relationship(
