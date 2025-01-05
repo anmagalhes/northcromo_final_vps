@@ -24,6 +24,8 @@ from app.models.posto_tarefa import Postotarefa
 from app.models.operacao import Operacao
 from app.models.defeito import Defeito
 from app.models.produto import Produto
+from app.models.recebimento.recebimento import Recebimento
+from app.models.recebimento.itens_recebimento import ItensRecebimento
 
 # Criando um timezone para São Paulo (UTC-3)
 SP_TZ = pytz.timezone("America/Sao_Paulo")
@@ -139,6 +141,14 @@ class User(settings.Base):  # Substituímos db.Model por Base
         back_populates="usuario",  # Nome do campo de volta em Operacao
         lazy="joined",  # Carregamento desejado
         uselist=True  # Isso permite que seja uma lista de objetos Operacao
+    )
+
+     # Relacionamento com a tabela Recebimento (um usuário pode ter muitos recebimentos)
+    recebimentos: Mapped[List["Recebimento"]] = relationship(
+        "Recebimento",  # Relacionamento com Recebimento (um-para-muitos)
+        back_populates="usuario",  # Referência ao campo `usuario` em Recebimento
+        lazy="joined",
+         uselist=True  # Isso permite que seja uma lista de objetos Operacao
     )
 
 

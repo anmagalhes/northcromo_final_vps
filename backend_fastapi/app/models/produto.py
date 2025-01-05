@@ -102,7 +102,23 @@ class Produto(settings.Base):
         "Postotrabalho",  # Certifique-se de usar o nome correto da classe (Postotrabalho)
         back_populates="produtos",  # Nome do campo de volta em Postotrabalho
         lazy="joined",
+        uselist=True  # Isso permite que seja uma lista de objetos Operacao
     )
-    
+
+     # Relacionamento muitos-para-muitos com Recebimento (via tabela intermediária ItensRecebimento)
+    recebimentos: Mapped[List["Recebimento"]] = relationship(
+        "Recebimento",  # Nome da classe relacionada
+        secondary="itens_recebimento",  # Tabela intermediária para o relacionamento muitos-para-muitos
+        back_populates="produtos",
+        uselist=True  # Isso permite que seja uma lista de objetos Operacao
+    )
+
+    # Relacionamento com a tabela ItensRecebimento (um produto pode ter vários itens de recebimento)
+    itens_recebimento: Mapped[List["ItensRecebimento"]] = relationship(
+        "ItensRecebimento",
+        back_populates="produto",
+        uselist=True  # Isso permite que seja uma lista de objetos Operacao
+    )
+
     def __repr__(self):
         return f'<Produto id={self.id} nome_produto={self.nome_produto if self.nome_produto else "Unnamed"}>'

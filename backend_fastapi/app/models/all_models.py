@@ -8,6 +8,9 @@ from app.models import (
     componente,
     postotrabalho,
     posto_tarefa,
-    defeito
+    defeito,
 )
+
+from app.models.recebimento.recebimento import Recebimento
+from app.models.recebimento.itens_recebimento import ItensRecebimento
 
