@@ -1,4 +1,4 @@
-#app/models/funcionario.py
+# app/models/funcionario.py
 from datetime import datetime
 import pytz
 from sqlalchemy import (
@@ -30,6 +30,6 @@ class Funcionario(settings.Base):
         back_populates="funcionario",
         lazy="joined",
     )
-    
+
     def __repr__(self):
         return f"<Funcionario id={self.id} nome={self.nome}>"

@@ -8,12 +8,14 @@ from enum import Enum as PyEnum
 # Importe explicitamente a classe Funcionario aqui
 from app.models.funcionario import Funcionario  # Adicione essa importação
 
+
 # Definindo o Enum de StatusOrdem
 class StatusOrdem(PyEnum):
-    PENDENTE = 1      # Status 1 - Pendente
-    FINALIZADO = 5    # Status 5 - Finalizado
-    CANCELADO = 3     # Status 3 - Cancelado
+    PENDENTE = 1  # Status 1 - Pendente
+    FINALIZADO = 5  # Status 5 - Finalizado
+    CANCELADO = 3  # Status 3 - Cancelado
     EM_ANDAMENTO = 2  # Status 2 - Em Andamento
+
 
 class ItensRecebimento(settings.Base):
     __tablename__ = "itens_recebimento"
@@ -34,7 +36,7 @@ class ItensRecebimento(settings.Base):
         lazy="joined",
     )
 
-     # Relacionamento com o modelo User (usando tipagem de string)
+    # Relacionamento com o modelo User (usando tipagem de string)
     recebimento_id: Mapped[int] = mapped_column(
         Integer, ForeignKey("recebimentos.id"), nullable=True
     )  # Tabela Campo
@@ -46,7 +48,7 @@ class ItensRecebimento(settings.Base):
         lazy="joined",
     )
 
-     # Relacionamento com o modelo User (usando tipagem de string)
+    # Relacionamento com o modelo User (usando tipagem de string)
     funcionario_id: Mapped[int] = mapped_column(
         Integer, ForeignKey("funcionarios.id"), nullable=True
     )  # Tabela Campo
@@ -63,11 +65,10 @@ class ItensRecebimento(settings.Base):
     preco_unitario: Mapped[float] = mapped_column(Float, nullable=False)
     preco_total: Mapped[float] = mapped_column(Float, nullable=False)
 
-     # Adicionando o campo status_ordem como ENUM, mas armazenando o valor inteiro no banco
+    # Adicionando o campo status_ordem como ENUM, mas armazenando o valor inteiro no banco
     status_ordem: Mapped[StatusOrdem] = mapped_column(
         Enum(StatusOrdem), nullable=False, default=StatusOrdem.PENDENTE
     )
-
 
     def __repr__(self):
         # Representação amigável do objeto, para exibição no log ou debug

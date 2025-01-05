@@ -95,7 +95,7 @@ class Cliente(settings.Base):  # Substituímos db.Model por Base
         back_populates="cliente",  # Nome da propriedade no modelo Recebimento
         lazy="joined",
     )
-    
+
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         default=get_current_time_in_sp,  # timezone=True garante que seja "aware"
@@ -109,6 +109,12 @@ class Cliente(settings.Base):  # Substituímos db.Model por Base
         DateTime, nullable=True
     )  # Permite que seja None
 
+    # Relacionamento One-to-Many com Checklist
+    checklists: Mapped[List["Checklist_Recebimento"]] = relationship(
+        "Checklist_Recebimento",
+        back_populates="cliente",
+        lazy="joined",
+    )
 
     def __repr__(self):
         return f"<clientes {self.nome_cliente}>"

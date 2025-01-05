@@ -28,6 +28,7 @@ from app.models.recebimento.recebimento import Recebimento
 from app.models.recebimento.itens_recebimento import ItensRecebimento
 from app.models.notafiscal.notafiscal import NotaFiscal
 from app.models.notafiscal.notaRecebimento import NotaRecebimento
+from app.models.checklist_recebimento.checklist_recebimento import Checklist_Recebimento
 
 # Criando um timezone para São Paulo (UTC-3)
 SP_TZ = pytz.timezone("America/Sao_Paulo")
@@ -113,7 +114,7 @@ class User(settings.Base):  # Substituímos db.Model por Base
         uselist=True,  # Permite que seja uma lista vazia
     )
 
-   # Relacionamento com Postotarefa
+    # Relacionamento com Postotarefa
     Postotarefas: Mapped[List["Postotarefa"]] = relationship(
         "Postotarefa",  # Nome da classe de destino
         back_populates="usuario",  # Nome do campo de volta no Postotarefa
@@ -126,7 +127,7 @@ class User(settings.Base):  # Substituímos db.Model por Base
         "Operacao",  # Nome da classe de destino
         back_populates="usuario",  # Nome do campo de volta em Operacao
         lazy="joined",  # Carregamento desejado
-        uselist=True  # Isso permite que seja uma lista de objetos Operacao
+        uselist=True,  # Isso permite que seja uma lista de objetos Operacao
     )
 
     # Relacionamento com 'Operacao' (caso esteja faltando)
@@ -134,25 +135,31 @@ class User(settings.Base):  # Substituímos db.Model por Base
         "Defeito",  # Nome da classe de destino
         back_populates="usuario",  # Nome do campo de volta em Operacao
         lazy="joined",  # Carregamento desejado
-        uselist=True  # Isso permite que seja uma lista de objetos Operacao
+        uselist=True,  # Isso permite que seja uma lista de objetos Operacao
     )
 
-     # Relacionamento com Produto
+    # Relacionamento com Produto
     produtos: Mapped[List["Produto"]] = relationship(
         "Produto",  # Nome da classe de destino
         back_populates="usuario",  # Nome do campo de volta em Operacao
         lazy="joined",  # Carregamento desejado
-        uselist=True  # Isso permite que seja uma lista de objetos Operacao
+        uselist=True,  # Isso permite que seja uma lista de objetos Operacao
     )
 
-     # Relacionamento com a tabela Recebimento (um usuário pode ter muitos recebimentos)
+    # Relacionamento com a tabela Recebimento (um usuário pode ter muitos recebimentos)
     recebimentos: Mapped[List["Recebimento"]] = relationship(
         "Recebimento",  # Relacionamento com Recebimento (um-para-muitos)
         back_populates="usuario",  # Referência ao campo `usuario` em Recebimento
         lazy="joined",
-         uselist=True  # Isso permite que seja uma lista de objetos Operacao
+        uselist=True,  # Isso permite que seja uma lista de objetos Operacao
     )
 
+    checklists: Mapped[List["Checklist_Recebimento"]] = relationship(
+        "Checklist_Recebimento",  # Relacionamento com Recebimento (um-para-muitos)
+        back_populates="usuario",  # Referência ao campo `usuario` em Recebimento
+        lazy="joined",
+        uselist=True,  # Isso permite que seja uma lista de objetos Operacao
+    )
 
     def __repr__(self) -> str:
         return f"<User {self.username}>"

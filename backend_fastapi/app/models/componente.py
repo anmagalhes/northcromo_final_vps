@@ -14,6 +14,7 @@ from typing import Optional, List
 # Criando um timezone para São Paulo (UTC-3)
 SP_TZ = pytz.timezone("America/Sao_Paulo")
 
+
 # Função auxiliar para garantir o uso correto do timezone
 def get_current_time_in_sp() -> datetime:
     return datetime.now(SP_TZ).astimezone(
@@ -56,15 +57,15 @@ class Componente(settings.Base):
         "Defeito",  # Nome da classe de destino
         back_populates="componentes",  # Nome do campo de volta em Operacao
         lazy="joined",  # Carregamento desejado
-        uselist=True  # Isso permite que seja uma lista de objetos Operacao
+        uselist=True,  # Isso permite que seja uma lista de objetos Operacao
     )
 
-     # Relacionamento com Produto
+    # Relacionamento com Produto
     produtos: Mapped[List["Produto"]] = relationship(
         "Produto",  # Nome da classe de destino
         back_populates="componentes",  # Nome do campo de volta em Operacao
         lazy="joined",  # Carregamento desejado
-        uselist=True  # Isso permite que seja uma lista de objetos Operacao
+        uselist=True,  # Isso permite que seja uma lista de objetos Operacao
     )
 
     def __repr__(self):

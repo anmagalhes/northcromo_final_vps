@@ -8,7 +8,7 @@ from app.models import (
     postotrabalho,
     posto_tarefa,
     defeito,
-    funcionario
+    funcionario,
 )
 
 
@@ -17,4 +17,4 @@ from app.models.recebimento.recebimento import Recebimento
 from app.models.recebimento.itens_recebimento import ItensRecebimento
 from app.models.notafiscal.notafiscal import NotaFiscal
 from app.models.notafiscal.notaRecebimento import NotaRecebimento
-
+from app.models.checklist_recebimento.checklist_recebimento import Checklist_Recebimento

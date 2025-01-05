@@ -18,5 +18,6 @@ class Produto_tarefaList(BaseModel):
     offset: int
     limit: int
 
+
 class Produto_tarefaUpdate(BaseModel):
     name: str | None = None

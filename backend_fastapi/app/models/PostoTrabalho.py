@@ -57,7 +57,7 @@ class Postotrabalho(settings.Base):
         "Produto",  # Nome da classe de destino
         back_populates="Postotrabalhos",  # Nome do campo de volta em Operacao
         lazy="joined",  # Carregamento desejado
-        uselist=True  # Isso permite que seja uma lista de objetos Operacao
+        uselist=True,  # Isso permite que seja uma lista de objetos Operacao
     )
 
     def __repr__(self):

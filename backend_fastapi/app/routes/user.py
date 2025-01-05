@@ -91,6 +91,7 @@ async def get_usuarios(
 
     return users
 
+
 @router.get("/users", response_model=List[UserPublicSchema])
 async def get_usuarios(
     limit: int = 10, skip: int = 0, db: AsyncSession = Depends(get_session)
@@ -116,6 +117,7 @@ async def get_usuarios(
         )
 
     return users
+
 
 # POST /login
 @router.post("/login", response_model=UserPublicSchema)

@@ -1,4 +1,4 @@
-#app/models/produto.py
+# app/models/produto.py
 from datetime import datetime
 import pytz
 from sqlalchemy import (
@@ -71,53 +71,53 @@ class Produto(settings.Base):
         Integer, ForeignKey("operacacoes.id"), nullable=True
     )  # Tabela Campo
 
-     # Relacionamento com 'Operacao' (caso esteja faltando)
+    # Relacionamento com 'Operacao' (caso esteja faltando)
     Operacoes: Mapped["Operacao"] = relationship(
         "Operacao",  # Nome da classe de destino
         back_populates="produtos",  # Nome do campo de volta em Operacao
         lazy="joined",  # Carregamento desejado
-        uselist=True  # Isso permite que seja uma lista de objetos Operacao
+        uselist=True,  # Isso permite que seja uma lista de objetos Operacao
     )
 
-     # Relacionamento com o modelo Componente
+    # Relacionamento com o modelo Componente
     grupo_produto_id: Mapped[int] = mapped_column(
         Integer, ForeignKey("grupo_produto.id"), nullable=True
     )  # Tabela Campo
 
-     # Relacionamento com 'Operacao' (caso esteja faltando)
+    # Relacionamento com 'Operacao' (caso esteja faltando)
     grupo_produtos: Mapped["Grupo_Produto"] = relationship(
         "Grupo_Produto",  # Nome da classe de destino
         back_populates="produtos",  # Nome do campo de volta em Operacao
         lazy="joined",  # Carregamento desejado
-        uselist=True  # Isso permite que seja uma lista de objetos Operacao
+        uselist=True,  # Isso permite que seja uma lista de objetos Operacao
     )
 
     # Relacionamento com o modelo posto_trabalho
     posto_trabalho_id: Mapped[int] = mapped_column(
         Integer, ForeignKey("Postotrabalho_novos.id"), nullable=True
-    )  
+    )
 
     # Relacionamento MANY-TO-ONE de Grupo_Produto para User (não 'Usuario')
     Postotrabalhos: Mapped["Postotrabalho"] = relationship(
         "Postotrabalho",  # Certifique-se de usar o nome correto da classe (Postotrabalho)
         back_populates="produtos",  # Nome do campo de volta em Postotrabalho
         lazy="joined",
-        uselist=True  # Isso permite que seja uma lista de objetos Operacao
+        uselist=True,  # Isso permite que seja uma lista de objetos Operacao
     )
 
-     # Relacionamento muitos-para-muitos com Recebimento (via tabela intermediária ItensRecebimento)
+    # Relacionamento muitos-para-muitos com Recebimento (via tabela intermediária ItensRecebimento)
     recebimentos: Mapped[List["Recebimento"]] = relationship(
         "Recebimento",  # Nome da classe relacionada
         secondary="itens_recebimento",  # Tabela intermediária para o relacionamento muitos-para-muitos
         back_populates="produtos",
-        uselist=True  # Isso permite que seja uma lista de objetos Operacao
+        uselist=True,  # Isso permite que seja uma lista de objetos Operacao
     )
 
     # Relacionamento com a tabela ItensRecebimento (um produto pode ter vários itens de recebimento)
     itens_recebimento: Mapped[List["ItensRecebimento"]] = relationship(
         "ItensRecebimento",
         back_populates="produto",
-        uselist=True  # Isso permite que seja uma lista de objetos Operacao
+        uselist=True,  # Isso permite que seja uma lista de objetos Operacao
     )
 
     def __repr__(self):

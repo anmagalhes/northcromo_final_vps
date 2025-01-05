@@ -26,10 +26,12 @@ def get_current_time_in_sp() -> datetime:
         SP_TZ
     )  # Garante que a data e hora sejam "aware"
 
+
 # Definindo ENUMs para os campos SIM/NAO
 class SimNaoEnum(enum.Enum):
     SIM = "SIM"
     NAO = "NAO"
+
 
 class Recebimento(settings.Base):
     __tablename__ = "recebimentos"
@@ -44,23 +46,49 @@ class Recebimento(settings.Base):
     data_prazo_desmont: Mapped[Optional[datetime]] = mapped_column(Date, nullable=False)
 
     # Para o checklist
-    sv_desmontagem_ordem: Mapped[SimNaoEnum] = mapped_column(Enum(SimNaoEnum), default=SimNaoEnum.NAO)
-    sv_montagem_teste_ordem: Mapped[SimNaoEnum] = mapped_column(Enum(SimNaoEnum), default=SimNaoEnum.NAO)
-    limpeza_quimica_ordem: Mapped[SimNaoEnum] = mapped_column(Enum(SimNaoEnum), default=SimNaoEnum.NAO)
-    laudo_tecnico_ordem: Mapped[SimNaoEnum] = mapped_column(Enum(SimNaoEnum), default=SimNaoEnum.NAO)
-    desmontagem_ordem: Mapped[SimNaoEnum] = mapped_column(Enum(SimNaoEnum), default=SimNaoEnum.NAO)
+    sv_desmontagem_ordem: Mapped[SimNaoEnum] = mapped_column(
+        Enum(SimNaoEnum), default=SimNaoEnum.NAO
+    )
+    sv_montagem_teste_ordem: Mapped[SimNaoEnum] = mapped_column(
+        Enum(SimNaoEnum), default=SimNaoEnum.NAO
+    )
+    limpeza_quimica_ordem: Mapped[SimNaoEnum] = mapped_column(
+        Enum(SimNaoEnum), default=SimNaoEnum.NAO
+    )
+    laudo_tecnico_ordem: Mapped[SimNaoEnum] = mapped_column(
+        Enum(SimNaoEnum), default=SimNaoEnum.NAO
+    )
+    desmontagem_ordem: Mapped[SimNaoEnum] = mapped_column(
+        Enum(SimNaoEnum), default=SimNaoEnum.NAO
+    )
 
     # Campos de data e hora
-    data_rec_ordem: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=get_current_time_in_sp)
-    hora_inicial_ordem: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=True)
-    data_final_ordem: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
-    hora_final_ordem: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    data_rec_ordem: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=get_current_time_in_sp
+    )
+    hora_inicial_ordem: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
+    data_final_ordem: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False
+    )
+    hora_final_ordem: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False
+    )
 
     # Imagens relacionadas à ordem (Opcional)
-    img1_ordem: Mapped[Optional[str]] = mapped_column(String(500), nullable=False)  # Caminho para a imagem 1
-    img2_ordem: Mapped[Optional[str]] = mapped_column(String(500), nullable=False)  # Caminho para a imagem 2
-    img3_ordem: Mapped[Optional[str]] = mapped_column(String(500), nullable=False)  # Caminho para a imagem 3
-    img4_ordem: Mapped[Optional[str]] = mapped_column(String(500), nullable=False)  # Caminho para a imagem 4
+    img1_ordem: Mapped[Optional[str]] = mapped_column(
+        String(500), nullable=False
+    )  # Caminho para a imagem 1
+    img2_ordem: Mapped[Optional[str]] = mapped_column(
+        String(500), nullable=False
+    )  # Caminho para a imagem 2
+    img3_ordem: Mapped[Optional[str]] = mapped_column(
+        String(500), nullable=False
+    )  # Caminho para a imagem 3
+    img4_ordem: Mapped[Optional[str]] = mapped_column(
+        String(500), nullable=False
+    )  # Caminho para a imagem 4
 
     # Relacionamento com Produto (muitos para muitos)
     produtos: Mapped[List["Produto"]] = relationship(
@@ -69,7 +97,7 @@ class Recebimento(settings.Base):
         back_populates="recebimentos",
     )
 
-     # Relacionamento com ItensRecebimento
+    # Relacionamento com ItensRecebimento
     itens: Mapped[List["ItensRecebimento"]] = relationship(
         "ItensRecebimento",
         back_populates="recebimento",
@@ -105,14 +133,24 @@ class Recebimento(settings.Base):
         lazy="joined",
     )
 
-     # Relacionamento Muitos-para-Um com Cliente
-    cliente_id: Mapped[int] = mapped_column(Integer, ForeignKey("clientes.id"), nullable=False)  # Adiciona o campo id_cliente
-    
-   # Relacionamento Many-to-One com Cliente
+    # Relacionamento Muitos-para-Um com Cliente
+    cliente_id: Mapped[int] = mapped_column(
+        Integer, ForeignKey("clientes.id"), nullable=False
+    )  # Adiciona o campo id_cliente
+
+    # Relacionamento Many-to-One com Cliente
     cliente: Mapped["Cliente"] = relationship(
         "Cliente",  # A classe de destino
         back_populates="recebimentos",  # Nome da propriedade no modelo Cliente
-        lazy="joined"
+        lazy="joined",
+    )
+
+    # Relacionamento com o Checklist
+    checklists: Mapped[List["Checklist_Recebimento"]] = relationship(
+        "Checklist_Recebimento",  # Relacionamento com Recebimento (um-para-muitos)
+        back_populates="recebimento",  # Referência ao campo `usuario` em Recebimento
+        lazy="joined",
+        uselist=True,  # Isso permite que seja uma lista de objetos Operacao
     )
 
     def __repr__(self):

@@ -65,6 +65,4 @@ class Defeito(settings.Base):
     )
 
     def __repr__(self):
-        return (
-            f'<Defeito id={self.id} name={self.name if self.name else "Unnamed"}>'
-        )
+        return f'<Defeito id={self.id} name={self.name if self.name else "Unnamed"}>'
