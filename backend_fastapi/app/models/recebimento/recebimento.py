@@ -2,6 +2,7 @@
 from datetime import datetime
 import pytz
 from sqlalchemy import (
+    Enum,
     Integer,
     String,
     ForeignKey,
@@ -12,6 +13,7 @@ from sqlalchemy import (
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.core.config import settings
 from typing import Optional, List
+import enum
 
 # Criando um timezone para São Paulo (UTC-3)
 SP_TZ = pytz.timezone("America/Sao_Paulo")
@@ -23,6 +25,10 @@ def get_current_time_in_sp() -> datetime:
         SP_TZ
     )  # Garante que a data e hora sejam "aware"
 
+# Definindo ENUMs para os campos SIM/NAO
+class SimNaoEnum(enum.Enum):
+    SIM = "SIM"
+    NAO = "NAO"
 
 class Recebimento(settings.Base):
     __tablename__ = "recebimentos"
@@ -31,13 +37,28 @@ class Recebimento(settings.Base):
     # Campos básicos
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     tipo_ordem: Mapped[str] = mapped_column(String(20), nullable=False)
-    recebimento_ordem: Mapped[int] = mapped_column(String(12), unique=False, nullable=False)
+    recebimento_ordem: Mapped[int] = mapped_column(String(12), nullable=False)
     
+    # Para o checklist
+    sv_desmontagem_ordem: Mapped[SimNaoEnum] = mapped_column(Enum(SimNaoEnum), default=SimNaoEnum.NAO)
+    sv_montagem_teste_ordem: Mapped[SimNaoEnum] = mapped_column(Enum(SimNaoEnum), default=SimNaoEnum.NAO)
+    limpeza_quimica_ordem: Mapped[SimNaoEnum] = mapped_column(Enum(SimNaoEnum), default=SimNaoEnum.NAO)
+    laudo_tecnico_ordem: Mapped[SimNaoEnum] = mapped_column(Enum(SimNaoEnum), default=SimNaoEnum.NAO)
+    desmontagem_ordem: Mapped[SimNaoEnum] = mapped_column(Enum(SimNaoEnum), default=SimNaoEnum.NAO)
+
+
     # Campos de data e hora
     data_rec_ordem: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=get_current_time_in_sp)
     hora_inicial_ordem: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=True)
     data_final_ordem: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=True)
     hora_final_ordem: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=True)
+
+    # Imagens relacionadas à ordem (Opcional)
+    img1_ordem: Mapped[Optional[str]] = mapped_column(String(500), nullable=True)  # Caminho para a imagem 1
+    img2_ordem: Mapped[Optional[str]] = mapped_column(String(500), nullable=True)  # Caminho para a imagem 2
+    img3_ordem: Mapped[Optional[str]] = mapped_column(String(500), nullable=True)  # Caminho para a imagem 3
+    img4_ordem: Mapped[Optional[str]] = mapped_column(String(500), nullable=True)  # Caminho para a imagem 4
+
 
     # Relacionamento com Produto (muitos para muitos)
     produtos: Mapped[List["Produto"]] = relationship(
@@ -50,6 +71,13 @@ class Recebimento(settings.Base):
     itens: Mapped[List["ItensRecebimento"]] = relationship(
         "ItensRecebimento",
         back_populates="recebimento",
+    )
+
+    # Relacionamento Muitos-para-Muitos com NotaFiscal via tabela intermediária
+    notas_fiscais: Mapped[List["NotaFiscal"]] = relationship(
+        "NotaFiscal",
+        secondary="nota_recebimento",  # Tabela intermediária
+        back_populates="recebimentos",  # Relacionamento reverso
     )
 
     # Colunas de controle de data

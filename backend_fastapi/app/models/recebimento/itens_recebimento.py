@@ -1,8 +1,11 @@
 # app/models/recebimento/itens_recebimento.py
-
 from sqlalchemy import Integer, Float, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.core.config import settings
+
+
+# Importe explicitamente a classe Funcionario aqui
+from app.models.funcionario import Funcionario  # Adicione essa importação
 
 class ItensRecebimento(settings.Base):
     __tablename__ = "itens_recebimento"
@@ -11,13 +14,41 @@ class ItensRecebimento(settings.Base):
     # Definindo a chave primária do item de recebimento
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
 
-    # Relacionamento com Produto
-    id_produto: Mapped[int] = mapped_column(Integer, ForeignKey("produtos.id"), nullable=False)
-    produto: Mapped["Produto"] = relationship("Produto", back_populates="itens_recebimento")
-    
-    # Relacionamento com Recebimento
-    id_recebimento: Mapped[int] = mapped_column(Integer, ForeignKey("recebimentos.id"), nullable=False)
-    recebimento: Mapped["Recebimento"] = relationship("Recebimento", back_populates="itens")
+    # Relacionamento com o modelo User (usando tipagem de string)
+    produto_id: Mapped[int] = mapped_column(
+        Integer, ForeignKey("produtos.id"), nullable=True
+    )  # Tabela Campo
+
+    # Relacionamento MANY-TO-ONE de Grupo_Produto para User (não 'Usuario')
+    produto: Mapped["Produto"] = relationship(
+        "Produto",  # Referência correta à classe 'User'
+        back_populates="itens_recebimento",  # Nome do campo de volta no User
+        lazy="joined",
+    )
+
+     # Relacionamento com o modelo User (usando tipagem de string)
+    recebimento_id: Mapped[int] = mapped_column(
+        Integer, ForeignKey("recebimentos.id"), nullable=True
+    )  # Tabela Campo
+
+    # Relacionamento MANY-TO-ONE de Grupo_Produto para User (não 'Usuario')
+    recebimento: Mapped["Recebimento"] = relationship(
+        "Recebimento",  # Referência correta à classe 'User'
+        back_populates="itens",  # Nome do campo de volta no User
+        lazy="joined",
+    )
+
+     # Relacionamento com o modelo User (usando tipagem de string)
+    funcionario_id: Mapped[int] = mapped_column(
+        Integer, ForeignKey("funcionarios.id"), nullable=True
+    )  # Tabela Campo
+
+    # Relacionamento MANY-TO-ONE de Grupo_Produto para User (não 'Usuario')
+    funcionario: Mapped["Funcionario"] = relationship(
+        "Funcionario",  # Referência correta à classe 'User'
+        back_populates="itens_recebimento",  # Nome do campo de volta no User
+        lazy="joined",
+    )
 
     # Campos adicionais para armazenar a quantidade, preço unitário e preço total
     quantidade: Mapped[int] = mapped_column(Integer, nullable=False)
