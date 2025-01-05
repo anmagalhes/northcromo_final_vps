@@ -103,5 +103,15 @@ class Recebimento(settings.Base):
         lazy="joined",
     )
 
+     # Relacionamento Muitos-para-Um com Cliente
+    cliente_id: Mapped[int] = mapped_column(Integer, ForeignKey("clientes.id"), nullable=False)  # Adiciona o campo id_cliente
+    
+   # Relacionamento Many-to-One com Cliente
+    cliente: Mapped["Cliente"] = relationship(
+        "Cliente",  # A classe de destino
+        back_populates="recebimentos",  # Nome da propriedade no modelo Cliente
+        lazy="joined"
+    )
+
     def __repr__(self):
         return f"<Recebimento id={self.id} tipo_ordem={self.tipo_ordem or 'Unnamed'} recebimento_ordem={self.recebimento_ordem or 'Unnamed'}>"

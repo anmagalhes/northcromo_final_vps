@@ -89,6 +89,13 @@ class Cliente(settings.Base):  # Substituímos db.Model por Base
         lazy="joined",
     )
 
+    # Relacionamento MANY-TO-ONE de Grupo_Produto para User (não 'Usuario')
+    recebimentos: Mapped[List["Recebimento"]] = relationship(
+        "Recebimento",  # A classe de destino
+        back_populates="cliente",  # Nome da propriedade no modelo Recebimento
+        lazy="joined",
+    )
+    
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         default=get_current_time_in_sp,  # timezone=True garante que seja "aware"
@@ -102,10 +109,6 @@ class Cliente(settings.Base):  # Substituímos db.Model por Base
         DateTime, nullable=True
     )  # Permite que seja None
 
-    # Relacionamento com Recebimento - Importação tardia
-    # recebimentos: Mapped[list["Recebimento"]] = relationship(
-    #    "Recebimento", back_populates="clientes", lazy="joined"
-    # )
 
     def __repr__(self):
         return f"<clientes {self.nome_cliente}>"
