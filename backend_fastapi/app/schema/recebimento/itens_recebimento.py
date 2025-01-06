@@ -1,11 +1,7 @@
-# app/schemas/itens_recebimento.py
+# app/schemas/recebimento/itens_recebimento.py
 from pydantic import BaseModel
 from typing import Optional
 from enum import Enum
-from app.schema.produto import ProdutoPublic
-from app.schema.funcionario import FuncionarioPublic
-from app.schema.recebimento.recebimento import RecebimentoPublic
-
 
 # Enum de Status da Ordem
 class StatusOrdemEnum(Enum):
@@ -27,39 +23,16 @@ class ItensRecebimentoSchema(BaseModel):
     recebimento_id: int  # ID do recebimento relacionado
     funcionario_id: Optional[int] = None  # ID do funcionário relacionado (se houver)
 
-    class Config:
-        orm_mode = True
-
 
 # Inclusão do ID após a criação do item de recebimento
 class ItensRecebimentoPublic(ItensRecebimentoSchema):
     id: int
-    produto: Optional[ProdutoPublic]  # Produto completo (relacionado)
-    funcionario: Optional[FuncionarioPublic]  # Funcionario completo (opcional)
-    recebimento: RecebimentoPublic  # Recebimento completo (relacionado)
-
 
 # Exibição para usuário final
 class ItensRecebimentoList(BaseModel):
     itensRecebimento: list[ItensRecebimentoPublic]
     offset: int
     limit: int
-
-
-# Criar Novo Item de Recebimento
-class ItensRecebimentoCreate(BaseModel):
-    qtd_produto: int
-    preco_unitario: float
-    preco_total: float
-    referencia_produto: Optional[str] = None
-    status_ordem: StatusOrdemEnum  # Status da ordem (como 'PENDENTE', 'FINALIZADO', etc.)
-
-    produto_id: int  # ID do produto
-    recebimento_id: int  # ID do recebimento
-    funcionario_id: Optional[int] = None  # ID do funcionário (se houver)
-
-    class Config:
-        orm_mode = True
 
 
 # Atualizar Item de Recebimento
@@ -70,5 +43,6 @@ class ItensRecebimentoUpdate(BaseModel):
     referencia_produto: Optional[str] = None
     status_ordem: Optional[StatusOrdemEnum] = None
 
-    class Config:
-        orm_mode = True
+# Chame o update_forward_refs após a definição dos modelos
+ItensRecebimentoPublic.update_forward_refs()
+

@@ -8,10 +8,8 @@ from sqlalchemy import (
     Integer,
     String,
     ForeignKey,
-    Table,
     Column,
 )
-
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.core.config import settings
 from typing import Optional, List
@@ -19,7 +17,6 @@ from typing import Optional, List
 
 # Criando um timezone para São Paulo (UTC-3)
 SP_TZ = pytz.timezone("America/Sao_Paulo")
-
 
 # Função auxiliar para garantir o uso correto do timezone
 def get_current_time_in_sp() -> datetime:
@@ -33,69 +30,47 @@ class Cliente(settings.Base):  # Substituímos db.Model por Base
     # Usando Mapped e mapped_column para definir as colunas
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
 
-    tipo_cliente: Mapped[str | None] = mapped_column(
-        String(50), nullable=True
-    )  # Tipo de Cliente
-    nome_cliente: Mapped[str | None] = mapped_column(
-        String(100), nullable=True
-    )  # Nome do Cliente
-    doc_cliente: Mapped[str | None] = mapped_column(
-        String(20), nullable=True
-    )  # Documento do Cliente (CPF/CNPJ)
-    endereco_cliente: Mapped[str | None] = mapped_column(
-        String(255), nullable=True
-    )  # Endereço do Cliente
-    num_cliente: Mapped[str | None] = mapped_column(
-        String(20), nullable=True
-    )  # Número do endereço
-    bairro_cliente: Mapped[str | None] = mapped_column(
-        String(100), nullable=True
-    )  # Bairro
-    cidade_cliente: Mapped[str | None] = mapped_column(
-        String(100), nullable=True
-    )  # Cidade
-    uf_cliente: Mapped[str | None] = mapped_column(String(2), nullable=True)  # UF
-    cep_cliente: Mapped[str | None] = mapped_column(String(10), nullable=True)  # CEP
-    telefone_cliente: Mapped[str | None] = mapped_column(
-        String(20), nullable=True
-    )  # Telefone do Cliente
+    tipo_cliente: Mapped[Optional[str]] = mapped_column(String(50))  # Tipo de Cliente
+    nome_cliente: Mapped[Optional[str]] = mapped_column(String(100))  # Nome do Cliente
+    doc_cliente: Mapped[Optional[str]] = mapped_column(String(20))  # Documento do Cliente (CPF/CNPJ)
+    endereco_cliente: Mapped[Optional[str]] = mapped_column(String(255))  # Endereço do Cliente
+    num_cliente: Mapped[Optional[str]] = mapped_column(String(20))  # Número do endereço
+    bairro_cliente: Mapped[Optional[str]] = mapped_column(String(100))  # Bairro
+    cidade_cliente: Mapped[Optional[str]] = mapped_column(String(100))  # Cidade
+    uf_cliente: Mapped[Optional[str]] = mapped_column(String(2))  # UF
+    cep_cliente: Mapped[Optional[str]] = mapped_column(String(10))  # CEP
+    telefone_cliente: Mapped[Optional[str]] = mapped_column(String(20))  # Telefone do Cliente
 
-    # Colunas que podem ser nulas (não obrigatórias)
-    telefone_rec_cliente: Mapped[str | None] = mapped_column(
-        String(20), nullable=True
-    )  # Telefone de recado
-    whatsapp_cliente: Mapped[str | None] = mapped_column(
-        String(20), nullable=True
-    )  # WhatsApp
-    email_funcionario: Mapped[str | None] = mapped_column(
-        String(100), nullable=True
-    )  # E-mail do Funcionário responsável
-    acao: Mapped[str | None] = mapped_column(
-        String(255), nullable=True
-    )  # Ação/observações adicionais
-    fornecedor_cliente: Mapped[str | None] = mapped_column(
-        String(100), nullable=True
-    )  # Fornecedor associado ao cliente
+    # Colunas opcionais
+    telefone_rec_cliente: Mapped[Optional[str]] = mapped_column(String(20))  # Telefone de recado
+    whatsapp_cliente: Mapped[Optional[str]] = mapped_column(String(20))  # WhatsApp
+    email_funcionario: Mapped[Optional[str]] = mapped_column(String(100))  # E-mail do Funcionário responsável
+    acao: Mapped[Optional[str]] = mapped_column(String(255))  # Ação/observações adicionais
+    fornecedor_cliente: Mapped[Optional[str]] = mapped_column(String(100))  # Fornecedor associado ao cliente
 
-    # Relacionamento com o modelo User (usando tipagem de string)
-    usuario_id: Mapped[int] = mapped_column(
-        Integer, ForeignKey("usuario.id"), nullable=True
-    )  # Tabela Campo
+    # Relacionamento com o modelo User
+    usuario_id: Mapped[Optional[int]] = mapped_column(Integer, ForeignKey("usuario.id"))  # Tabela Campo
 
-    # Relacionamento MANY-TO-ONE de Grupo_Produto para User (não 'Usuario')
+    # Relacionamentos com Recebimentos e Checklist_Recebimento
     usuario: Mapped["User"] = relationship(
-        "User",  # Referência correta à classe 'User'
-        back_populates="clientes",  # Nome do campo de volta no User
+        "User",
+        back_populates="clientes",
         lazy="joined",
     )
 
-    # Relacionamento MANY-TO-ONE de Grupo_Produto para User (não 'Usuario')
     recebimentos: Mapped[List["Recebimento"]] = relationship(
-        "Recebimento",  # A classe de destino
-        back_populates="cliente",  # Nome da propriedade no modelo Recebimento
+        "Recebimento",
+        back_populates="cliente",
         lazy="joined",
     )
 
+    checklists: Mapped[List["Checklist_Recebimento"]] = relationship(
+        "Checklist_Recebimento",
+        back_populates="cliente",
+        lazy="joined",
+    )
+
+    # Campos de auditoria
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         default=get_current_time_in_sp,  # timezone=True garante que seja "aware"
@@ -105,16 +80,7 @@ class Cliente(settings.Base):  # Substituímos db.Model por Base
         default=get_current_time_in_sp,
         onupdate=get_current_time_in_sp,
     )
-    deleted_at: Mapped[Optional[datetime]] = mapped_column(
-        DateTime, nullable=True
-    )  # Permite que seja None
-
-    # Relacionamento One-to-Many com Checklist
-    checklists: Mapped[List["Checklist_Recebimento"]] = relationship(
-        "Checklist_Recebimento",
-        back_populates="cliente",
-        lazy="joined",
-    )
+    deleted_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)  # Permite que seja None
 
     def __repr__(self):
-        return f"<clientes {self.nome_cliente}>"
+        return f"<Cliente {self.nome_cliente}, ID {self.id}>"

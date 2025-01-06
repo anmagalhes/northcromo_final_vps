@@ -1,12 +1,10 @@
-from pydantic import BaseModel, Field
+# app/schemas/recebimento/recebimento.py
+from pydantic import BaseModel
 from typing import Optional, List
 from datetime import datetime
-from app.schema.produto import ProdutoResponse
-from .checklist import ChecklistResponse
-from .cliente import ClienteResponse
-from .vendedor import VendedorResponse
-from .enums import TipoOrdemEnum, SimNaoEnum, StatusOrdemEnum, ProcessosOrdemEnum
 
+from app.schema.variavel_global.enums import TipoOrdemEnum, SimNaoEnum, StatusOrdemEnum, ProcessosOrdemEnum
+from app.schema.recebimento.itens_recebimento import ItensRecebimentoSchema
 
 # Esquema para criar um novo recebimento
 class RecebimentoSchema(BaseModel):
@@ -27,20 +25,19 @@ class RecebimentoSchema(BaseModel):
     vendedor_id: Optional[int] = None  # ID do vendedor (opcional)
     
     # Lista de itens que vão ser relacionados a esse recebimento
-    itens_recebimento: List["ItensRecebimentoCreate"]  # Você pode definir o schema do item se necessário.
+    itens_recebimento: List["ItensRecebimentoSchema"]  # Usar string para Forward Reference
 
-    class Config:
-        orm_mode = True  # Garantir que o Pydantic possa converter SQLAlchemy em Pydantic (e vice-versa)
 
+# Esquema para exibição pública de Recebimento
 class RecebimentoPublic(RecebimentoSchema):
     id: int  # ID do recebimento no banco de dados
 
-    cliente: ClienteResponse  # Detalhes do cliente (relacionado)
-    produtos: List[ProdutoResponse]  # Lista de produtos relacionados ao recebimento
-    vendedor: Optional[VendedorResponse]  # Detalhes do vendedor (opcional)
-    ordem_checklist: List[ChecklistResponse]  # Lista de checklists relacionados
-    status_ordem: StatusOrdemEnum  # Status da ordem
-    processos_ordem: ProcessosOrdemEnum  # Processo da ordem
+    cliente: Optional["ClientePublic"]  # Usando Forward Reference
+    produtos: List["ProdutoPublic"]
+    vendedor: Optional["FuncionarioPublic"]
+    ordem_checklist: List["ChecklistRecebimentoPublic"]
+    status_ordem: "StatusOrdemEnum"  # Usando a referência adiada corretamente
+    processos_ordem: "ProcessosOrdemEnum"  # Da mesma forma
 
     # Outros campos que podem ser retornados
     data_producao_ordem_servicos: datetime
@@ -55,5 +52,44 @@ class RecebimentoPublic(RecebimentoSchema):
     num_orcamento: Optional[str]
     acao: Optional[str]
 
-    class Config:
-        orm_mode = True  # Permite que o Pydantic converta objetos ORM em modelos Pydantic
+
+# Esquema para listagem de Recebimentos
+class RecebimentoList(BaseModel):
+    recebimentos: List[RecebimentoPublic]  # Lista de recebimentos
+    offset: int  # Offset para paginação
+    limit: int  # Limite para paginação
+
+
+# Esquema para atualização de Recebimento
+class RecebimentoUpdate(BaseModel):
+    tipo_ordem: Optional[TipoOrdemEnum]  # Tipo de ordem (NOVO, NAO)
+    numero_ordem: Optional[int]  # Número da ordem
+    recebimento_ordem: Optional[str]  # Identificador da ordem de recebimento
+    queixa_cliente: Optional[str]  # Queixa do cliente
+    data_prazo_desmont: Optional[datetime]  # Prazo para desmontagem (usar datetime)
+
+    sv_desmontagem_ordem: Optional[SimNaoEnum]  # Sim ou Não
+    sv_montagem_teste_ordem: Optional[SimNaoEnum]  # Sim ou Não
+    limpeza_quimica_ordem: Optional[SimNaoEnum]  # Sim ou Não
+    laudo_tecnico_ordem: Optional[SimNaoEnum]  # Sim ou Não
+    desmontagem_ordem: Optional[SimNaoEnum]  # Sim ou Não
+
+    data_rec_ordem: Optional[datetime]  # Data do recebimento (usar datetime)
+    hora_inicial_ordem: Optional[datetime]  # Hora inicial da ordem
+    data_final_ordem: Optional[datetime]  # Data final da ordem
+    hora_final_ordem: Optional[datetime]  # Hora final da ordem
+
+    img1_ordem: Optional[str]  # Caminho para imagem 1
+    img2_ordem: Optional[str]  # Caminho para imagem 2
+    img3_ordem: Optional[str]  # Caminho para imagem 3
+    img4_ordem: Optional[str]  # Caminho para imagem 4
+
+
+# Agora você pode importar as dependências no final do arquivo para evitar ciclo de importações
+from app.schema.cliente import ClientePublic  # Agora importando ClientePublic
+from app.schema.produto import ProdutoPublic
+from app.schema.funcionario import FuncionarioPublic
+from app.schema.checklist import ChecklistRecebimentoPublic
+
+# Isso garante que as referências de "ClientePublic", "ProdutoPublic", etc., sejam resolvidas corretamente
+RecebimentoPublic.update_forward_refs()

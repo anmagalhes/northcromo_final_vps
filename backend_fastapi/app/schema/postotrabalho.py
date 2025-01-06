@@ -4,7 +4,6 @@ from typing import List, Optional
 
 from app.models.postotrabalho import Postotrabalho
 
-
 class PostotrabalhoSchema(BaseModel):
     name: str
 
