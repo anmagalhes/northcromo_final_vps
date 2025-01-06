@@ -1,16 +1,30 @@
 # app/models/recebimento/itens_recebimento.py
-from sqlalchemy import Integer, Float, ForeignKey, Enum
+from datetime import datetime
+import pytz
+from sqlalchemy import (
+    Enum,
+    Integer,
+    String,
+    ForeignKey,
+    DateTime,
+    Boolean,
+    Text,
+    Date,
+    Float,
+)
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.core.config import settings
-from enum import Enum as PyEnum
+from typing import Optional, List
+import enum
 
 
 # Importe explicitamente a classe Funcionario aqui
-from app.models.funcionario import Funcionario  # Adicione essa importação
-
+from app.models.produto import Produto
+from app.models.funcionario import Funcionario
+from app.models.recebimento.recebimento import Recebimento
 
 # Definindo o Enum de StatusOrdem
-class StatusOrdem(PyEnum):
+class StatusOrdem(enum.Enum):
     PENDENTE = 1  # Status 1 - Pendente
     FINALIZADO = 5  # Status 5 - Finalizado
     CANCELADO = 3  # Status 3 - Cancelado
@@ -64,7 +78,7 @@ class ItensRecebimento(settings.Base):
     qtd_Produto: Mapped[int] = mapped_column(Integer, nullable=False)
     preco_unitario: Mapped[float] = mapped_column(Float, nullable=False)
     preco_total: Mapped[float] = mapped_column(Float, nullable=False)
-    Referencia_Produto: Mapped[str | None] = mapped_column(Text, nullable=False)
+    referencia_produto: Mapped[str | None] = mapped_column(Text, nullable=False)
 
     # Adicionando o campo status_ordem como ENUM, mas armazenando o valor inteiro no banco
     status_ordem: Mapped[StatusOrdem] = mapped_column(

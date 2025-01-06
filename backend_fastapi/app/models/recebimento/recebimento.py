@@ -10,6 +10,8 @@ from sqlalchemy import (
     Boolean,
     Text,
     Date,
+    Float,
+
 )
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.core.config import settings
@@ -39,7 +41,7 @@ class TipoOrdemEnum(enum.Enum):
 
 
 # Definindo o Enum de StatusOrdem
-class StatusOrdem(PyEnum):
+class StatusOrdem(enum.Enum):
     PENDENTE = 1  # Status 1 - Pendente
     FINALIZADO = 5  # Status 5 - Finalizado
     CANCELADO = 3  # Status 3 - Cancelado
@@ -200,12 +202,12 @@ class Recebimento(settings.Base):
 
         # Criar o checklist único para o recebimento
         checklist_item = Checklist_Recebimento(
-            recebimento_id=self.id,
+            recebimento_id=self.id,  # Usando o ID do recebimento
             datarec_ordem_servicos=self.data_rec_ordem,
             hora_inicial_ordem=self.hora_inicial_ordem,
-            referencia_produto="Referência geral",  # Pode ser um dado genérico
+            referencia_produto="Referência geral",
             nota_interna=f"Nota {self.numero_nota_fiscal}",
-            observacao_checklist="Observação inicial",  # Pode ser preenchido depois
+            observacao_checklist="Observação inicial",
             status_tarefa=StatusTarefaEnum.PENDENTE,
             data_checklist_ordem_servicos=self.data_rec_ordem,
             cliente_id=self.cliente_id,
