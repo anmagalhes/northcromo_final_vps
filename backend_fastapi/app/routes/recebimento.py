@@ -11,7 +11,7 @@ from app.models.recebimento.recebimento import Recebimento
 from app.models.recebimento.itens_recebimento import ItensRecebimento
 from app.models.checklist_recebimento.checklist_recebimento import Checklist_Recebimento
 
-from app.schema.recebimento.recebimento import RecebimentoPublic, RecebimentoSchema, RecebimentoList, RecebimentoUpdate
+from app.schema.recebimento.recebimento import RecebimentoPublic, RecebimentoSchema, RecebimentoList, RecebimentoUpdate, RecebimentoResponse
 from app.schema.recebimento.itens_recebimento import ItensRecebimentoSchema
 from app.schema.checklist import ChecklistRecebimentoPublic
 
@@ -110,6 +110,7 @@ async def create_recebimento(
 
     return db_recebimento  # Retorna o recebimento criado
 
+
 # Rota para listar recebimentos
 @router.get("/", response_model=RecebimentoList)
 async def list_recebimentos(
@@ -158,6 +159,7 @@ async def list_recebimentos(
     # Retorno dos resultados paginados com o campo 'recebimentos'
     return {"recebimentos": recebimentos, "offset": offset, "limit": limit}
 
+
 # Rota para atualizar recebimento
 @router.patch("/{recebimento_id}", response_model=RecebimentoPublic)
 async def update_recebimento(
@@ -190,7 +192,7 @@ async def update_recebimento(
     return db_recebimento
 
 
-#CRIAR OS INTES PARA MESMO RECEBIMENTO
+# Criar itens para um recebimento específico
 @router.post("/{recebimento_id}/itens", response_model=List[ItensRecebimentoSchema])
 async def create_itens_recebimento(
     recebimento_id: int,  # ID do recebimento existente
@@ -236,3 +238,138 @@ async def create_itens_recebimento(
     # Retornando os itens criados
     return itens_db
 
+# Rota para atualizar um item de recebimento
+@router.patch("/{recebimento_id}/itens/{item_id}", response_model=ItensRecebimentoSchema)
+async def update_item_recebimento(
+    recebimento_id: int,  # ID do recebimento
+    item_id: int,  # ID do item a ser atualizado
+    item: ItensRecebimentoSchema,  # Dados de entrada para o item
+    db: DbSession,  # Sessão do banco de dados
+    user: Current_user,  # Usuário autenticado
+):
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, detail="Usuário não autenticado"
+        )
+
+    # Verifica se o recebimento existe
+    query = select(Recebimento).where(Recebimento.id == recebimento_id)
+    result = await db.execute(query)
+    db_recebimento = result.scalars().first()
+
+    if not db_recebimento:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Recebimento não encontrado."
+        )
+
+    # Verifica se o item de recebimento existe
+    query = select(ItensRecebimento).where(ItensRecebimento.id == item_id, ItensRecebimento.recebimento_id == recebimento_id)
+    result = await db.execute(query)
+    db_item = result.scalars().first()
+
+    if not db_item:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Item de recebimento não encontrado."
+        )
+
+    # Atualiza o item com os novos dados
+    for key, value in item.dict(exclude_unset=True).items():
+        setattr(db_item, key, value)
+
+    # Commit para salvar as alterações
+    await db.commit()
+    await db.refresh(db_item)
+
+    return db_item
+
+
+# Rota para deletar um item de recebimento
+@router.delete("/{recebimento_id}/itens/{item_id}", response_model=ItensRecebimentoSchema)
+async def delete_item_recebimento(
+    recebimento_id: int,  # ID do recebimento
+    item_id: int,  # ID do item a ser deletado
+    db: DbSession,  # Sessão do banco de dados
+    user: Current_user,  # Usuário autenticado
+):
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, detail="Usuário não autenticado"
+        )
+
+    # Verifica se o recebimento existe
+    query = select(Recebimento).where(Recebimento.id == recebimento_id)
+    result = await db.execute(query)
+    db_recebimento = result.scalars().first()
+
+    if not db_recebimento:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Recebimento não encontrado."
+        )
+
+    # Verifica se o item de recebimento existe
+    query = select(ItensRecebimento).where(ItensRecebimento.id == item_id, ItensRecebimento.recebimento_id == recebimento_id)
+    result = await db.execute(query)
+    db_item = result.scalars().first()
+
+    if not db_item:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Item de recebimento não encontrado."
+        )
+
+    # Deleta o item de recebimento
+    await db.delete(db_item)
+    await db.commit()
+
+    return db_item  # Retorna o item deletado
+
+
+# Rota para deletar um recebimento
+@router.delete("/{recebimento_id}", response_model=RecebimentoResponse)
+async def delete_recebimento(
+    recebimento_id: int,  # ID do recebimento a ser deletado
+    db: DbSession,  # Sessão do banco de dados
+    user: Current_user,  # Usuário autenticado
+):
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, detail="Usuário não autenticado"
+        )
+
+    # Verifica se o recebimento existe
+    query = select(Recebimento).where(Recebimento.id == recebimento_id)
+    result = await db.execute(query)
+    db_recebimento = result.scalars().first()
+
+    if not db_recebimento:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Recebimento não encontrado."
+        )
+
+    # Deleta os itens de recebimento associados ao recebimento
+    query_itens = select(ItensRecebimento).where(ItensRecebimento.recebimento_id == recebimento_id)
+    result_itens = await db.execute(query_itens)
+    itens = result_itens.scalars().all()
+
+    for item in itens:
+        await db.delete(item)
+
+    # Deleta o checklist associado ao recebimento
+    query_checklist = select(Checklist_Recebimento).where(Checklist_Recebimento.recebimento_id == recebimento_id)
+    result_checklist = await db.execute(query_checklist)
+    checklist = result_checklist.scalars().first()
+
+    if checklist:
+        await db.delete(checklist)
+
+    # Deleta o recebimento
+    await db.delete(db_recebimento)
+
+    # Commit para salvar as exclusões no banco de dados
+    await db.commit()
+
+    return db_recebimento  # Retorna o recebimento deletado

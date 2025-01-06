@@ -84,6 +84,31 @@ class RecebimentoUpdate(BaseModel):
     img3_ordem: Optional[str]  # Caminho para imagem 3
     img4_ordem: Optional[str]  # Caminho para imagem 4
 
+class RecebimentoResponse(BaseModel):
+    id: int
+    tipo_ordem: TipoOrdemEnum
+    numero_ordem: int
+    recebimento_ordem: str
+    queixa_cliente: str
+    data_prazo_desmont: datetime
+    sv_desmontagem_ordem: SimNaoEnum
+    sv_montagem_teste_ordem: SimNaoEnum
+    limpeza_quimica_ordem: SimNaoEnum
+    laudo_tecnico_ordem: SimNaoEnum
+    desmontagem_ordem: SimNaoEnum
+    data_rec_ordem: datetime
+    hora_inicial_ordem: Optional[datetime]
+    data_final_ordem: datetime
+    hora_final_ordem: datetime
+    img1_ordem: Optional[str]
+    img2_ordem: Optional[str]
+    img3_ordem: Optional[str]
+    img4_ordem: Optional[str]
+    created_at: datetime
+    updated_at: datetime
+    deleted_at: Optional[datetime]
+    usuario_id: Optional[int]
+    cliente_id: int
 
 # Agora você pode importar as dependências no final do arquivo para evitar ciclo de importações
 from app.schema.cliente import ClientePublic  # Agora importando ClientePublic

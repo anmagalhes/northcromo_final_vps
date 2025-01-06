@@ -48,6 +48,7 @@ class ItensRecebimento(settings.Base):
         "Produto",  # Referência correta à classe 'User'
         back_populates="itens_recebimento",  # Nome do campo de volta no User
         lazy="joined",
+        cascade="all, delete", 
     )
 
     # Relacionamento com o modelo User (usando tipagem de string)
@@ -72,6 +73,7 @@ class ItensRecebimento(settings.Base):
         "Funcionario",  # Referência correta à classe 'User'
         back_populates="itens_recebimento",  # Nome do campo de volta no User
         lazy="joined",
+        cascade="all, delete", 
     )
 
     # Campos adicionais para armazenar a quantidade, preço unitário e preço total

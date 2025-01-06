@@ -119,12 +119,14 @@ class Recebimento(settings.Base):
         "Produto",  # Nome da classe relacionada
         secondary="itens_recebimento",  # Tabela intermediária para o relacionamento muitos-para-muitos
         back_populates="recebimentos",
+        cascade="all, delete", 
     )
 
     # Relacionamento com ItensRecebimento
     itens: Mapped[List["ItensRecebimento"]] = relationship(
         "ItensRecebimento",
         back_populates="recebimento",
+        cascade="all, delete", 
     )
 
     # Relacionamento Muitos-para-Muitos com NotaFiscal via tabela intermediária
@@ -132,6 +134,7 @@ class Recebimento(settings.Base):
         "NotaFiscal",
         secondary="nota_recebimento",  # Tabela intermediária
         back_populates="recebimentos",  # Relacionamento reverso
+        cascade="all, delete", 
     )
 
     # Colunas de controle de data
@@ -155,6 +158,7 @@ class Recebimento(settings.Base):
         "User",  # Referência correta à classe 'User'
         back_populates="recebimentos",  # Nome do campo de volta no User
         lazy="joined",
+        cascade="all, delete", 
     )
 
     # Relacionamento Muitos-para-Um com Cliente
@@ -167,6 +171,7 @@ class Recebimento(settings.Base):
         "Cliente",  # A classe de destino
         back_populates="recebimentos",  # Nome da propriedade no modelo Cliente
         lazy="joined",
+        cascade="all, delete", 
     )
 
     # Relacionamento com o Checklist
@@ -175,6 +180,7 @@ class Recebimento(settings.Base):
         back_populates="recebimento",  # Referência ao campo `usuario` em Recebimento
         lazy="joined",
         uselist=False,  # Isso permite que seja uma lista de objetos Operacao
+        cascade="all, delete",
     )
 
     def criar_item_inicial(self):
