@@ -47,7 +47,6 @@ class ItensRecebimento(settings.Base):
     produto: Mapped["Produto"] = relationship(
         "Produto",  # Referência correta à classe 'User'
         back_populates="itens_recebimento",  # Nome do campo de volta no User
-        lazy="joined",
         cascade="all, delete", 
     )
 
@@ -60,7 +59,6 @@ class ItensRecebimento(settings.Base):
     recebimento: Mapped["Recebimento"] = relationship(
         "Recebimento",  # Referência correta à classe 'User'
         back_populates="itens",  # Nome do campo de volta no User
-        lazy="joined",
     )
 
     # Relacionamento com o modelo User (usando tipagem de string)
@@ -72,12 +70,11 @@ class ItensRecebimento(settings.Base):
     funcionario: Mapped["Funcionario"] = relationship(
         "Funcionario",  # Referência correta à classe 'User'
         back_populates="itens_recebimento",  # Nome do campo de volta no User
-        lazy="joined",
         cascade="all, delete", 
     )
 
     # Campos adicionais para armazenar a quantidade, preço unitário e preço total
-    qtd_Produto: Mapped[int] = mapped_column(Integer, nullable=False)
+    qtd_produto: Mapped[int] = mapped_column(Integer, nullable=False)
     preco_unitario: Mapped[float] = mapped_column(Float, nullable=False)
     preco_total: Mapped[float] = mapped_column(Float, nullable=False)
     referencia_produto: Mapped[str | None] = mapped_column(Text, nullable=False)

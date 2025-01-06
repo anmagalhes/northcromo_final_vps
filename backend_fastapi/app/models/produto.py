@@ -105,19 +105,10 @@ class Produto(settings.Base):
         uselist=True,  # Isso permite que seja uma lista de objetos Operacao
     )
 
-    # Relacionamento muitos-para-muitos com Recebimento (via tabela intermediária ItensRecebimento)
-    recebimentos: Mapped[List["Recebimento"]] = relationship(
-        "Recebimento",  # Nome da classe relacionada
-        secondary="itens_recebimento",  # Tabela intermediária para o relacionamento muitos-para-muitos
-        back_populates="produtos",
-        uselist=True,  # Isso permite que seja uma lista de objetos Operacao
-    )
-
     # Relacionamento com a tabela ItensRecebimento (um produto pode ter vários itens de recebimento)
     itens_recebimento: Mapped[List["ItensRecebimento"]] = relationship(
         "ItensRecebimento",
         back_populates="produto",
-        uselist=True,  # Isso permite que seja uma lista de objetos Operacao
     )
 
     def __repr__(self):

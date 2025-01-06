@@ -22,8 +22,7 @@ class RecebimentoSchema(BaseModel):
 
     # Relacionamento com outros objetos através dos IDs
     cliente_id: int  # ID do cliente
-    vendedor_id: Optional[int] = None  # ID do vendedor (opcional)
-    
+
     # Lista de itens que vão ser relacionados a esse recebimento
     itens_recebimento: List["ItensRecebimentoSchema"]  # Usar string para Forward Reference
 

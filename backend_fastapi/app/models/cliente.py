@@ -37,8 +37,8 @@ class Cliente(settings.Base):  # Substituímos db.Model por Base
     num_cliente: Mapped[Optional[str]] = mapped_column(String(20))  # Número do endereço
     bairro_cliente: Mapped[Optional[str]] = mapped_column(String(100))  # Bairro
     cidade_cliente: Mapped[Optional[str]] = mapped_column(String(100))  # Cidade
-    uf_cliente: Mapped[Optional[str]] = mapped_column(String(2))  # UF
-    cep_cliente: Mapped[Optional[str]] = mapped_column(String(10))  # CEP
+    uf_cliente: Mapped[Optional[str]] = mapped_column(String(16))  # UF
+    cep_cliente: Mapped[Optional[str]] = mapped_column(String(16))  # CEP
     telefone_cliente: Mapped[Optional[str]] = mapped_column(String(20))  # Telefone do Cliente
 
     # Colunas opcionais
@@ -55,19 +55,16 @@ class Cliente(settings.Base):  # Substituímos db.Model por Base
     usuario: Mapped["User"] = relationship(
         "User",
         back_populates="clientes",
-        lazy="joined",
     )
 
     recebimentos: Mapped[List["Recebimento"]] = relationship(
         "Recebimento",
         back_populates="cliente",
-        lazy="joined",
     )
 
     checklists: Mapped[List["Checklist_Recebimento"]] = relationship(
         "Checklist_Recebimento",
         back_populates="cliente",
-        lazy="joined",
     )
 
     # Campos de auditoria

@@ -59,11 +59,11 @@ class Recebimento(settings.Base):
     __table_args__ = {"extend_existing": True}
 
     # Campos básicos
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
     tipo_ordem: Mapped[TipoOrdemEnum] = mapped_column(
         Enum(TipoOrdemEnum), nullable=False, default=TipoOrdemEnum.NAO
     )
-    numero_ordem: Mapped[int] = mapped_column(Integer, nullable=False)                   # NUMERO DA ORDEM NOVO
+    numero_ordem: Mapped[int] = mapped_column(Integer, nullable=False, index=True)                   # NUMERO DA ORDEM NOVO
     recebimento_ordem: Mapped[str | None] = mapped_column(String(12), nullable=False)
     
     queixa_cliente: Mapped[str | None] = mapped_column(Text, nullable=False)
@@ -94,38 +94,31 @@ class Recebimento(settings.Base):
         DateTime(timezone=True), nullable=True
     )
     data_final_ordem: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), nullable=False
+        DateTime(timezone=True), nullable=True
     )
     hora_final_ordem: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), nullable=False
+        DateTime(timezone=True), nullable=True
     )
 
     # Imagens relacionadas à ordem (Opcional)
     img1_ordem: Mapped[Optional[str]] = mapped_column(
-        String(500), nullable=False
+        String(500), nullable=True
     )  # Caminho para a imagem 1
     img2_ordem: Mapped[Optional[str]] = mapped_column(
-        String(500), nullable=False
+        String(500), nullable=True
     )  # Caminho para a imagem 2
     img3_ordem: Mapped[Optional[str]] = mapped_column(
-        String(500), nullable=False
+        String(500), nullable=True
     )  # Caminho para a imagem 3
     img4_ordem: Mapped[Optional[str]] = mapped_column(
-        String(500), nullable=False
+        String(500), nullable=True
     )  # Caminho para a imagem 4
-
-    # Relacionamento com Produto (muitos para muitos)
-    produtos: Mapped[List["Produto"]] = relationship(
-        "Produto",  # Nome da classe relacionada
-        secondary="itens_recebimento",  # Tabela intermediária para o relacionamento muitos-para-muitos
-        back_populates="recebimentos",
-        cascade="all, delete", 
-    )
 
     # Relacionamento com ItensRecebimento
     itens: Mapped[List["ItensRecebimento"]] = relationship(
         "ItensRecebimento",
         back_populates="recebimento",
+        lazy='selectin',
         cascade="all, delete", 
     )
 
@@ -157,7 +150,6 @@ class Recebimento(settings.Base):
     usuario: Mapped["User"] = relationship(
         "User",  # Referência correta à classe 'User'
         back_populates="recebimentos",  # Nome do campo de volta no User
-        lazy="joined",
         cascade="all, delete", 
     )
 
@@ -170,7 +162,6 @@ class Recebimento(settings.Base):
     cliente: Mapped["Cliente"] = relationship(
         "Cliente",  # A classe de destino
         back_populates="recebimentos",  # Nome da propriedade no modelo Cliente
-        lazy="joined",
         cascade="all, delete", 
     )
 
@@ -178,7 +169,6 @@ class Recebimento(settings.Base):
     checklists: Mapped[List["Checklist_Recebimento"]] = relationship(
         "Checklist_Recebimento",  # Relacionamento com Recebimento (um-para-muitos)
         back_populates="recebimento",  # Referência ao campo `usuario` em Recebimento
-        lazy="joined",
         uselist=False,  # Isso permite que seja uma lista de objetos Operacao
         cascade="all, delete",
     )
@@ -206,31 +196,37 @@ class Recebimento(settings.Base):
         """
         from app.models.checklist_recebimento.checklist_recebimento import Checklist_Recebimento
 
+        # Inicializando o cod_produto como None
+        cod_produto = None
+
+        # Acessando os itens relacionados ao recebimento
+        for item in self.itens:
+            if item.cod_produto > 0:  # Primeiro item válido com cod_produto > 0
+                cod_produto = item.cod_produto
+                break  # Encontrou o primeiro produto válido, sai do loop
+
+        # Caso não tenha encontrado nenhum produto válido, podemos definir um valor padrão (ex: 0 ou None)
+        if cod_produto is None:
+            cod_produto = 0  # Ou você pode usar None dependendo do comportamento desejado
+
         # Criar o checklist único para o recebimento
         checklist_item = Checklist_Recebimento(
             recebimento_id=self.id,  # Usando o ID do recebimento
             datarec_ordem_servicos=self.data_rec_ordem,
             hora_inicial_ordem=self.hora_inicial_ordem,
-            referencia_produto="Referência geral",
-            nota_interna=f"Nota {self.numero_nota_fiscal}",
-            observacao_checklist="Observação inicial",
-            status_tarefa=StatusTarefaEnum.PENDENTE,
+            referencia_produto="Referência geral",  # Referência do produto
+            nota_interna=f"Nota {self.numero_ordem}",  # Número de nota interna
+            observacao_checklist="Observação inicial",  # Observação padrão
+            status_tarefa=StatusTarefaEnum.PENDENTE,  # Status inicial do checklist
             data_checklist_ordem_servicos=self.data_rec_ordem,
             cliente_id=self.cliente_id,
-            usuario_id=self.usuario_id
-           # cliente_id=self.cliente_id,
-           # usuario_id=self.usuario_id,
-           # datarec_ordem_servicos=get_current_time_in_sp(),
-           # hora_inicial_ordem=get_current_time_in_sp(),
-            #cod_produto=cod_produto,
-           # quantidade=1,
-           # referencia_produto="Referência padrão",  # Exemplo: Referência do produto
-           # nota_interna=f"Nota-{self.numero_ordem}",  # Criação de um número de nota interna
-           # status_tarefa=StatusTarefaEnum.PENDENTE,  # Status inicial
-           # observacao_checklist="Checklist gerado automaticamente",  # Observação inicial
-           # data_checklist_ordem_servicos=get_current_time_in_sp(),  # Data do checklist
+            usuario_id=self.usuario_id,  # ID do usuário relacionado
+            cod_produto=cod_produto,  # Atribuindo o cod_produto encontrado ou 0
         )
-        self.checklists.append(checklist_item)  # Adiciona o checklist ao recebimento
+
+        # Adiciona o checklist ao recebimento
+        self.checklists.append(checklist_item)
+
 
     def __repr__(self):
         return f"<Recebimento id={self.id} tipo_ordem={self.tipo_ordem or 'Unnamed'} recebimento_ordem={self.recebimento_ordem or 'Unnamed'}>"

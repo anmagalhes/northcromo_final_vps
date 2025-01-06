@@ -82,7 +82,7 @@ async def create_recebimento(
         laudo_tecnico_ordem=recebimento.laudo_tecnico_ordem,
         desmontagem_ordem=recebimento.desmontagem_ordem,
         cliente_id=recebimento.cliente_id,
-        vendedor_id=recebimento.vendedor_id,
+       # vendedor_id=recebimento.vendedor_id,
     )
 
     db.add(db_recebimento)
