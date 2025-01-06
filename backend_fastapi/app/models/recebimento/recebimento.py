@@ -218,6 +218,17 @@ class Recebimento(settings.Base):
             data_checklist_ordem_servicos=self.data_rec_ordem,
             cliente_id=self.cliente_id,
             usuario_id=self.usuario_id
+           # cliente_id=self.cliente_id,
+           # usuario_id=self.usuario_id,
+           # datarec_ordem_servicos=get_current_time_in_sp(),
+           # hora_inicial_ordem=get_current_time_in_sp(),
+            #cod_produto=cod_produto,
+           # quantidade=1,
+           # referencia_produto="Referência padrão",  # Exemplo: Referência do produto
+           # nota_interna=f"Nota-{self.numero_ordem}",  # Criação de um número de nota interna
+           # status_tarefa=StatusTarefaEnum.PENDENTE,  # Status inicial
+           # observacao_checklist="Checklist gerado automaticamente",  # Observação inicial
+           # data_checklist_ordem_servicos=get_current_time_in_sp(),  # Data do checklist
         )
         self.checklists.append(checklist_item)  # Adiciona o checklist ao recebimento
 
