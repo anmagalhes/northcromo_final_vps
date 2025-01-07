@@ -6,6 +6,7 @@ from pydantic import ConfigDict, EmailStr
 
 from app.models.cliente import Cliente
 
+
 # Esquema básico para Cliente
 class ClienteSchema(BaseModel):
     tipo_cliente: Optional[str] = None  # Tipo de Cliente (opcional)
@@ -28,6 +29,7 @@ class ClienteSchema(BaseModel):
 # Esquema de Cliente para exibição pública (com relacionamentos)
 class ClientePublic(ClienteSchema):
     id: int  # ID do cliente
+
 
 # Exibição de múltiplos clientes (com paginação)
 class ClienteList(BaseModel):

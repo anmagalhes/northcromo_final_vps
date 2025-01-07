@@ -3,8 +3,14 @@ from pydantic import BaseModel
 from typing import Optional, List
 from datetime import datetime
 
-from app.schema.variavel_global.enums import TipoOrdemEnum, SimNaoEnum, StatusOrdemEnum, ProcessosOrdemEnum
+from app.schema.variavel_global.enums import (
+    TipoOrdemEnum,
+    SimNaoEnum,
+    StatusOrdemEnum,
+    ProcessosOrdemEnum,
+)
 from app.schema.recebimento.itens_recebimento import ItensRecebimentoSchema
+
 
 # Esquema para criar um novo recebimento
 class RecebimentoSchema(BaseModel):
@@ -20,11 +26,15 @@ class RecebimentoSchema(BaseModel):
     laudo_tecnico_ordem: SimNaoEnum = SimNaoEnum.NAO
     desmontagem_ordem: SimNaoEnum = SimNaoEnum.NAO
 
+    # referencia_produto: Optional[str] = None
+
     # Relacionamento com outros objetos através dos IDs
     cliente_id: int  # ID do cliente
 
     # Lista de itens que vão ser relacionados a esse recebimento
-    itens_recebimento: List["ItensRecebimentoSchema"]  # Usar string para Forward Reference
+    itens_recebimento: List[
+        "ItensRecebimentoSchema"
+    ]  # Usar string para Forward Reference
 
 
 # Esquema para exibição pública de Recebimento
@@ -83,6 +93,7 @@ class RecebimentoUpdate(BaseModel):
     img3_ordem: Optional[str]  # Caminho para imagem 3
     img4_ordem: Optional[str]  # Caminho para imagem 4
 
+
 class RecebimentoResponse(BaseModel):
     id: int
     tipo_ordem: TipoOrdemEnum
@@ -108,6 +119,7 @@ class RecebimentoResponse(BaseModel):
     deleted_at: Optional[datetime]
     usuario_id: Optional[int]
     cliente_id: int
+
 
 # Agora você pode importar as dependências no final do arquivo para evitar ciclo de importações
 from app.schema.cliente import ClientePublic  # Agora importando ClientePublic

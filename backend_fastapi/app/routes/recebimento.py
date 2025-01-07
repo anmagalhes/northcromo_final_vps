@@ -11,7 +11,13 @@ from app.models.recebimento.recebimento import Recebimento
 from app.models.recebimento.itens_recebimento import ItensRecebimento
 from app.models.checklist_recebimento.checklist_recebimento import Checklist_Recebimento
 
-from app.schema.recebimento.recebimento import RecebimentoPublic, RecebimentoSchema, RecebimentoList, RecebimentoUpdate, RecebimentoResponse
+from app.schema.recebimento.recebimento import (
+    RecebimentoPublic,
+    RecebimentoSchema,
+    RecebimentoList,
+    RecebimentoUpdate,
+    RecebimentoResponse,
+)
 from app.schema.recebimento.itens_recebimento import ItensRecebimentoSchema
 from app.schema.checklist import ChecklistRecebimentoPublic
 
@@ -23,16 +29,17 @@ router = APIRouter(prefix="/recebimentos", tags=["Recebimentos"])
 DbSession = Annotated[AsyncSession, Depends(get_session)]
 Current_user = Annotated[User, Depends(get_current_user)]
 
+
 # Função para criar checklist e itens de recebimento
 async def criar_checklist_e_itens(recebimento: Recebimento, db: AsyncSession):
     checklist = Checklist_Recebimento(
         recebimento_id=recebimento.id,
         datarec_ordem_servicos=recebimento.data_rec_ordem,
         hora_inicial_ordem=recebimento.hora_inicial_ordem,
-        referencia_produto="Referência geral", 
+        referencia_produto=recebimento.referencia_produto,
         nota_interna=f"Nota {recebimento.numero_nota_fiscal}",
-        observacao_checklist="Observação inicial",  
-        status_tarefa="PENDENTE",  
+        observacao_checklist="Observação inicial",
+        status_tarefa="PENDENTE",
         data_checklist_ordem_servicos=recebimento.data_rec_ordem,
         cliente_id=recebimento.cliente_id,
         usuario_id=recebimento.usuario_id,
@@ -45,7 +52,7 @@ async def criar_checklist_e_itens(recebimento: Recebimento, db: AsyncSession):
             preco_unitario=item.preco_unitario,
             preco_total=item.preco_total,
             referencia_produto=item.referencia_produto,
-            status_ordem=item.status_ordem,
+            status_ordem=item.status_ordem.value,
             produto_id=item.produto_id,
             recebimento_id=recebimento.id,
             funcionario_id=item.funcionario_id,
@@ -55,6 +62,7 @@ async def criar_checklist_e_itens(recebimento: Recebimento, db: AsyncSession):
     await db.commit()
 
 
+# Rota para criar recebimento
 # Rota para criar recebimento
 @router.post("/", response_model=RecebimentoPublic)
 async def create_recebimento(
@@ -82,7 +90,6 @@ async def create_recebimento(
         laudo_tecnico_ordem=recebimento.laudo_tecnico_ordem,
         desmontagem_ordem=recebimento.desmontagem_ordem,
         cliente_id=recebimento.cliente_id,
-       # vendedor_id=recebimento.vendedor_id,
     )
 
     db.add(db_recebimento)
@@ -91,17 +98,24 @@ async def create_recebimento(
 
     # Adicionar os itens de recebimento
     for item in recebimento.itens_recebimento:
-        item_db = ItensRecebimento(
-            qtd_produto=item.qtd_produto,
-            preco_unitario=item.preco_unitario,
-            preco_total=item.preco_total,
-            referencia_produto=item.referencia_produto,
-            status_ordem=item.status_ordem,
-            produto_id=item.produto_id,
-            recebimento_id=db_recebimento.id,
-            funcionario_id=item.funcionario_id,
-        )
-        db.add(item_db)
+        print(f"Item de recebimento: {item}")  # Depuração dos itens
+        try:
+            item_db = ItensRecebimento(
+                qtd_produto=item.qtd_produto,
+                preco_unitario=item.preco_unitario,
+                preco_total=item.preco_total,
+                referencia_produto=item.referencia_produto,
+                status_ordem=item.status_ordem,
+                produto_id=item.produto_id,
+                recebimento_id=db_recebimento.id,
+                funcionario_id=item.funcionario_id,
+            )
+            db.add(item_db)
+        except Exception as e:
+            print(f"Erro ao criar item de recebimento: {e}")
+            raise HTTPException(
+                status_code=500, detail="Erro ao criar item de recebimento."
+            )
 
     await db.commit()
 
@@ -124,17 +138,17 @@ async def list_recebimentos(
     if offset < 0:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Offset não pode ser negativo."
+            detail="Offset não pode ser negativo.",
         )
     if limit <= 0:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Limite deve ser maior que zero."
+            detail="Limite deve ser maior que zero.",
         )
     if limit > 100:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Limite não pode ser maior que 100."
+            detail="Limite não pode ser maior que 100.",
         )
 
     # Criando a consulta para pegar todos os Recebimentos
@@ -153,7 +167,8 @@ async def list_recebimentos(
 
     if not recebimentos:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Nenhum recebimento encontrado."
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Nenhum recebimento encontrado.",
         )
 
     # Retorno dos resultados paginados com o campo 'recebimentos'
@@ -179,8 +194,7 @@ async def update_recebimento(
 
     if not db_recebimento:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Recebimento não encontrado."
+            status_code=status.HTTP_404_NOT_FOUND, detail="Recebimento não encontrado."
         )
 
     for key, value in recebimento.dict(exclude_unset=True).items():
@@ -212,8 +226,7 @@ async def create_itens_recebimento(
 
     if not db_recebimento:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Recebimento não encontrado."
+            status_code=status.HTTP_404_NOT_FOUND, detail="Recebimento não encontrado."
         )
 
     # Criação dos itens de recebimento
@@ -238,8 +251,11 @@ async def create_itens_recebimento(
     # Retornando os itens criados
     return itens_db
 
+
 # Rota para atualizar um item de recebimento
-@router.patch("/{recebimento_id}/itens/{item_id}", response_model=ItensRecebimentoSchema)
+@router.patch(
+    "/{recebimento_id}/itens/{item_id}", response_model=ItensRecebimentoSchema
+)
 async def update_item_recebimento(
     recebimento_id: int,  # ID do recebimento
     item_id: int,  # ID do item a ser atualizado
@@ -259,19 +275,21 @@ async def update_item_recebimento(
 
     if not db_recebimento:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Recebimento não encontrado."
+            status_code=status.HTTP_404_NOT_FOUND, detail="Recebimento não encontrado."
         )
 
     # Verifica se o item de recebimento existe
-    query = select(ItensRecebimento).where(ItensRecebimento.id == item_id, ItensRecebimento.recebimento_id == recebimento_id)
+    query = select(ItensRecebimento).where(
+        ItensRecebimento.id == item_id,
+        ItensRecebimento.recebimento_id == recebimento_id,
+    )
     result = await db.execute(query)
     db_item = result.scalars().first()
 
     if not db_item:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="Item de recebimento não encontrado."
+            detail="Item de recebimento não encontrado.",
         )
 
     # Atualiza o item com os novos dados
@@ -286,7 +304,9 @@ async def update_item_recebimento(
 
 
 # Rota para deletar um item de recebimento
-@router.delete("/{recebimento_id}/itens/{item_id}", response_model=ItensRecebimentoSchema)
+@router.delete(
+    "/{recebimento_id}/itens/{item_id}", response_model=ItensRecebimentoSchema
+)
 async def delete_item_recebimento(
     recebimento_id: int,  # ID do recebimento
     item_id: int,  # ID do item a ser deletado
@@ -305,19 +325,21 @@ async def delete_item_recebimento(
 
     if not db_recebimento:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Recebimento não encontrado."
+            status_code=status.HTTP_404_NOT_FOUND, detail="Recebimento não encontrado."
         )
 
     # Verifica se o item de recebimento existe
-    query = select(ItensRecebimento).where(ItensRecebimento.id == item_id, ItensRecebimento.recebimento_id == recebimento_id)
+    query = select(ItensRecebimento).where(
+        ItensRecebimento.id == item_id,
+        ItensRecebimento.recebimento_id == recebimento_id,
+    )
     result = await db.execute(query)
     db_item = result.scalars().first()
 
     if not db_item:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="Item de recebimento não encontrado."
+            detail="Item de recebimento não encontrado.",
         )
 
     # Deleta o item de recebimento
@@ -346,12 +368,13 @@ async def delete_recebimento(
 
     if not db_recebimento:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Recebimento não encontrado."
+            status_code=status.HTTP_404_NOT_FOUND, detail="Recebimento não encontrado."
         )
 
     # Deleta os itens de recebimento associados ao recebimento
-    query_itens = select(ItensRecebimento).where(ItensRecebimento.recebimento_id == recebimento_id)
+    query_itens = select(ItensRecebimento).where(
+        ItensRecebimento.recebimento_id == recebimento_id
+    )
     result_itens = await db.execute(query_itens)
     itens = result_itens.scalars().all()
 
@@ -359,7 +382,9 @@ async def delete_recebimento(
         await db.delete(item)
 
     # Deleta o checklist associado ao recebimento
-    query_checklist = select(Checklist_Recebimento).where(Checklist_Recebimento.recebimento_id == recebimento_id)
+    query_checklist = select(Checklist_Recebimento).where(
+        Checklist_Recebimento.recebimento_id == recebimento_id
+    )
     result_checklist = await db.execute(query_checklist)
     checklist = result_checklist.scalars().first()
 

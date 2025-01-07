@@ -6,6 +6,7 @@ from datetime import datetime
 
 from app.models.checklist_recebimento import checklist_recebimento
 
+
 # Enum de Status da Tarefa
 class StatusTarefaEnum(Enum):
     PENDENTE = "PENDENTE"
@@ -34,10 +35,9 @@ class ChecklistRecebimentoSchema(BaseModel):
 # Inclusão do ID após a criação do checklist
 class ChecklistRecebimentoPublic(ChecklistRecebimentoSchema):
     id: int  # ID do checklist
-    #cliente: Optional["ClientePublic"]  # Cliente completo (relacionado) - Usando Forward Reference
-    #usuario: Optional["UserPublicSchema"]  # Usuário responsável, se houver - Usando Forward Reference
-    #recebimento: Optional["RecebimentoPublic"]  # Recebimento completo, se houver - Usando Forward Reference
-
+    # cliente: Optional["ClientePublic"]  # Cliente completo (relacionado) - Usando Forward Reference
+    # usuario: Optional["UserPublicSchema"]  # Usuário responsável, se houver - Usando Forward Reference
+    # recebimento: Optional["RecebimentoPublic"]  # Recebimento completo, se houver - Usando Forward Reference
 
 
 # Exibição para listagem de checklists (com paginação)
@@ -77,6 +77,33 @@ class ChecklistRecebimentoUpdate(BaseModel):
     observacao_checklist: Optional[str] = None
     status_tarefa: Optional[StatusTarefaEnum] = None
     data_checklist_ordem_servicos: Optional[datetime] = None
-    
+
+# Representação de um Checklist simples para exibição
+class ChecklistSimple(BaseModel):
+    id: int
+    nota_interna: str
+    referencia_produto: str
+    status_tarefa: str
+    impresso: bool
+
+# Para representar o retorno de um checklist impresso ou qualquer outra ação simples.
+class ChecklistPrintStatus(BaseModel):
+    id: int
+    impresso: bool  # Se foi impresso ou não
+
+
+# Exemplo de resposta para o checklist com dados completos
+class ChecklistFullResponse(BaseModel):
+    id: int
+    nota_interna: str
+    referencia_produto: str
+    status_tarefa: str
+    observacao_checklist: Optional[str] = None
+    hora_inicial_ordem: Optional[str] = None
+    datarec_ordem_servicos: datetime
+    usuario_id: int
+    impresso: bool
+    criado_em: datetime
+
 # Atualizar as referências para tipos relacionados
 ChecklistRecebimentoPublic.update_forward_refs()

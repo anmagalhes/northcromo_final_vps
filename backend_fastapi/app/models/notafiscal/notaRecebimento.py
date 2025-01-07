@@ -1,10 +1,7 @@
 # app/models/notafiscal/notaRecebimento.py
-from sqlalchemy import Integer, String, ForeignKey, DateTime, Float
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy import Integer, String, ForeignKey
+from sqlalchemy.orm import Mapped, mapped_column
 from app.core.config import settings
-from datetime import datetime
-from typing import Optional, List
-
 
 class NotaRecebimento(settings.Base):
     __tablename__ = "nota_recebimento"

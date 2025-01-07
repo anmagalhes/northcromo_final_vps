@@ -1,17 +1,11 @@
 # app/models/all_models.py
-from app.models import (
-    user,
-    produto,
-    cliente,
-    todo,
-    componente,
-    postotrabalho,
-    posto_tarefa,
-    defeito,
-    funcionario,
-)
-
-
+from app.models import user
+from app.models import produto
+from app.models import todo
+from app.models import postotrabalho
+from app.models import posto_tarefa
+from app.models import defeito
+from app.models import funcionario
 from app.models.grupo_produto import Grupo_Produto
 from app.models.recebimento.recebimento import Recebimento
 from app.models.recebimento.itens_recebimento import ItensRecebimento

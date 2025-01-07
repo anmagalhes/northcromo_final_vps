@@ -29,6 +29,7 @@ from app.models.recebimento.itens_recebimento import ItensRecebimento
 from app.models.notafiscal.notafiscal import NotaFiscal
 from app.models.notafiscal.notaRecebimento import NotaRecebimento
 from app.models.checklist_recebimento.checklist_recebimento import Checklist_Recebimento
+from app.models.funcionario import Funcionario
 
 # Criando um timezone para São Paulo (UTC-3)
 SP_TZ = pytz.timezone("America/Sao_Paulo")
@@ -154,11 +155,17 @@ class User(settings.Base):  # Substituímos db.Model por Base
         uselist=True,  # Isso permite que seja uma lista de objetos Operacao
     )
 
-    checklists: Mapped[List["Checklist_Recebimento"]] = relationship(
+    checklist: Mapped[List["Checklist_Recebimento"]] = relationship(
         "Checklist_Recebimento",  # Relacionamento com Recebimento (um-para-muitos)
         back_populates="usuario",  # Referência ao campo `usuario` em Recebimento
         lazy="joined",
         uselist=True,  # Isso permite que seja uma lista de objetos Operacao
+    )
+
+   # Relacionamento MANY-TO-ONE de Grupo_Produto para User (não 'Usuario')
+    funcionario: Mapped["Funcionario"] = relationship(
+        "Funcionario",  # Referência correta à classe 'User'
+        back_populates="usuario",  # Nome do campo de volta no User
     )
 
     def __repr__(self) -> str:

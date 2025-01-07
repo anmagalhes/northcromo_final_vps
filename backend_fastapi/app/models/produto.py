@@ -29,7 +29,7 @@ class Produto(settings.Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     codigo: Mapped[int] = mapped_column(Integer, unique=True, nullable=False)
     nome_produto: Mapped[str] = mapped_column(String(300), unique=True, nullable=False)
-    und_servicos: Mapped[str] = mapped_column(String(5), unique=True, nullable=False)
+    und_servicos: Mapped[str] = mapped_column(String(10), unique=True, nullable=False)
 
     # Colunas de controle de data
     created_at: Mapped[datetime] = mapped_column(
@@ -51,7 +51,6 @@ class Produto(settings.Base):
     usuario: Mapped["User"] = relationship(
         "User",  # Referência correta à classe 'User'
         back_populates="produtos",  # Nome do campo de volta no User
-        lazy="joined",
     )
 
     # Relacionamento com o modelo Componente
@@ -63,7 +62,6 @@ class Produto(settings.Base):
     componentes: Mapped["Componente"] = relationship(
         "Componente",  # Referência correta à classe 'User'
         back_populates="produtos",  # Nome do campo de volta no User
-        lazy="joined",
     )
 
     # Relacionamento com o modelo Componente
@@ -75,8 +73,6 @@ class Produto(settings.Base):
     Operacoes: Mapped["Operacao"] = relationship(
         "Operacao",  # Nome da classe de destino
         back_populates="produtos",  # Nome do campo de volta em Operacao
-        lazy="joined",  # Carregamento desejado
-        uselist=True,  # Isso permite que seja uma lista de objetos Operacao
     )
 
     # Relacionamento com o modelo Componente
@@ -88,8 +84,6 @@ class Produto(settings.Base):
     grupo_produtos: Mapped["Grupo_Produto"] = relationship(
         "Grupo_Produto",  # Nome da classe de destino
         back_populates="produtos",  # Nome do campo de volta em Operacao
-        lazy="joined",  # Carregamento desejado
-        uselist=True,  # Isso permite que seja uma lista de objetos Operacao
     )
 
     # Relacionamento com o modelo posto_trabalho
@@ -101,8 +95,6 @@ class Produto(settings.Base):
     Postotrabalhos: Mapped["Postotrabalho"] = relationship(
         "Postotrabalho",  # Certifique-se de usar o nome correto da classe (Postotrabalho)
         back_populates="produtos",  # Nome do campo de volta em Postotrabalho
-        lazy="joined",
-        uselist=True,  # Isso permite que seja uma lista de objetos Operacao
     )
 
     # Relacionamento com a tabela ItensRecebimento (um produto pode ter vários itens de recebimento)

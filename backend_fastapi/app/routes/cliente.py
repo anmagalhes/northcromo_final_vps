@@ -1,3 +1,4 @@
+# app/routes/cliente.py
 from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -48,7 +49,9 @@ async def create_cliente(
 
     db.add(db_cliente)  # Adicionando o Cliente à sessão do banco
     await db.commit()  # Persistindo a transação
-    await db.refresh(db_cliente)  # Atualizando o objeto com os dados persistidos (como o ID)
+    await db.refresh(
+        db_cliente
+    )  # Atualizando o objeto com os dados persistidos (como o ID)
 
     return db_cliente  # Retornando o Cliente criado
 
@@ -128,7 +131,9 @@ async def update_cliente(
         )
 
     # Atualiza os campos com os dados enviados na requisição, se presentes
-    update_data = cliente_update.dict(exclude_unset=True)  # Pega os dados que não são None
+    update_data = cliente_update.dict(
+        exclude_unset=True
+    )  # Pega os dados que não são None
     for key, value in update_data.items():
         setattr(db_cliente, key, value)
 

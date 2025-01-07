@@ -1,4 +1,4 @@
-# app/models/recebimento/recebimento.py
+# app/models/checklist_recebimento/checklist_recebimento.py
 from datetime import datetime
 import pytz
 from sqlalchemy import (
@@ -8,6 +8,7 @@ from sqlalchemy import (
     ForeignKey,
     DateTime,
     Text,
+    Boolean,
 )
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.core.config import settings
@@ -18,20 +19,15 @@ from sqlalchemy import Enum as SQLEnum
 # Criando um timezone para São Paulo (UTC-3)
 SP_TZ = pytz.timezone("America/Sao_Paulo")
 
-
 # Função auxiliar para garantir o uso correto do timezone
 def get_current_time_in_sp() -> datetime:
-    return datetime.now(SP_TZ).astimezone(
-        SP_TZ
-    )  # Garante que a data e hora sejam "aware"
-
+    return datetime.now(SP_TZ).astimezone(SP_TZ)  # Garante que a data e hora sejam "aware"
 
 # Enum para Status da Tarefa
 class StatusTarefaEnum(enum.Enum):
     PENDENTE = "PENDENTE"
     EM_ANDAMENTO = "EM_ANDAMENTO"
     FINALIZADO = "FINALIZADO"
-
 
 class Checklist_Recebimento(settings.Base):
     __tablename__ = "checklist_recebimentos"
@@ -53,7 +49,7 @@ class Checklist_Recebimento(settings.Base):
     nota_interna: Mapped[str] = mapped_column(String(20), nullable=False)
     quantidade: Mapped[int] = mapped_column(Integer, nullable=False)
     referencia_produto: Mapped[str] = mapped_column(String(100), nullable=False)
-    link: Mapped[str | None] = mapped_column(
+    link: Mapped[Optional[str]] = mapped_column(
         String(255), nullable=True
     )  # Link opcional
     observacao_checklist: Mapped[str] = mapped_column(
@@ -71,33 +67,34 @@ class Checklist_Recebimento(settings.Base):
         Integer, ForeignKey("clientes.id"), nullable=False
     )  # Relacionamento com Cliente
 
-     # Relacionamento MANY-TO-ONE de Checklist para User
+    # Relacionamento MANY-TO-ONE de Checklist para Cliente
     cliente: Mapped["Cliente"] = relationship(
-        "Cliente",  # Referência correta à classe 'User'
-        back_populates="checklists",  # Nome do campo de volta no User
-        lazy="joined",
+        "Cliente", back_populates="checklists", lazy="joined"
     )
 
-    # Relacionamento com o modelo User (usando tipagem de string)
-    usuario_id: Mapped[int] = mapped_column(
-        Integer, ForeignKey("usuario.id"), nullable=True
-    )  # Relacionamento opcional com o usuário responsável
+    # Relacionamento com o modelo User
+    usuario_id: Mapped[Optional[int]] = mapped_column(
+        Integer, ForeignKey("usuario.id")
+    )  # Tabela Campo
 
-    # Relacionamento MANY-TO-ONE de Checklist para User
+    # Relacionamentos com Recebimentos e Checklist_Recebimento
     usuario: Mapped["User"] = relationship(
-        "User",  # Referência correta à classe 'User'
-        back_populates="checklists",  # Nome do campo de volta no User
-        lazy="joined",
+        "User",
+        back_populates="checklist",
     )
 
+
+    # Relacionamento com Recebimento
     ordem_id: Mapped[int] = mapped_column(
         Integer, ForeignKey("recebimentos.id"), nullable=True
     )
 
-    # Relacionamento com Recebimento
     recebimento: Mapped["Recebimento"] = relationship(
         "Recebimento", back_populates="checklists", lazy="joined"
     )
 
+     # Novo campo para indicar que foi impresso
+    impresso_pdf: Mapped[bool] = mapped_column(Boolean, default=False)
+
     def __repr__(self):
-        return f"<Checklist id={self.id} id_ordem={self.id_ordem}>"
+        return f"<Checklist id={self.id} ordem_id={self.ordem_id}>"
