@@ -25,8 +25,15 @@ from app.routes import (
     cliente,
     produto,
     funcionario,
+    operacao,
 )
-from app.routes.importacao import cliente_import, componente_import, produto_import
+from app.routes.importacao import (
+    cliente_import, 
+    componente_import, 
+    produto_import,
+    operacao_import,
+
+ )
 
 # Definição do FastAPI
 app = FastAPI()
@@ -54,13 +61,14 @@ app.include_router(cliente.router)
 app.include_router(cliente_import.router)
 app.include_router(produto.router)
 app.include_router(funcionario.router)
+app.include_router(operacao.router)
 
 
 # Incluindo as rotas de importação arquivo
 app.include_router(cliente_import.router)
 app.include_router(produto_import.router)
 app.include_router(componente_import.router)
-
+app.include_router(operacao_import.router)
 
 # Rota para renderizar o template HTML padrão
 @app.get("/", response_class=HTMLResponse)
