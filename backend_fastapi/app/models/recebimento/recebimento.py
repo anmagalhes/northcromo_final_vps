@@ -75,7 +75,9 @@ class Recebimento(settings.Base):
 
     referencia_produto: Mapped[str | None] = mapped_column(Text, nullable=True)
 
-    numero_nota_fiscal: Mapped[str | None] = mapped_column(String(20), nullable=True)  # Campo adicional
+    numero_nota_fiscal: Mapped[str | None] = mapped_column(
+        String(20), nullable=True
+    )  # Campo adicional
 
     # Para o checklist
     sv_desmontagem_ordem: Mapped[SimNaoEnum] = mapped_column(

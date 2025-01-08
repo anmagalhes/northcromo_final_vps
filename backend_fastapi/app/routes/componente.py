@@ -47,8 +47,6 @@ async def create_componente(
 
     return db_componente  # Retornando o Componente criado
 
-
-# LISTAR Componentes
 # LISTAR Componentes
 @router.get("/", response_model=ComponenteList)
 async def list_componentes(

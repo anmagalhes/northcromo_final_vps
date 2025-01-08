@@ -78,6 +78,7 @@ class ChecklistRecebimentoUpdate(BaseModel):
     status_tarefa: Optional[StatusTarefaEnum] = None
     data_checklist_ordem_servicos: Optional[datetime] = None
 
+
 # Representação de um Checklist simples para exibição
 class ChecklistSimple(BaseModel):
     id: int
@@ -85,6 +86,7 @@ class ChecklistSimple(BaseModel):
     referencia_produto: str
     status_tarefa: str
     impresso: bool
+
 
 # Para representar o retorno de um checklist impresso ou qualquer outra ação simples.
 class ChecklistPrintStatus(BaseModel):
@@ -104,6 +106,7 @@ class ChecklistFullResponse(BaseModel):
     usuario_id: int
     impresso: bool
     criado_em: datetime
+
 
 # Atualizar as referências para tipos relacionados
 ChecklistRecebimentoPublic.update_forward_refs()

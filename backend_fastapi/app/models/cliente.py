@@ -26,7 +26,14 @@ def get_current_time_in_sp() -> datetime:
 
 class Cliente(settings.Base):  # Substituímos db.Model por Base
     __tablename__ = "clientes"
-    __table_args__ = {"extend_existing": True}  # Permite redefinir a tabela
+
+    # Definir __table_args__ corretamente
+    __table_args__ = (
+        {
+            "extend_existing": True,
+            "unique_constraints": [("doc_cliente",)],
+        },  # Permite redefinir a tabela e garantir unicidade de doc_cliente
+    )
 
     # Usando Mapped e mapped_column para definir as colunas
     id: Mapped[int] = mapped_column(Integer, primary_key=True)

@@ -2,14 +2,18 @@
 from pydantic import BaseModel
 from typing import Optional, List
 from app.models.funcionario import Funcionario
+
+
 # Esquema básico para Funcionario
 class FuncionarioSchema(BaseModel):
     nome: str  # Nome do funcionário
     cargo: str  # Cargo do funcionário
 
+
 # Esquema de Funcionario para exibição pública (com relacionamentos)
 class FuncionarioPublic(FuncionarioSchema):
     id: int  # ID do funcionário
+
 
 # Exibição de múltiplos funcionários (com paginação)
 class FuncionarioList(BaseModel):
@@ -17,9 +21,11 @@ class FuncionarioList(BaseModel):
     offset: int  # Offset da paginação
     limit: int  # Limite da paginação
 
+
 # Esquema para criação de novo Funcionario
 class FuncionarioCreate(FuncionarioSchema):
     pass
+
 
 # Esquema para atualização de Funcionario
 class FuncionarioUpdate(BaseModel):

@@ -1,4 +1,4 @@
-#app/routes/funcionario.py
+# app/routes/funcionario.py
 from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -42,7 +42,9 @@ async def create_funcionario(
 
     db.add(db_funcionario)  # Adicionando o Funcionario à sessão do banco
     await db.commit()  # Persistindo a transação
-    await db.refresh(db_funcionario)  # Atualizando o objeto com os dados persistidos (como o ID)
+    await db.refresh(
+        db_funcionario
+    )  # Atualizando o objeto com os dados persistidos (como o ID)
 
     return db_funcionario  # Retornando o Funcionario criado
 
@@ -89,7 +91,8 @@ async def list_funcionarios(
 
     if not funcionarios:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Nenhum Funcionario encontrado"
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Nenhum Funcionario encontrado",
         )
 
     # Retorno dos resultados paginados com o campo 'funcionarios'

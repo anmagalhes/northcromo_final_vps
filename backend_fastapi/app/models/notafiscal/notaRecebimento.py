@@ -3,6 +3,7 @@ from sqlalchemy import Integer, String, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column
 from app.core.config import settings
 
+
 class NotaRecebimento(settings.Base):
     __tablename__ = "nota_recebimento"
     __table_args__ = {"extend_existing": True}

@@ -162,7 +162,7 @@ class User(settings.Base):  # Substituímos db.Model por Base
         uselist=True,  # Isso permite que seja uma lista de objetos Operacao
     )
 
-   # Relacionamento MANY-TO-ONE de Grupo_Produto para User (não 'Usuario')
+    # Relacionamento MANY-TO-ONE de Grupo_Produto para User (não 'Usuario')
     funcionario: Mapped["Funcionario"] = relationship(
         "Funcionario",  # Referência correta à classe 'User'
         back_populates="usuario",  # Nome do campo de volta no User

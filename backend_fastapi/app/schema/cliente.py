@@ -1,5 +1,5 @@
 # app/schemas/cliente.py
-from pydantic import BaseModel
+from pydantic import BaseModel, validator
 from typing import Optional, List
 from datetime import datetime
 from pydantic import ConfigDict, EmailStr
@@ -24,6 +24,13 @@ class ClienteSchema(BaseModel):
     email_funcionario: Optional[EmailStr] = None  # E-mail do Funcionário responsável
     acao: Optional[str] = None  # Ação/observações adicionais
     fornecedor_cliente: Optional[str] = None  # Fornecedor associado ao cliente
+
+     # Validar tipo_cliente para garantir que seja em maiúsculas
+    @validator('tipo_cliente', pre=True, always=True)
+    def ensure_tipo_cliente_uppercase(cls, v):
+        if v is not None:
+            return v.upper()  # Converte o valor para maiúsculas
+        return v
 
 
 # Esquema de Cliente para exibição pública (com relacionamentos)
@@ -55,3 +62,11 @@ class ClienteUpdate(BaseModel):
     email_funcionario: Optional[str] = None
     acao: Optional[str] = None
     fornecedor_cliente: Optional[str] = None
+
+    # Validar tipo_cliente para garantir que seja em maiúsculas
+    @validator('tipo_cliente', pre=True, always=True)
+    def ensure_tipo_cliente_uppercase(cls, v):
+        if v is not None:
+            return v.upper()  # Converte o valor para maiúsculas
+        return v
+

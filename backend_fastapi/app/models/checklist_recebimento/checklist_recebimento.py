@@ -19,15 +19,20 @@ from sqlalchemy import Enum as SQLEnum
 # Criando um timezone para São Paulo (UTC-3)
 SP_TZ = pytz.timezone("America/Sao_Paulo")
 
+
 # Função auxiliar para garantir o uso correto do timezone
 def get_current_time_in_sp() -> datetime:
-    return datetime.now(SP_TZ).astimezone(SP_TZ)  # Garante que a data e hora sejam "aware"
+    return datetime.now(SP_TZ).astimezone(
+        SP_TZ
+    )  # Garante que a data e hora sejam "aware"
+
 
 # Enum para Status da Tarefa
 class StatusTarefaEnum(enum.Enum):
     PENDENTE = "PENDENTE"
     EM_ANDAMENTO = "EM_ANDAMENTO"
     FINALIZADO = "FINALIZADO"
+
 
 class Checklist_Recebimento(settings.Base):
     __tablename__ = "checklist_recebimentos"
@@ -83,7 +88,6 @@ class Checklist_Recebimento(settings.Base):
         back_populates="checklist",
     )
 
-
     # Relacionamento com Recebimento
     ordem_id: Mapped[int] = mapped_column(
         Integer, ForeignKey("recebimentos.id"), nullable=True
@@ -93,7 +97,7 @@ class Checklist_Recebimento(settings.Base):
         "Recebimento", back_populates="checklists", lazy="joined"
     )
 
-     # Novo campo para indicar que foi impresso
+    # Novo campo para indicar que foi impresso
     impresso_pdf: Mapped[bool] = mapped_column(Boolean, default=False)
 
     def __repr__(self):

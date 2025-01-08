@@ -22,6 +22,7 @@ router = APIRouter(prefix="/checklist", tags=["checklists"])
 DbSession = Annotated[AsyncSession, Depends(get_session)]
 Current_user = Annotated[User, Depends(get_current_user)]
 
+
 # CRIAR Checklist
 @router.post("/", response_model=Checklist_RecebimentoPublic)
 async def create_checklist(
@@ -48,7 +49,9 @@ async def create_checklist(
 
     db.add(db_checklist)  # Adicionando o Checklist à sessão do banco
     await db.commit()  # Persistindo a transação
-    await db.refresh(db_checklist)  # Atualizando o objeto com os dados persistidos (como o ID)
+    await db.refresh(
+        db_checklist
+    )  # Atualizando o objeto com os dados persistidos (como o ID)
 
     return db_checklist  # Retornando o Checklist criado
 
@@ -85,7 +88,9 @@ async def list_checklists(
 
     # Filtro opcional pelo status da tarefa
     if status_tarefa:
-        query = query.filter(Checklist_Recebimento.status_tarefa.ilike(f"%{status_tarefa}%"))
+        query = query.filter(
+            Checklist_Recebimento.status_tarefa.ilike(f"%{status_tarefa}%")
+        )
 
     # Filtro opcional pelo status de impressão
     if impresso is not None:
@@ -120,7 +125,9 @@ async def gerar_pdf_checklist(
         )
 
     # Verifica se o Checklist existe no banco de dados
-    query = select(Checklist_Recebimento).where(Checklist_Recebimento.id == checklist_id)
+    query = select(Checklist_Recebimento).where(
+        Checklist_Recebimento.id == checklist_id
+    )
     result = await db.execute(query)
     db_checklist = result.scalars().first()
 
@@ -167,7 +174,9 @@ async def update_checklist(
         )
 
     # Verificando se o Checklist existe no banco de dados
-    query = select(Checklist_Recebimento).where(Checklist_Recebimento.id == checklist_id)
+    query = select(Checklist_Recebimento).where(
+        Checklist_Recebimento.id == checklist_id
+    )
     result = await db.execute(query)
     db_checklist = result.scalars().first()
 
@@ -207,7 +216,9 @@ async def delete_checklist(
         )
 
     # Verifica se o Checklist existe no banco de dados
-    query = select(Checklist_Recebimento).where(Checklist_Recebimento.id == checklist_id)
+    query = select(Checklist_Recebimento).where(
+        Checklist_Recebimento.id == checklist_id
+    )
     result = await db.execute(query)
     db_checklist = result.scalars().first()
 

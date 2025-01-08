@@ -1,5 +1,5 @@
 # app/schemas/produto.py
-from pydantic import BaseModel
+from pydantic import BaseModel, root_validator
 from typing import Optional, List
 from datetime import datetime
 from app.models.produto import Produto
@@ -23,6 +23,13 @@ class ProdutoSchema(BaseModel):
     updated_at: Optional[datetime] = None  # Data de atualização
     deleted_at: Optional[datetime] = None  # Data de exclusão (se houver)
 
+    @root_validator(pre=True)
+    def convert_to_uppercase(cls, values):
+        # Itera sobre os campos e converte os valores do tipo str para maiúsculas
+        for field, value in values.items():
+            if isinstance(value, str):  # Verifica se o valor é uma string
+                values[field] = value.upper()  # Converte para maiúsculas
+        return values
 
 # Esquema de Produto para exibição pública (com relacionamentos)
 class ProdutoPublic(ProdutoSchema):
@@ -59,3 +66,11 @@ class ProdutoUpdate(BaseModel):
     # Campos de controle
     updated_at: Optional[datetime] = None  # Data de atualização
     deleted_at: Optional[datetime] = None  # Data de exclusão (se houver)
+
+    @root_validator(pre=True)
+    def convert_to_uppercase(cls, values):
+        # Itera sobre os campos e converte os valores do tipo str para maiúsculas
+        for field, value in values.items():
+            if isinstance(value, str):  # Verifica se o valor é uma string
+                values[field] = value.upper()  # Converte para maiúsculas
+        return values

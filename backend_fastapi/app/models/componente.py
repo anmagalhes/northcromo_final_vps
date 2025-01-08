@@ -27,7 +27,7 @@ class Componente(settings.Base):
     __table_args__ = {"extend_existing": True}
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    name: Mapped[str] = mapped_column(String(40), unique=True, nullable=False)
+    name: Mapped[str] = mapped_column(String(40), nullable=False)
 
     # Colunas de controle de data
     created_at: Mapped[datetime] = mapped_column(
@@ -49,23 +49,19 @@ class Componente(settings.Base):
     usuario: Mapped["User"] = relationship(
         "User",  # Referência correta à classe 'User'
         back_populates="componentes",  # Nome do campo de volta no User
-        lazy="joined",
     )
 
     # Relacionamento com 'Operacao' (caso esteja faltando)
     Defeitos: Mapped[List["Defeito"]] = relationship(
         "Defeito",  # Nome da classe de destino
         back_populates="componentes",  # Nome do campo de volta em Operacao
-        lazy="joined",  # Carregamento desejado
-        uselist=True,  # Isso permite que seja uma lista de objetos Operacao
+
     )
 
     # Relacionamento com Produto
     produtos: Mapped[List["Produto"]] = relationship(
         "Produto",  # Nome da classe de destino
         back_populates="componentes",  # Nome do campo de volta em Operacao
-        lazy="joined",  # Carregamento desejado
-        uselist=True,  # Isso permite que seja uma lista de objetos Operacao
     )
 
     def __repr__(self):

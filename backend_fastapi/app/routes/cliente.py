@@ -1,6 +1,9 @@
 # app/routes/cliente.py
+import pandas as pd
+from io import BytesIO
+
 from typing import Annotated
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, UploadFile, File, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
@@ -13,6 +16,7 @@ from app.schema.cliente import (
     ClienteUpdate,
 )
 from core.desp import get_current_user, get_session
+
 
 router = APIRouter(prefix="/cliente", tags=["clientes"])
 

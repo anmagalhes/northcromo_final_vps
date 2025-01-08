@@ -22,6 +22,7 @@ def get_current_time_in_sp() -> datetime:
         SP_TZ
     )  # Garante que a data e hora sejam "aware"
 
+
 class Funcionario(settings.Base):
     __tablename__ = "funcionarios"
     __table_args__ = {"extend_existing": True}
@@ -30,8 +31,7 @@ class Funcionario(settings.Base):
     nome: Mapped[str] = mapped_column(String(100), nullable=False)
     cargo: Mapped[str] = mapped_column(String(100), nullable=False)
 
-
-     # Colunas de controle de data
+    # Colunas de controle de data
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=get_current_time_in_sp
     )
