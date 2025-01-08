@@ -41,7 +41,9 @@ async def create_operacao(
 
     db.add(db_operacao)  # Adicionando a Operacao à sessão do banco
     await db.commit()  # Persistindo a transação
-    await db.refresh(db_operacao)  # Atualizando o objeto com os dados persistidos (como o ID)
+    await db.refresh(
+        db_operacao
+    )  # Atualizando o objeto com os dados persistidos (como o ID)
 
     return db_operacao  # Retornando a Operacao criada
 

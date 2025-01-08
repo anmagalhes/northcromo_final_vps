@@ -25,8 +25,8 @@ class ClienteSchema(BaseModel):
     acao: Optional[str] = None  # Ação/observações adicionais
     fornecedor_cliente: Optional[str] = None  # Fornecedor associado ao cliente
 
-     # Validar tipo_cliente para garantir que seja em maiúsculas
-    @validator('tipo_cliente', pre=True, always=True)
+    # Validar tipo_cliente para garantir que seja em maiúsculas
+    @validator("tipo_cliente", pre=True, always=True)
     def ensure_tipo_cliente_uppercase(cls, v):
         if v is not None:
             return v.upper()  # Converte o valor para maiúsculas
@@ -64,9 +64,8 @@ class ClienteUpdate(BaseModel):
     fornecedor_cliente: Optional[str] = None
 
     # Validar tipo_cliente para garantir que seja em maiúsculas
-    @validator('tipo_cliente', pre=True, always=True)
+    @validator("tipo_cliente", pre=True, always=True)
     def ensure_tipo_cliente_uppercase(cls, v):
         if v is not None:
             return v.upper()  # Converte o valor para maiúsculas
         return v
-

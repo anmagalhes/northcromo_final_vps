@@ -100,7 +100,7 @@ class Produto(settings.Base):
     # Relacionamento com a tabela ItensRecebimento (um produto pode ter vários itens de recebimento)
     itens_recebimento: Mapped[List["ItensRecebimento"]] = relationship(
         "ItensRecebimento",
-        back_populates="produto",
+        back_populates="produtos",
     )
 
     def __repr__(self):

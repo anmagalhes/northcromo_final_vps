@@ -135,10 +135,14 @@ async def import_operacoes(
             for index, row in df.iterrows():
                 # Valida o nome da operação
                 nome_processo = (
-                    row["nome_processo"].strip() if isinstance(row["nome_processo"], str) else None
+                    row["nome_processo"].strip()
+                    if isinstance(row["nome_processo"], str)
+                    else None
                 )
                 grupo_processo = (
-                    row["grupo_processo"].strip() if isinstance(row["grupo_processo"], str) else None
+                    row["grupo_processo"].strip()
+                    if isinstance(row["grupo_processo"], str)
+                    else None
                 )
 
                 # Verifica se todas as informações necessárias estão presentes
@@ -146,7 +150,7 @@ async def import_operacoes(
                     falhas.append(
                         {
                             "linha": index + 1,
-                            "motivo": f"Nome do processo inválido na linha {index + 1}."
+                            "motivo": f"Nome do processo inválido na linha {index + 1}.",
                         }
                     )
                     continue  # Continua para a próxima linha
@@ -155,7 +159,7 @@ async def import_operacoes(
                     falhas.append(
                         {
                             "linha": index + 1,
-                            "motivo": f"Grupo de processo inválido na linha {index + 1}."
+                            "motivo": f"Grupo de processo inválido na linha {index + 1}.",
                         }
                     )
                     continue  # Continua para a próxima linha
@@ -168,7 +172,7 @@ async def import_operacoes(
                     falhas.append(
                         {
                             "linha": index + 1,
-                            "motivo": f"Operação '{nome_processo}' já existe na linha {index + 1}."
+                            "motivo": f"Operação '{nome_processo}' já existe na linha {index + 1}.",
                         }
                     )
                     continue  # Não cria duplicado, vai para a próxima linha
@@ -180,7 +184,7 @@ async def import_operacoes(
                         grupo_operacao=grupo_processo,
                         usuario_id=user.id,
                         created_at=datetime.now(),  # Definindo a data e hora atual
-                        updated_at=datetime.now()   # Definindo a data e hora atual
+                        updated_at=datetime.now(),  # Definindo a data e hora atual
                     )
                     db.add(db_operacao)
                     await db.flush()  # Empurra a transação para garantir visibilidade
@@ -190,7 +194,7 @@ async def import_operacoes(
                     falhas.append(
                         {
                             "linha": index + 1,
-                            "motivo": f"Erro ao salvar a operação '{nome_processo}': {str(e)} na linha {index + 1}"
+                            "motivo": f"Erro ao salvar a operação '{nome_processo}': {str(e)} na linha {index + 1}",
                         }
                     )
 
@@ -203,14 +207,14 @@ async def import_operacoes(
             return {
                 "status": "Importação finalizada com erros",
                 "sucesso": sucesso,
-                "falhas": falhas
+                "falhas": falhas,
             }
 
         # Caso contrário, retorno de sucesso total
         return {
             "status": "Importação finalizada com sucesso",
             "sucesso": sucesso,
-            "falhas": []
+            "falhas": [],
         }
 
     except Exception as e:

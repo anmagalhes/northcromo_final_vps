@@ -28,19 +28,20 @@ from app.routes import (
     operacao,
 )
 from app.routes.importacao import (
-    cliente_import, 
-    componente_import, 
+    cliente_import,
+    componente_import,
     produto_import,
     operacao_import,
-
- )
+)
 
 # Definição do FastAPI
 app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Permite todos os domínios. Para produção, é melhor especificar domínios confiáveis.
+    allow_origins=[
+        "*"
+    ],  # Permite todos os domínios. Para produção, é melhor especificar domínios confiáveis.
     allow_credentials=True,
     allow_methods=["*"],  # Permite todos os métodos (GET, POST, etc.)
     allow_headers=["*"],  # Permite todos os cabeçalhos
@@ -69,6 +70,7 @@ app.include_router(cliente_import.router)
 app.include_router(produto_import.router)
 app.include_router(componente_import.router)
 app.include_router(operacao_import.router)
+
 
 # Rota para renderizar o template HTML padrão
 @app.get("/", response_class=HTMLResponse)

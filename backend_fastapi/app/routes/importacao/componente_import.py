@@ -29,10 +29,12 @@ Current_user = Annotated[User, Depends(get_current_user)]
 def validar_codigo(codigo: str) -> bool:
     return re.match(r"^\d+$", codigo) is not None
 
+
 # Função para validar o nome do componente
 def validar_nome_componente(nome: str) -> bool:
     # Validando se o nome não está vazio e não é apenas espaços
     return bool(nome.strip())
+
 
 # Função para validar o preço (simplificada)
 def validar_preco(preco: float) -> bool:
@@ -82,6 +84,7 @@ async def download_modelo():
         media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         headers={"Content-Disposition": "attachment; filename=modelo_componentes.xlsx"},
     )
+
 
 @router.post("/importar", response_model=dict)
 async def import_componentes(
@@ -135,7 +138,9 @@ async def import_componentes(
             for index, row in df.iterrows():
                 # Valida o nome do componente
                 nome_componente = (
-                    row["nome_componente"].strip() if isinstance(row["nome_componente"], str) else None
+                    row["nome_componente"].strip()
+                    if isinstance(row["nome_componente"], str)
+                    else None
                 )
 
                 # Verifica se todas as informações necessárias estão presentes
@@ -143,7 +148,7 @@ async def import_componentes(
                     falhas.append(
                         {
                             "linha": index + 1,
-                            "motivo": f"Nome do componente inválido na linha {index + 1}."
+                            "motivo": f"Nome do componente inválido na linha {index + 1}.",
                         }
                     )
                     continue  # Continua para a próxima linha
@@ -156,7 +161,7 @@ async def import_componentes(
                     falhas.append(
                         {
                             "linha": index + 1,
-                            "motivo": f"Componente '{nome_componente}' já existe na linha {index + 1}."
+                            "motivo": f"Componente '{nome_componente}' já existe na linha {index + 1}.",
                         }
                     )
                     continue  # Não cria duplicado, vai para a próxima linha
@@ -164,10 +169,10 @@ async def import_componentes(
                 # Criação do componente a ser inserido
                 try:
                     db_componente = Componente(
-                        name=nome_componente, 
+                        name=nome_componente,
                         usuario_id=user.id,
                         created_at=datetime.now(),  # Definindo a data e hora atual
-                        updated_at=datetime.now()   # Definindo a data e hora atual
+                        updated_at=datetime.now(),  # Definindo a data e hora atual
                     )
                     db.add(db_componente)
                     await db.flush()  # Empurra a transação para garantir visibilidade
@@ -177,7 +182,7 @@ async def import_componentes(
                     falhas.append(
                         {
                             "linha": index + 1,
-                            "motivo": f"Erro ao salvar o componente '{nome_componente}': {str(e)} na linha {index + 1}"
+                            "motivo": f"Erro ao salvar o componente '{nome_componente}': {str(e)} na linha {index + 1}",
                         }
                     )
 
@@ -190,14 +195,14 @@ async def import_componentes(
             return {
                 "status": "Importação finalizada com erros",
                 "sucesso": sucesso,
-                "falhas": falhas
+                "falhas": falhas,
             }
 
         # Caso contrário, retorno de sucesso total
         return {
             "status": "Importação finalizada com sucesso",
             "sucesso": sucesso,
-            "falhas": []
+            "falhas": [],
         }
 
     except Exception as e:

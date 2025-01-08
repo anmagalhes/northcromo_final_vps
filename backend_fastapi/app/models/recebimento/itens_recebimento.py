@@ -38,8 +38,16 @@ class ItensRecebimento(settings.Base):
 
     # Definindo a chave primária do item de recebimento
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    referencia_produto: Mapped[Optional[str]] = mapped_column(
-        String(200), nullable=True
+
+    # Campos adicionais para armazenar a quantidade, preço unitário e preço total
+    qtd_produto: Mapped[int] = mapped_column(Integer, nullable=True)
+    preco_unitario: Mapped[float] = mapped_column(Float, nullable=True)
+    preco_total: Mapped[float] = mapped_column(Float, nullable=True)
+    referencia_produto: Mapped[str | None] = mapped_column(Text, nullable=True)
+
+    # Adicionando o campo status_ordem como ENUM, mas armazenando o valor inteiro no banco
+    status_ordem: Mapped[StatusOrdem] = mapped_column(
+        Enum(StatusOrdem), nullable=True, default=StatusOrdem.PENDENTE
     )
 
     # Relacionamento com o modelo User (usando tipagem de string)
@@ -48,7 +56,7 @@ class ItensRecebimento(settings.Base):
     )  # Tabela Campo
 
     # Relacionamento MANY-TO-ONE de Grupo_Produto para User (não 'Usuario')
-    produto: Mapped["Produto"] = relationship(
+    produtos: Mapped["Produto"] = relationship(
         "Produto",  # Referência correta à classe 'User'
         back_populates="itens_recebimento",  # Nome do campo de volta no User
         cascade="all, delete",
@@ -75,17 +83,6 @@ class ItensRecebimento(settings.Base):
         "Funcionario",  # Referência correta à classe 'User'
         back_populates="itens_recebimento",  # Nome do campo de volta no User
         cascade="all, delete",
-    )
-
-    # Campos adicionais para armazenar a quantidade, preço unitário e preço total
-    qtd_produto: Mapped[int] = mapped_column(Integer, nullable=True)
-    preco_unitario: Mapped[float] = mapped_column(Float, nullable=True)
-    preco_total: Mapped[float] = mapped_column(Float, nullable=True)
-    referencia_produto: Mapped[str | None] = mapped_column(Text, nullable=True)
-
-    # Adicionando o campo status_ordem como ENUM, mas armazenando o valor inteiro no banco
-    status_ordem: Mapped[StatusOrdem] = mapped_column(
-        Enum(StatusOrdem), nullable=True, default=StatusOrdem.PENDENTE
     )
 
     def __repr__(self):

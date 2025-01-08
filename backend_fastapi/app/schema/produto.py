@@ -31,6 +31,7 @@ class ProdutoSchema(BaseModel):
                 values[field] = value.upper()  # Converte para maiúsculas
         return values
 
+
 # Esquema de Produto para exibição pública (com relacionamentos)
 class ProdutoPublic(ProdutoSchema):
     id: int  # ID do Produto

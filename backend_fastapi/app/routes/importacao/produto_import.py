@@ -17,7 +17,7 @@ from core.desp import get_current_user, get_session
 import re
 
 from fastapi import Query
-from sqlalchemy.future import select 
+from sqlalchemy.future import select
 
 router = APIRouter(prefix="/produto/importar", tags=["importação de produtos"])
 
@@ -182,9 +182,17 @@ async def import_produtos(
         df.columns = df.columns.str.lower()
 
         required_columns = [
-            "codigo", "nome_produto", "und_servicos", "grupo_produto", 
-            "componente", "operacao", "posto_trabalho", "descricao", 
-            "preco_unitario", "quantidade", "categoria"
+            "codigo",
+            "nome_produto",
+            "und_servicos",
+            "grupo_produto",
+            "componente",
+            "operacao",
+            "posto_trabalho",
+            "descricao",
+            "preco_unitario",
+            "quantidade",
+            "categoria",
         ]
 
         # Verifica se o arquivo contém as colunas necessárias
@@ -199,7 +207,9 @@ async def import_produtos(
         grupo_produtos = {gp.name: gp for gp in await db.scalars(select(Grupo_Produto))}
         componentes = {comp.name: comp for comp in await db.scalars(select(Componente))}
         operacoes = {op.name: op for op in await db.scalars(select(Operacao))}
-        postos_trabalho = {posto.name: posto for posto in await db.scalars(select(Postotrabalho))}
+        postos_trabalho = {
+            posto.name: posto for posto in await db.scalars(select(Postotrabalho))
+        }
 
         # Processa cada linha do arquivo
         for index, row in df.iterrows():
@@ -210,13 +220,31 @@ async def import_produtos(
             componente_nome = row["componente"].strip()
             operacao_nome = row["operacao"].strip()
             posto_trabalho_nome = row["posto_trabalho"].strip()
-            descricao = row["descricao"].strip() if isinstance(row["descricao"], str) else None
-            preco_unitario = row["preco_unitario"] if isinstance(row["preco_unitario"], (int, float)) else None
-            quantidade = row["quantidade"] if isinstance(row["quantidade"], int) else None
+            descricao = (
+                row["descricao"].strip() if isinstance(row["descricao"], str) else None
+            )
+            preco_unitario = (
+                row["preco_unitario"]
+                if isinstance(row["preco_unitario"], (int, float))
+                else None
+            )
+            quantidade = (
+                row["quantidade"] if isinstance(row["quantidade"], int) else None
+            )
             categoria = row["categoria"].strip()
 
             # Verifica se todas as informações necessárias estão presentes
-            if not all([codigo, nome_produto, und_servicos, grupo_produto_nome, componente_nome, operacao_nome, posto_trabalho_nome]):
+            if not all(
+                [
+                    codigo,
+                    nome_produto,
+                    und_servicos,
+                    grupo_produto_nome,
+                    componente_nome,
+                    operacao_nome,
+                    posto_trabalho_nome,
+                ]
+            ):
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
                     detail=f"Dados inválidos no arquivo para o produto {codigo}. Verifique as colunas.",
@@ -243,13 +271,25 @@ async def import_produtos(
 
             # Valida se as entidades foram encontradas
             if not grupo_produto:
-                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Grupo de produto '{grupo_produto_nome}' não encontrado.")
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail=f"Grupo de produto '{grupo_produto_nome}' não encontrado.",
+                )
             if not componente:
-                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Componente '{componente_name}' não encontrado.")
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail=f"Componente '{componente_name}' não encontrado.",
+                )
             if not operacao:
-                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Operação '{operacao_nome}' não encontrada.")
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail=f"Operação '{operacao_nome}' não encontrada.",
+                )
             if not posto_trabalho:
-                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Posto de trabalho '{posto_trabalho_nome}' não encontrado.")
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail=f"Posto de trabalho '{posto_trabalho_nome}' não encontrado.",
+                )
 
             # Criação do produto a ser inserido
             db_produto = Produto(

@@ -55,7 +55,6 @@ class Componente(settings.Base):
     Defeitos: Mapped[List["Defeito"]] = relationship(
         "Defeito",  # Nome da classe de destino
         back_populates="componentes",  # Nome do campo de volta em Operacao
-
     )
 
     # Relacionamento com Produto

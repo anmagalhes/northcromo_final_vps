@@ -49,16 +49,12 @@ class Operacao(settings.Base):
     # Relacionamento MANY-TO-ONE de Grupo_Produto para User (não 'Usuario')
     usuario: Mapped["User"] = relationship(
         "User",  # Referência correta à classe 'User'
-        back_populates="Operacoes",  # Nome do campo de volta no User
-        lazy="joined",
     )
 
     # Relacionamento com Produto
     produtos: Mapped[List["Produto"]] = relationship(
         "Produto",  # Nome da classe de destino
         back_populates="Operacoes",  # Nome do campo de volta em Operacao
-        lazy="joined",  # Carregamento desejado
-        uselist=True,  # Isso permite que seja uma lista de objetos Operacao
     )
 
     def __repr__(self):
