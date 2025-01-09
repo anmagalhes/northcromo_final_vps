@@ -26,10 +26,10 @@ from app.models.recebimento.recebimento import Recebimento
 
 # Definindo o Enum de StatusOrdem
 class StatusOrdem(enum.Enum):
-    PENDENTE = 1  # Status 1 - Pendente
-    FINALIZADO = 5  # Status 5 - Finalizado
-    CANCELADO = 3  # Status 3 - Cancelado
-    EM_ANDAMENTO = 2  # Status 2 - Em Andamento
+    PENDENTE = "PENDENTE"  # Status 1 - Pendente
+    FINALIZADO = "FINALIZADO"  # Status 5 - Finalizado
+    CANCELADO = "CANCELADO"  # Status 3 - Cancelado
+    EM_ANDAMENTO = "EM_ANDAMENTO"
 
 
 class ItensRecebimento(settings.Base):
@@ -44,7 +44,6 @@ class ItensRecebimento(settings.Base):
     preco_unitario: Mapped[float] = mapped_column(Float, nullable=True)
     preco_total: Mapped[float] = mapped_column(Float, nullable=True)
     referencia_produto: Mapped[str | None] = mapped_column(Text, nullable=True)
-    
 
     # Adicionando o campo status_ordem como ENUM, mas armazenando o valor inteiro no banco
     status_ordem: Mapped[StatusOrdem] = mapped_column(
@@ -86,10 +85,14 @@ class ItensRecebimento(settings.Base):
         cascade="all, delete",
     )
 
+    # Relacionamento com Fotos
+    fotos: Mapped["FotoRecebimento"] = relationship(
+        "FotoRecebimento", back_populates="item_recebimento"
+    )
+
     def __repr__(self):
         # Representação amigável do objeto, para exibição no log ou debug
         return f"<ItensRecebimento id={self.id} produto={self.produto.id} quantidade={self.qtd_produto}>"
-    
 
     def mudar_status(self, novo_status: StatusOrdem):
         """
@@ -97,5 +100,5 @@ class ItensRecebimento(settings.Base):
         atualiza a data final da ordem.
         """
         if novo_status in [StatusOrdem.FINALIZADO, StatusOrdem.CANCELADO]:
-            self.data_final_ordem = datetime.now(pytz.timezone('America/Sao_Paulo'))
+            self.data_final_ordem = datetime.now(pytz.timezone("America/Sao_Paulo"))
         self.status_ordem = novo_status

@@ -21,6 +21,7 @@ class ProcessosOrdemEnum(str, Enum):
 
 
 class StatusOrdemEnum(str, Enum):
-    PENDENTE = "PENDENTE"
-    APROVADO = "APROVADO"
-    REJEITADO = "REJEITADO"
+    PENDENTE = "PENDENTE"  # Status 1 - Pendente
+    FINALIZADO = "FINALIZADO"  # Status 5 - Finalizado
+    CANCELADO = "CANCELADO"  # Status 3 - Cancelado
+    EM_ANDAMENTO = "EM_ANDAMENTO"

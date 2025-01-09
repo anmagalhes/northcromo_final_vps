@@ -43,11 +43,10 @@ class TipoOrdemEnum(enum.Enum):
 
 # Definindo o Enum de StatusOrdem
 class StatusOrdem(enum.Enum):
-    PENDENTE = 1  # Status 1 - Pendente
-    FINALIZADO = 5  # Status 5 - Finalizado
-    CANCELADO = 3  # Status 3 - Cancelado
-    EM_ANDAMENTO = 2  # Status 2 - Em Andamento
-
+    PENDENTE = "PENDENTE"  # Status 1 - Pendente
+    FINALIZADO = "FINALIZADO"  # Status 5 - Finalizado
+    CANCELADO = "CANCELADO"  # Status 3 - Cancelado
+    EM_ANDAMENTO = "EM_ANDAMENTO"
 
 # Enum para Status da Tarefa
 class StatusTarefaEnum(enum.Enum):
@@ -182,6 +181,8 @@ class Recebimento(settings.Base):
         cascade="all, delete",
     )
 
+    status_ordem=StatusOrdem.PENDENTE
+
     def criar_item_inicial(self):
         """
         Cria o primeiro item de recebimento automaticamente após criar o recebimento.
@@ -252,7 +253,7 @@ class Recebimento(settings.Base):
 
     def __repr__(self):
         return f"<Recebimento id={self.id} tipo_ordem={self.tipo_ordem or 'Unnamed'} recebimento_ordem={self.recebimento_ordem or 'Unnamed'}>"
-    
+
     def mudar_status(self, novo_status: StatusOrdem):
         """
         Altera o status do recebimento e, se o novo status for FINALIZADO ou CANCELADO,
@@ -263,3 +264,22 @@ class Recebimento(settings.Base):
                 self.data_final_recebimento = datetime.now(SP_TZ)
 
         self.status_recebimento = novo_status
+
+
+    def verificar_status_itens_e_atualizar(self):
+            """
+            Verifica todos os itens do recebimento. Se todos os itens não estiverem mais
+            no status 'PENDENTE', altera o status do recebimento para 'FINALIZADO'.
+            """
+            # Verifica se todos os itens não estão mais com status 'PENDENTE'
+            todos_finalizados = all(
+                item.status_ordem != StatusOrdem.PENDENTE for item in self.itens
+            )
+
+            if todos_finalizados:
+                # Se todos os itens não estiverem mais pendentes, mudar o status do recebimento
+                self.status_recebimento = StatusOrdem.FINALIZADO
+                self.data_final_ordem = datetime.now(SP_TZ)  # Definir data de finalização
+
+    def __repr__(self):
+        return f"<Recebimento id={self.id} tipo_ordem={self.tipo_ordem or 'Unnamed'} recebimento_ordem={self.recebimento_ordem or 'Unnamed'}>"

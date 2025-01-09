@@ -7,29 +7,45 @@ from app.repositories.recebimento_repository import RecebimentoRepository
 from app.repositories.itens_recebimento_repository import ItensRecebimentoRepository
 from app.schemas.recebimento import RecebimentoSchema, RecebimentoPublic
 
+
 class RecebimentoService:
-    
+
     def __init__(self):
         self.recebimento_repo = RecebimentoRepository()
         self.itens_recebimento_repo = ItensRecebimentoRepository()
 
-    async def create_recebimento(self, recebimento: RecebimentoSchema, db: AsyncSession, user: User) -> RecebimentoPublic:
+    async def create_recebimento(
+        self, recebimento: RecebimentoSchema, db: AsyncSession, user: User
+    ) -> RecebimentoPublic:
         """
         Criação de um novo recebimento.
         """
-        db_recebimento = await self.recebimento_repo.create_recebimento(recebimento, db, user)
-        
+        db_recebimento = await self.recebimento_repo.create_recebimento(
+            recebimento, db, user
+        )
+
         # Criando checklist e itens relacionados
         await self.create_checklist_e_itens(db_recebimento, db)
         return db_recebimento
 
-    async def list_recebimentos(self, db: AsyncSession, user: User, cliente_id: int | None, offset: int, limit: int):
+    async def list_recebimentos(
+        self,
+        db: AsyncSession,
+        user: User,
+        cliente_id: int | None,
+        offset: int,
+        limit: int,
+    ):
         """
         Listar todos os recebimentos, com base na paginação.
         """
-        return await self.recebimento_repo.get_recebimentos(db, cliente_id, offset, limit)
+        return await self.recebimento_repo.get_recebimentos(
+            db, cliente_id, offset, limit
+        )
 
-    async def create_checklist_e_itens(self, recebimento: Recebimento, db: AsyncSession):
+    async def create_checklist_e_itens(
+        self, recebimento: Recebimento, db: AsyncSession
+    ):
         """
         Criar o checklist e os itens relacionados ao recebimento.
         """

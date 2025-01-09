@@ -13,20 +13,24 @@ from app.schema.variavel_global.enums import (
 from app.schema.recebimento.itens_recebimento import ItensRecebimentoSchema
 from app.schema.produto import ProdutoSchema
 
+
 # Enum's do Pydantic (similares aos do SQLAlchemy)
 class SimNaoEnum(str, Enum):
     SIM = "SIM"
     NAO = "NAO"
 
+
 class TipoOrdemEnum(str, Enum):
     NOVO = "NOVO"
     NAO = "NAO"
 
-class StatusOrdemEnum(int, Enum):
-    PENDENTE = 1
-    FINALIZADO = 5
-    CANCELADO = 3
-    EM_ANDAMENTO = 2
+
+class StatusOrdemEnum(str, Enum):
+    PENDENTE = "PENDENTE"  # Status 1 - Pendente
+    FINALIZADO = "FINALIZADO"  # Status 5 - Finalizado
+    CANCELADO = "CANCELADO"  # Status 3 - Cancelado
+    EM_ANDAMENTO = "EM_ANDAMENTO"
+
 
 class StatusTarefaEnum(str, Enum):
     PENDENTE = "PENDENTE"
@@ -68,17 +72,17 @@ class RecebimentoSchema(BaseModel):
     usuario_id: Optional[int] = None
     cliente_id: Optional[int] = None
 
+    status_ordem: StatusOrdemEnum
 
     # Lista de itens que vão ser relacionados a esse recebimento
-    itens: List[
-        "ItensRecebimentoSchema"
-    ]  # Usar string para Forward Reference
+    itens: List["ItensRecebimentoSchema"]  # Usar string para Forward Reference
 
 
 # Esquema para exibição pública de Recebimento
 class RecebimentoPublic(RecebimentoSchema):
     id: int  # ID do recebimento no banco de dados
-    
+
+
 # Esquema para listagem de Recebimentos
 class RecebimentoList(BaseModel):
     recebimentos: List[RecebimentoPublic]  # Lista de recebimentos
@@ -109,6 +113,7 @@ class RecebimentoUpdate(BaseModel):
     img2_ordem: Optional[str]  # Caminho para imagem 2
     img3_ordem: Optional[str]  # Caminho para imagem 3
     img4_ordem: Optional[str]  # Caminho para imagem 4
+    status_ordem: StatusOrdemEnum
 
 
 class RecebimentoResponse(BaseModel):
@@ -136,7 +141,7 @@ class RecebimentoResponse(BaseModel):
     deleted_at: Optional[datetime]
     usuario_id: Optional[int]
     cliente_id: int
-
+    status_ordem: StatusOrdemEnum
 
 # Agora você pode importar as dependências no final do arquivo para evitar ciclo de importações
 from app.schema.cliente import ClientePublic  # Agora importando ClientePublic

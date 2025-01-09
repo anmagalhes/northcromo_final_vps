@@ -6,12 +6,14 @@ from datetime import datetime
 from app.schema.produto import ProdutoSchema
 from app.schema.funcionario import FuncionarioSchema
 
+
 # Definindo o Enum de StatusOrdem com valores inteiros
-class StatusOrdemEnum(int, Enum):
-    PENDENTE = 1
-    EM_ANDAMENTO = 2
-    CANCELADO = 3
-    FINALIZADO = 5
+class StatusOrdemEnum(str, Enum):
+    PENDENTE = "PENDENTE"  # Status 1 - Pendente
+    FINALIZADO = "FINALIZADO"  # Status 5 - Finalizado
+    CANCELADO = "CANCELADO"  # Status 3 - Cancelado
+    EM_ANDAMENTO = "EM_ANDAMENTO"  # Status 2 - Em andamento
+
 
 # Esquema básico para item de recebimento
 class ItensRecebimentoSchema(BaseModel):
@@ -29,19 +31,25 @@ class ItensRecebimentoSchema(BaseModel):
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
 
+    # Adicionando campo de fotos (uma lista de URLs de fotos, opcional)
+    fotos: Optional[List[str]] = []  # Lista de URLs ou caminhos das fotos do item de recebimento
+
     # Incluindo informações adicionais do produto e funcionário, se necessário
     produto: Optional["ProdutoSchema"] = None
     funcionario: Optional["FuncionarioSchema"] = None  # Referência circular
 
+
 # Inclusão do ID após a criação do item de recebimento
 class ItensRecebimentoPublic(ItensRecebimentoSchema):
     id: int
+
 
 # Exibição para usuário final com paginação
 class ItensRecebimentoList(BaseModel):
     itensRecebimento: List[ItensRecebimentoPublic]
     offset: int
     limit: int
+
 
 # Atualizar Item de Recebimento
 class ItensRecebimentoUpdate(BaseModel):
@@ -50,13 +58,16 @@ class ItensRecebimentoUpdate(BaseModel):
     preco_total: Optional[float] = None
     referencia_produto: Optional[str] = None
     status_ordem: Optional[StatusOrdemEnum] = None
+    fotos: Optional[List[str]] = None  # Permite atualizar a lista de fotos
 
 
 # Chame o update_forward_refs após a definição dos modelos
 def update_references():
     from app.schema.funcionario import FuncionarioSchema  # Importação local para evitar circularidade
+
     ItensRecebimentoSchema.update_forward_refs()  # Atualizando a referência para FuncionarioSchema
     ItensRecebimentoPublic.update_forward_refs()  # Atualizando a referência para FuncionarioSchema
+
 
 # Chame a função para atualizar as referências
 update_references()

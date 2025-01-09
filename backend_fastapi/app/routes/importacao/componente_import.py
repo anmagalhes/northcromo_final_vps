@@ -189,7 +189,9 @@ async def import_funcionarios(
                     )
                     db.add(db_funcionario)
                     await db.flush()  # Empurra a transação para garantir visibilidade
-                    sucesso.append({"linha": index + 1, "funcionario": nome_funcionario})
+                    sucesso.append(
+                        {"linha": index + 1, "funcionario": nome_funcionario}
+                    )
                 except IntegrityError as e:
                     # Se ocorrer uma violação de chave única, será tratada aqui
                     falhas.append(

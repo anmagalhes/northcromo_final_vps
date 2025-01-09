@@ -10,7 +10,9 @@ from sqlalchemy import select
 
 from app.models.funcionario import Funcionario
 from app.models.user import User
-from app.models.grupo_produto import Grupo_Produto  # Caso precise de algum relacionamento com Grupo_Produto
+from app.models.grupo_produto import (
+    Grupo_Produto,
+)  # Caso precise de algum relacionamento com Grupo_Produto
 from core.desp import get_current_user, get_session
 
 import re
@@ -69,7 +71,9 @@ async def download_modelo():
     worksheet.set_column("B:B", 30)  # Cargo do Funcionario
 
     # Adicionando comentários explicativos em cada coluna
-    worksheet.write_comment("A1", "Nome completo do funcionário (exemplo: Funcionario A)")
+    worksheet.write_comment(
+        "A1", "Nome completo do funcionário (exemplo: Funcionario A)"
+    )
     worksheet.write_comment("B1", "Cargo do funcionário (exemplo: Cargo A)")
 
     output.seek(0)
@@ -77,7 +81,9 @@ async def download_modelo():
     return StreamingResponse(
         output,
         media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-        headers={"Content-Disposition": "attachment; filename=modelo_funcionarios.xlsx"},
+        headers={
+            "Content-Disposition": "attachment; filename=modelo_funcionarios.xlsx"
+        },
     )
 
 
@@ -131,8 +137,12 @@ async def import_funcionarios(
         # Inicia a transação
         async with db.begin():  # Garante que as alterações sejam atômicas
             for index, row in df.iterrows():
-                nome_funcionario = row["nome"].strip() if isinstance(row["nome"], str) else None
-                cargo_funcionario = row["cargo"].strip() if isinstance(row["cargo"], str) else None
+                nome_funcionario = (
+                    row["nome"].strip() if isinstance(row["nome"], str) else None
+                )
+                cargo_funcionario = (
+                    row["cargo"].strip() if isinstance(row["cargo"], str) else None
+                )
 
                 # Valida os dados
                 if not nome_funcionario or not validar_nome(nome_funcionario):
@@ -180,7 +190,9 @@ async def import_funcionarios(
                     )
                     db.add(db_funcionario)
                     await db.flush()  # Empurra a transação para garantir visibilidade
-                    sucesso.append({"linha": index + 1, "funcionario": nome_funcionario})
+                    sucesso.append(
+                        {"linha": index + 1, "funcionario": nome_funcionario}
+                    )
                 except IntegrityError as e:
                     falhas.append(
                         {

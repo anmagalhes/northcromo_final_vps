@@ -22,4 +22,3 @@ class OperacaoList(BaseModel):
 class OperacaoUpdate(BaseModel):
     name: Optional[str] = None
     grupo_operacao: Optional[str] = None
-

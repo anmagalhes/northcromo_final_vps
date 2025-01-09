@@ -17,11 +17,11 @@ from fastapi.middleware.cors import CORSMiddleware
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "app")))
 
 from app.routes import (
+    recebimento,
     todo,
     user,
     componente,
     postotrabalho,
-    recebimento,
     cliente,
     produto,
     funcionario,
@@ -32,7 +32,7 @@ from app.routes.importacao import (
     componente_import,
     funcionario_import,
     produto_import,
-    operacao_import
+    operacao_import,
 )
 
 # Definição do FastAPI
