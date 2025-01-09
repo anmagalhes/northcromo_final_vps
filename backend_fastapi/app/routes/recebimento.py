@@ -1,6 +1,7 @@
 from datetime import datetime
 from typing import Annotated, List
 
+import pytz
 from core.desp import get_current_user, get_session
 from fastapi import APIRouter, Depends, File, HTTPException, UploadFile, status
 from sqlalchemy.exc import SQLAlchemyError
@@ -13,13 +14,22 @@ from app.models.recebimento.foto_recebimento import FotoRecebimento
 from app.models.recebimento.itens_recebimento import ItensRecebimento
 from app.models.recebimento.recebimento import Recebimento
 from app.models.user import User
-from app.schema.recebimento.itens_recebimento import (ItensRecebimentoList,
-                                                      ItensRecebimentoPublic,
-                                                      ItensRecebimentoSchema,
-                                                      ItensRecebimentoUpdate)
-from app.schema.recebimento.recebimento import (RecebimentoPublic,
-                                                RecebimentoResponse,
-                                                RecebimentoSchema)
+from app.schema.recebimento.itens_recebimento import (
+    ItensRecebimentoList,
+    ItensRecebimentoPublic,
+    ItensRecebimentoSchema,
+    ItensRecebimentoUpdate,
+)
+from app.schema.recebimento.recebimento import (
+    RecebimentoPublic,
+    RecebimentoResponse,
+    RecebimentoSchema,
+    SimNaoEnum,
+    StatusOrdemEnum
+)
+
+# Definir o fuso horário de São Paulo
+sp_tz = pytz.timezone("America/Sao_Paulo")
 
 router = APIRouter(prefix="/recebimentos", tags=["Recebimentos"])
 
@@ -28,13 +38,8 @@ DbSession = Annotated[AsyncSession, Depends(get_session)]
 CurrentUser = Annotated[User, Depends(get_current_user)]  # Renomeado para CurrentUser
 
 
+# Ajustando a transação assíncrona
 async def commit_or_rollback(db: AsyncSession, error: bool = False):
-    """
-    Função auxiliar para realizar commit ou rollback em transações de banco de dados.
-
-    :param db: Sessão do banco de dados.
-    :param error: Indica se houve erro, se True faz rollback.
-    """
     try:
         if error:
             await db.rollback()  # Rollback em caso de erro
@@ -45,12 +50,6 @@ async def commit_or_rollback(db: AsyncSession, error: bool = False):
 
 
 async def criar_checklist_e_itens(recebimento: Recebimento, db: AsyncSession):
-    """
-    Cria o checklist e os itens do recebimento, associando ao banco de dados.
-
-    :param recebimento: Objeto do tipo Recebimento.
-    :param db: Sessão do banco de dados.
-    """
     try:
         hora_inicial = datetime.now()
         cod_produto = recebimento.itens[0].produto_id if recebimento.itens else 1
@@ -79,7 +78,6 @@ async def criar_checklist_e_itens(recebimento: Recebimento, db: AsyncSession):
             cod_produto=cod_produto,
             quantidade=quantidade,
         )
-
         db.add(checklist)
 
         for item in recebimento.itens:
@@ -88,7 +86,7 @@ async def criar_checklist_e_itens(recebimento: Recebimento, db: AsyncSession):
                 preco_unitario=item.preco_unitario,
                 preco_total=item.preco_total,
                 referencia_produto=item.referencia_produto or "Não Informada",
-                status_ordem=item.status_ordem.value,
+                status_ordem=StatusOrdemEnum(item.status_ordem).value,
                 produto_id=item.produto_id,
                 recebimento_id=recebimento.id,
                 funcionario_id=item.funcionario_id,
@@ -96,13 +94,11 @@ async def criar_checklist_e_itens(recebimento: Recebimento, db: AsyncSession):
             db.add(item_db)
 
         await commit_or_rollback(db)
-
     except Exception as e:
         await db.rollback()
         raise HTTPException(status_code=500, detail=f"Erro ao salvar dados: {str(e)}")
 
 
-# Função de validação do cliente
 async def validar_cliente(cliente_id: int, db: AsyncSession):
     query_cliente = select(Cliente).where(Cliente.id == cliente_id)
     result_cliente = await db.execute(query_cliente)
@@ -112,38 +108,29 @@ async def validar_cliente(cliente_id: int, db: AsyncSession):
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Cliente não encontrado."
         )
-
     return cliente
 
 
 @router.post("/", response_model=List[RecebimentoPublic])
 async def create_recebimentos(
     recebimentos: List[RecebimentoSchema],
-    db: DbSession,  # Sessão do banco de dados
-    user: CurrentUser,  # Renomeado para CurrentUser
+    db: DbSession,
+    user: CurrentUser,
 ):
-    """
-    Cria múltiplos recebimentos no banco de dados.
-
-    :param recebimentos: Lista de objetos RecebimentoSchema.
-    :param db: Sessão do banco de dados.
-    :param user: Usuário autenticado.
-    :return: Lista de recebimentos criados.
-    """
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED, detail="Usuário não autenticado"
         )
 
-    created_recebimentos = []  # Lista para armazenar os recebimentos criados
+    created_recebimentos = []
 
     try:
-        async with db.begin():
+        async with db.begin():  # Iniciar a transação
             for recebimento in recebimentos:
-                # Validando se o cliente existe
+                # Validação do cliente
                 cliente = await validar_cliente(recebimento.cliente_id, db)
 
-                # Atribuindo automaticamente o usuario_id do usuário logado
+                # Criação do objeto de recebimento no banco de dados
                 db_recebimento = Recebimento(
                     tipo_ordem=recebimento.tipo_ordem,
                     numero_ordem=recebimento.numero_ordem,
@@ -157,62 +144,35 @@ async def create_recebimentos(
                     laudo_tecnico_ordem=recebimento.laudo_tecnico_ordem,
                     desmontagem_ordem=recebimento.desmontagem_ordem,
                     cliente_id=recebimento.cliente_id,
-                    usuario_id=user.id,  # Atribuindo o usuário logado automaticamente
-                    status_ordem=recebimento.status_ordem.value
+                    usuario_id=user.id,
+                    status_ordem=recebimento.status_ordem.value,  # Convertendo para string
+                    created_at=datetime.now(sp_tz),  # Converte para string ISO 8601
+                    updated_at=datetime.now(sp_tz),  # Converte para string ISO 8601
                 )
                 db.add(db_recebimento)
-                await db.flush()  # Garante que o ID seja atribuído ao objeto
+                await db.flush()  # Necessário para garantir que o ID seja gerado
 
-                # Verificando campos obrigatórios para os itens
-                campos_faltando = []
+                # Adicionar itens ao recebimento
                 for item in recebimento.itens:
-                    item.qtd_produto = item.qtd_produto or 1
-                    item.preco_unitario = item.preco_unitario or 0.0
-                    item.preco_total = item.preco_total or 0.0
-                    item.referencia_produto = item.referencia_produto or "Não INFORMADO"
-
-                    # Verificar campos obrigatórios
-                    if not item.status_ordem:
-                        campos_faltando.append("status_ordem")
-                    if not item.produto_id:
-                        campos_faltando.append("produto_id")
-                    if not item.funcionario_id:
-                        campos_faltando.append("funcionario_id")
-
-                    if campos_faltando:
-                        raise HTTPException(
-                            status_code=status.HTTP_400_BAD_REQUEST,
-                            detail=f"Campos obrigatórios não preenchidos: {', '.join(campos_faltando)}",
-                        )
-
                     item_db = ItensRecebimento(
                         qtd_produto=item.qtd_produto,
                         preco_unitario=item.preco_unitario,
                         preco_total=item.preco_total,
                         referencia_produto=item.referencia_produto,
-                        status_ordem=item.status_ordem.value ,
+                        status_ordem=item.status_ordem.value,
                         produto_id=item.produto_id,
                         recebimento_id=db_recebimento.id,
                         funcionario_id=item.funcionario_id,
                     )
                     db.add(item_db)
-                    await db.flush()
 
-                    for foto_url in item.fotos:
-                        if len(item.fotos) > 5:
-                            raise HTTPException(
-                                status_code=status.HTTP_400_BAD_REQUEST,
-                                detail="No máximo 5 fotos por item.",
-                            )
-                        foto = FotoRecebimento(
-                            url_foto=foto_url, item_recebimento_id=item_db.id
-                        )
-                        db.add(foto)
+                # Aqui você pode incluir os produtos associados ao recebimento
+                produtos = [item.produto_id for item in recebimento.itens]
 
-            # Criação de checklist e itens do recebimento
-            await criar_checklist_e_itens(db_recebimento, db)
+            # Commit da transação se tudo ocorreu bem
+            await commit_or_rollback(db)
 
-        # Respondendo com os recebimentos criados
+        # Preparar a resposta com os dados corretos
         for db_recebimento in recebimentos:
             created_recebimentos.append(
                 RecebimentoPublic(
@@ -220,21 +180,36 @@ async def create_recebimentos(
                     tipo_ordem=db_recebimento.tipo_ordem,
                     numero_ordem=db_recebimento.numero_ordem,
                     cliente_id=db_recebimento.cliente_id,
-                    produtos=db_recebimento.produtos,
-                    vendedor=db_recebimento.vendedor,
-                    status_ordem=str(recebimento.status_ordem),
-                    ordem_checklist=db_recebimento.ordem_checklist,
+                    status_ordem=db_recebimento.status_ordem,
+                    produtos=produtos,  # Garantir que os produtos sejam listados corretamente
+                    data_rec_ordem=db_recebimento.data_rec_ordem.isoformat(),  # Converter para string
+                    created_at=datetime.now(sp_tz),  # Ajustado para São Paulo
+                    updated_at=datetime.now(sp_tz),  # Ajustado para São Paulo
+                    itens=[
+                        {
+                            "id": item.id,
+                            "qtd_produto": item.qtd_produto,
+                            "preco_unitario": item.preco_unitario,
+                            "preco_total": item.preco_total,
+                            "referencia_produto": item.referencia_produto,
+                            "status_ordem": item.status_ordem,
+                            "produto_id": item.produto_id,
+                            "funcionario_id": item.funcionario_id,
+                        }
+                        for item in db_recebimento.itens
+                    ],  # Preenchendo a lista de itens
                 )
             )
-
         return created_recebimentos
 
     except SQLAlchemyError as e:
-        db.rollback()
+        # Em caso de erro, faz o rollback
+        await db.rollback()
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Erro ao salvar os recebimentos: {str(e)}",
         )
+
 
 @router.delete("/{recebimento_id}", response_model=RecebimentoResponse)
 async def delete_recebimento(
@@ -242,14 +217,6 @@ async def delete_recebimento(
     db: DbSession,
     user: CurrentUser,
 ):
-    """
-    Deleta um recebimento específico e todos os itens e checklists associados.
-
-    :param recebimento_id: ID do recebimento a ser deletado.
-    :param db: Sessão do banco de dados.
-    :param user: Usuário autenticado.
-    :return: O recebimento deletado.
-    """
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED, detail="Usuário não autenticado"

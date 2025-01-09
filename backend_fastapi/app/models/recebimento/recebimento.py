@@ -48,6 +48,7 @@ class StatusOrdem(enum.Enum):
     CANCELADO = "CANCELADO"  # Status 3 - Cancelado
     EM_ANDAMENTO = "EM_ANDAMENTO"
 
+
 # Enum para Status da Tarefa
 class StatusTarefaEnum(enum.Enum):
     PENDENTE = "PENDENTE"
@@ -181,7 +182,7 @@ class Recebimento(settings.Base):
         cascade="all, delete",
     )
 
-    status_ordem=StatusOrdem.PENDENTE
+    status_ordem = StatusOrdem.PENDENTE
 
     def criar_item_inicial(self):
         """
@@ -197,11 +198,10 @@ class Recebimento(settings.Base):
         item = ItensRecebimento(
             recebimento_id=self.id,
             status_ordem=StatusOrdem.PENDENTE,  # Status inicial
-            qtd_Produto=0,  # Inicialmente a quantidade é 0
+            qtd_produto=0,  # Inicialmente a quantidade é 0
             preco_unitario=0.0,  # Inicialmente o preço unitário é 0
             preco_total=0.0,  # Preço total é 0
-            # referencia_produto=self.referencia_produto if self.referencia_produto else None  # Permitir None se não houver referência
-        )  # Adicionei a vírgula aqui!
+        )
 
         self.itens.append(item)  # Adicionando o item à lista de itens do recebimento
 
@@ -260,26 +260,25 @@ class Recebimento(settings.Base):
         atualiza a data final do recebimento.
         """
         if novo_status in [StatusOrdem.FINALIZADO, StatusOrdem.CANCELADO]:
-            if not self.data_final_recebimento:
-                self.data_final_recebimento = datetime.now(SP_TZ)
+            if (
+                not self.data_final_ordem
+            ):  # Garantir que data_final_ordem não foi preenchida ainda
+                self.data_final_ordem = datetime.now(SP_TZ)
 
-        self.status_recebimento = novo_status
-
+        self.status_ordem = novo_status  # Alterar o status
 
     def verificar_status_itens_e_atualizar(self):
-            """
-            Verifica todos os itens do recebimento. Se todos os itens não estiverem mais
-            no status 'PENDENTE', altera o status do recebimento para 'FINALIZADO'.
-            """
-            # Verifica se todos os itens não estão mais com status 'PENDENTE'
-            todos_finalizados = all(
-                item.status_ordem != StatusOrdem.PENDENTE for item in self.itens
-            )
+        """
+        Verifica todos os itens do recebimento. Se todos os itens não estiverem mais
+        no status 'PENDENTE', altera o status do recebimento para 'FINALIZADO'.
+        """
+        todos_finalizados = all(
+            item.status_ordem != StatusOrdem.PENDENTE for item in self.itens
+        )
 
-            if todos_finalizados:
-                # Se todos os itens não estiverem mais pendentes, mudar o status do recebimento
-                self.status_recebimento = StatusOrdem.FINALIZADO
-                self.data_final_ordem = datetime.now(SP_TZ)  # Definir data de finalização
+        if todos_finalizados:
+            self.status_ordem = StatusOrdem.FINALIZADO
+            self.data_final_ordem = datetime.now(SP_TZ)  # Definir data de finalização
 
     def __repr__(self):
         return f"<Recebimento id={self.id} tipo_ordem={self.tipo_ordem or 'Unnamed'} recebimento_ordem={self.recebimento_ordem or 'Unnamed'}>"

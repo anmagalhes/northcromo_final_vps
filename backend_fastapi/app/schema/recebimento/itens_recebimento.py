@@ -17,6 +17,7 @@ class StatusOrdemEnum(str, Enum):
 
 # Esquema básico para item de recebimento
 class ItensRecebimentoSchema(BaseModel):
+    id: Optional[int] = None  # Tornando o id opcional
     qtd_produto: int  # Quantidade de produtos no item de recebimento
     preco_unitario: float  # Preço unitário
     preco_total: float  # Preço total (qtd_produto * preco_unitario)
@@ -32,7 +33,9 @@ class ItensRecebimentoSchema(BaseModel):
     updated_at: Optional[datetime] = None
 
     # Adicionando campo de fotos (uma lista de URLs de fotos, opcional)
-    fotos: Optional[List[str]] = []  # Lista de URLs ou caminhos das fotos do item de recebimento
+    fotos: Optional[List[str]] = (
+        []
+    )  # Lista de URLs ou caminhos das fotos do item de recebimento
 
     # Incluindo informações adicionais do produto e funcionário, se necessário
     produto: Optional["ProdutoSchema"] = None
@@ -63,7 +66,9 @@ class ItensRecebimentoUpdate(BaseModel):
 
 # Chame o update_forward_refs após a definição dos modelos
 def update_references():
-    from app.schema.funcionario import FuncionarioSchema  # Importação local para evitar circularidade
+    from app.schema.funcionario import (
+        FuncionarioSchema,
+    )  # Importação local para evitar circularidade
 
     ItensRecebimentoSchema.update_forward_refs()  # Atualizando a referência para FuncionarioSchema
     ItensRecebimentoPublic.update_forward_refs()  # Atualizando a referência para FuncionarioSchema

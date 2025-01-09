@@ -79,87 +79,65 @@ class User(settings.Base):  # Substituímos db.Model por Base
     grupo_produtos: Mapped[List["Grupo_Produto"]] = relationship(
         "Grupo_Produto",  # Nome da classe de destino
         back_populates="usuario",  # Nome do campo de volta no Grupo_Produto
-        lazy="joined",  # Pode ajustar para o comportamento de carregamento desejado
-        uselist=True,  # Permite que seja uma lista vazia
     )
 
     # Relacionamentos com o modelo clientes
     clientes: Mapped[List["Cliente"]] = relationship(
         "Cliente",
         back_populates="usuario",
-        lazy="joined",
-        uselist=True,  # Permite que seja uma lista vazia
     )
 
     # Relacionamentos com o modelo clientes
     todos: Mapped[List["Todo"]] = relationship(
         "Todo",
         back_populates="usuario",
-        lazy="joined",
-        uselist=True,  # Permite que seja uma lista vazia
     )
 
     # Relacionamentos com o modelo clientes
     componentes: Mapped[List["Componente"]] = relationship(
         "Componente",
         back_populates="usuario",
-        lazy="joined",
-        uselist=True,  # Permite que seja uma lista vazia
     )
 
     # Relacionamentos com o modelo clientes
     Postotrabalhos: Mapped[List["Postotrabalho"]] = relationship(
         "Postotrabalho",
         back_populates="usuario",
-        lazy="joined",
-        uselist=True,  # Permite que seja uma lista vazia
     )
 
     # Relacionamento com Postotarefa
     Postotarefas: Mapped[List["Postotarefa"]] = relationship(
         "Postotarefa",  # Nome da classe de destino
         back_populates="usuario",  # Nome do campo de volta no Postotarefa
-        lazy="joined",
-        uselist=True,  # Permite que seja uma lista vazia
     )
 
     # Relacionamento com 'Operacao' (caso esteja faltando)
     Operacoes: Mapped[List["Operacao"]] = relationship(
         "Operacao",  # Nome da classe de destino
         back_populates="usuario",  # Nome do campo de volta em Operacao
-        lazy="joined",  # Carregamento desejado
-        uselist=True,  # Isso permite que seja uma lista de objetos Operacao
     )
 
     # Relacionamento com 'Operacao' (caso esteja faltando)
     Defeitos: Mapped[List["Defeito"]] = relationship(
         "Defeito",  # Nome da classe de destino
         back_populates="usuario",  # Nome do campo de volta em Operacao
-        lazy="joined",  # Carregamento desejado
-        uselist=True,  # Isso permite que seja uma lista de objetos Operacao
     )
 
     # Relacionamento com Produto
     produtos: Mapped[List["Produto"]] = relationship(
         "Produto",  # Nome da classe de destino
         back_populates="usuario",  # Nome do campo de volta em Operacao
-        lazy="joined",  # Carregamento desejado
-        uselist=True,  # Isso permite que seja uma lista de objetos Operacao
     )
 
     # Relacionamento com a tabela Recebimento (um usuário pode ter muitos recebimentos)
     recebimentos: Mapped[List["Recebimento"]] = relationship(
         "Recebimento",  # Relacionamento com Recebimento (um-para-muitos)
         back_populates="usuario",  # Referência ao campo `usuario` em Recebimento
-        lazy="joined",
-        uselist=True,  # Isso permite que seja uma lista de objetos Operacao
     )
 
     checklist: Mapped[List["Checklist_Recebimento"]] = relationship(
         "Checklist_Recebimento",  # Relacionamento com Recebimento (um-para-muitos)
         back_populates="usuario",  # Referência ao campo `usuario` em Recebimento
-        lazy="joined",
-        uselist=True,  # Isso permite que seja uma lista de objetos Operacao
     )
 
     # Relacionamento MANY-TO-ONE de Grupo_Produto para User (não 'Usuario')

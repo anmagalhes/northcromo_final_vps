@@ -9,6 +9,7 @@ from sqlalchemy import (
     String,
     ForeignKey,
     Column,
+    UniqueConstraint,
 )
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.core.config import settings
@@ -28,11 +29,11 @@ class Cliente(settings.Base):  # Substituímos db.Model por Base
     __tablename__ = "clientes"
 
     # Definir __table_args__ corretamente
+    # Definindo o UniqueConstraint para a coluna doc_cliente
     __table_args__ = (
-        {
-            "extend_existing": True,
-            "unique_constraints": [("doc_cliente",)],
-        },  # Permite redefinir a tabela e garantir unicidade de doc_cliente
+        UniqueConstraint(
+            "doc_cliente", name="uix_doc_cliente"
+        ),  # Garantindo unicidade de 'doc_cliente'
     )
 
     # Usando Mapped e mapped_column para definir as colunas

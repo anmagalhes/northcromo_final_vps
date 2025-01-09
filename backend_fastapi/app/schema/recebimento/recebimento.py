@@ -26,9 +26,9 @@ class TipoOrdemEnum(str, Enum):
 
 
 class StatusOrdemEnum(str, Enum):
-    PENDENTE = "PENDENTE"  # Status 1 - Pendente
-    FINALIZADO = "FINALIZADO"  # Status 5 - Finalizado
-    CANCELADO = "CANCELADO"  # Status 3 - Cancelado
+    PENDENTE = "PENDENTE"
+    FINALIZADO = "FINALIZADO"
+    CANCELADO = "CANCELADO"
     EM_ANDAMENTO = "EM_ANDAMENTO"
 
 
@@ -81,6 +81,17 @@ class RecebimentoSchema(BaseModel):
 # Esquema para exibição pública de Recebimento
 class RecebimentoPublic(RecebimentoSchema):
     id: int  # ID do recebimento no banco de dados
+    tipo_ordem: str
+    produtos: List[int]
+    status_ordem: StatusOrdemEnum
+    data_rec_ordem: str  # Exemplo de campo obrigatório
+    created_at: datetime
+    updated_at: datetime
+    itens: List[dict]  # Exemplo de campo obrigatório
+
+    class Config:
+        # Configura a serialização de datetime
+        json_encoders = {datetime: lambda v: v.isoformat()}
 
 
 # Esquema para listagem de Recebimentos
@@ -142,6 +153,7 @@ class RecebimentoResponse(BaseModel):
     usuario_id: Optional[int]
     cliente_id: int
     status_ordem: StatusOrdemEnum
+
 
 # Agora você pode importar as dependências no final do arquivo para evitar ciclo de importações
 from app.schema.cliente import ClientePublic  # Agora importando ClientePublic
