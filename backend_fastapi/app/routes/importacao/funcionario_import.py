@@ -1,61 +1,56 @@
-# app/api/componente.py
+# app/api/funcionario.py
 from datetime import datetime
 from io import BytesIO
 import pandas as pd
 from typing import Annotated
 from fastapi import APIRouter, UploadFile, File, Depends, HTTPException, status
 from fastapi.responses import StreamingResponse
-from psycopg2 import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
-
-from app.models.componente import Componente
-from app.models.grupo_produto import Grupo_Produto
-from app.models.user import User
-
-from core.desp import get_current_user, get_session
-import re
-from fastapi import Query
 from sqlalchemy import select
 
+from app.models.funcionario import Funcionario
+from app.models.user import User
+from app.models.grupo_produto import Grupo_Produto  # Caso precise de algum relacionamento com Grupo_Produto
+from core.desp import get_current_user, get_session
 
-router = APIRouter(prefix="/componente/importar", tags=["importação de componentes"])
+import re
+
+router = APIRouter(prefix="/funcionario/importar", tags=["importação de funcionários"])
 
 # Criando variáveis para dependências com Annotated
 DbSession = Annotated[AsyncSession, Depends(get_session)]
 Current_user = Annotated[User, Depends(get_current_user)]
 
 
-# Função para validar o código do componente (pode ser adaptada)
-def validar_codigo(codigo: str) -> bool:
-    return re.match(r"^\d+$", codigo) is not None
-
-
-# Função para validar o nome do componente
-def validar_nome_componente(nome: str) -> bool:
-    # Validando se o nome não está vazio e não é apenas espaços
+# Função para validar o nome do funcionário
+def validar_nome(nome: str) -> bool:
     return bool(nome.strip())
 
 
-# Função para validar o preço (simplificada)
-def validar_preco(preco: float) -> bool:
-    return preco >= 0
+# Função para validar o cargo
+def validar_cargo(cargo: str) -> bool:
+    return bool(cargo.strip())
 
 
-# Função para gerar o modelo de importação de componentes
+# Função para gerar o modelo de importação de funcionários
 @router.get("/modelo", response_class=StreamingResponse)
 async def download_modelo():
     """
     Gera e retorna um arquivo Excel modelo contendo as colunas esperadas para
-    a importação de componentes. O usuário pode baixar esse arquivo, preenchê-lo e enviá-lo
-    para a importação de componentes.
+    a importação de funcionários. O usuário pode baixar esse arquivo, preenchê-lo e enviá-lo
+    para a importação de funcionários.
     """
-    # Exemplo de dados do modelo de importação, com colunas e exemplos de preenchimento
     model_data = {
-        "nome_componente": [
-            "Componente A",
-            "Componente B",
-            "Componente C",
-        ],  # Exemplo de nome do componente
+        "nome": [
+            "Funcionario A",
+            "Funcionario B",
+            "Funcionario C",
+        ],  # Exemplo de nome do funcionário
+        "cargo": [
+            "Cargo A",
+            "Cargo B",
+            "Cargo C",
+        ],  # Exemplo de cargo do funcionário
     }
 
     # Convertendo o modelo para um DataFrame pandas
@@ -65,24 +60,24 @@ async def download_modelo():
     output = BytesIO()
     with pd.ExcelWriter(output, engine="xlsxwriter") as writer:
         df_model.to_excel(writer, index=False, sheet_name="Modelo de Importação")
-    output.seek(0)  # Necessário para retornar o arquivo gerado
+    output.seek(0)
 
-    # Acessando a aba da planilha
     worksheet = writer.sheets["Modelo de Importação"]
 
     # Ajustando a largura das colunas
-    worksheet.set_column("A:A", 30)  # Nome do Componente
+    worksheet.set_column("A:A", 30)  # Nome do Funcionario
+    worksheet.set_column("B:B", 30)  # Cargo do Funcionario
 
     # Adicionando comentários explicativos em cada coluna
-    worksheet.write_comment("A1", "Nome completo do componente (exemplo: Componente A)")
+    worksheet.write_comment("A1", "Nome completo do funcionário (exemplo: Funcionario A)")
+    worksheet.write_comment("B1", "Cargo do funcionário (exemplo: Cargo A)")
 
-    output.seek(0)  # Necessário para retornar o arquivo gerado
+    output.seek(0)
 
-    # Retornando o arquivo Excel como uma resposta de download
     return StreamingResponse(
         output,
         media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-        headers={"Content-Disposition": "attachment; filename=modelo_componentes.xlsx"},
+        headers={"Content-Disposition": "attachment; filename=modelo_funcionarios.xlsx"},
     )
 
 
@@ -136,14 +131,10 @@ async def import_funcionarios(
         # Inicia a transação
         async with db.begin():  # Garante que as alterações sejam atômicas
             for index, row in df.iterrows():
-                nome_funcionario = (
-                    row["nome"].strip() if isinstance(row["nome"], str) else None
-                )
-                cargo_funcionario = (
-                    row["cargo"].strip() if isinstance(row["cargo"], str) else None
-                )
+                nome_funcionario = row["nome"].strip() if isinstance(row["nome"], str) else None
+                cargo_funcionario = row["cargo"].strip() if isinstance(row["cargo"], str) else None
 
-                # Valida os dados do funcionário
+                # Valida os dados
                 if not nome_funcionario or not validar_nome(nome_funcionario):
                     falhas.append(
                         {
@@ -151,7 +142,7 @@ async def import_funcionarios(
                             "motivo": f"Nome do funcionário inválido na linha {index + 1}.",
                         }
                     )
-                    continue  # Continua para a próxima linha
+                    continue
 
                 if not cargo_funcionario or not validar_cargo(cargo_funcionario):
                     falhas.append(
@@ -160,7 +151,7 @@ async def import_funcionarios(
                             "motivo": f"Cargo inválido na linha {index + 1}.",
                         }
                     )
-                    continue  # Continua para a próxima linha
+                    continue
 
                 # Verifica se já existe um funcionário com o mesmo nome e cargo
                 existing_funcionario = await db.execute(
@@ -176,7 +167,7 @@ async def import_funcionarios(
                             "motivo": f"Funcionário '{nome_funcionario}' já existe com o cargo '{cargo_funcionario}' na linha {index + 1}.",
                         }
                     )
-                    continue  # Não cria duplicado, vai para a próxima linha
+                    continue
 
                 # Criação do funcionário a ser inserido
                 try:
@@ -191,7 +182,6 @@ async def import_funcionarios(
                     await db.flush()  # Empurra a transação para garantir visibilidade
                     sucesso.append({"linha": index + 1, "funcionario": nome_funcionario})
                 except IntegrityError as e:
-                    # Se ocorrer uma violação de chave única, será tratada aqui
                     falhas.append(
                         {
                             "linha": index + 1,

@@ -128,7 +128,6 @@ class Recebimento(settings.Base):
     itens: Mapped[List["ItensRecebimento"]] = relationship(
         "ItensRecebimento",
         back_populates="recebimento",
-        lazy="selectin",
         cascade="all, delete",
     )
 
@@ -253,3 +252,14 @@ class Recebimento(settings.Base):
 
     def __repr__(self):
         return f"<Recebimento id={self.id} tipo_ordem={self.tipo_ordem or 'Unnamed'} recebimento_ordem={self.recebimento_ordem or 'Unnamed'}>"
+    
+    def mudar_status(self, novo_status: StatusOrdem):
+        """
+        Altera o status do recebimento e, se o novo status for FINALIZADO ou CANCELADO,
+        atualiza a data final do recebimento.
+        """
+        if novo_status in [StatusOrdem.FINALIZADO, StatusOrdem.CANCELADO]:
+            if not self.data_final_recebimento:
+                self.data_final_recebimento = datetime.now(SP_TZ)
+
+        self.status_recebimento = novo_status

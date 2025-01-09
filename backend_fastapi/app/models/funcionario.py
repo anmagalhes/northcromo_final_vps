@@ -1,5 +1,4 @@
 # app/models/funcionario.py
-# app/models/funcionario.py
 from datetime import datetime
 import pytz
 from sqlalchemy import (

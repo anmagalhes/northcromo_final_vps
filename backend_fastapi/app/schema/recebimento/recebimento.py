@@ -1,7 +1,8 @@
 # app/schemas/recebimento/recebimento.py
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import Optional, List
 from datetime import datetime
+from enum import Enum
 
 from app.schema.variavel_global.enums import (
     TipoOrdemEnum,
@@ -10,29 +11,66 @@ from app.schema.variavel_global.enums import (
     ProcessosOrdemEnum,
 )
 from app.schema.recebimento.itens_recebimento import ItensRecebimentoSchema
+from app.schema.produto import ProdutoSchema
+
+# Enum's do Pydantic (similares aos do SQLAlchemy)
+class SimNaoEnum(str, Enum):
+    SIM = "SIM"
+    NAO = "NAO"
+
+class TipoOrdemEnum(str, Enum):
+    NOVO = "NOVO"
+    NAO = "NAO"
+
+class StatusOrdemEnum(int, Enum):
+    PENDENTE = 1
+    FINALIZADO = 5
+    CANCELADO = 3
+    EM_ANDAMENTO = 2
+
+class StatusTarefaEnum(str, Enum):
+    PENDENTE = "PENDENTE"
+    EM_ANDAMENTO = "EM_ANDAMENTO"
+    FINALIZADO = "FINALIZADO"
 
 
 # Esquema para criar um novo recebimento
 class RecebimentoSchema(BaseModel):
-    tipo_ordem: TipoOrdemEnum
-    numero_ordem: int
-    recebimento_ordem: str
-    data_rec_ordem: datetime
-    queixa_cliente: str
-    data_prazo_desmont: datetime
+    id: Optional[int] = None
+    tipo_ordem: Optional[TipoOrdemEnum] = TipoOrdemEnum.NAO
+    numero_ordem: Optional[int] = None
+    recebimento_ordem: Optional[str] = None
+    queixa_cliente: Optional[str] = None
+    data_prazo_desmont: Optional[datetime] = None
+    referencia_produto: Optional[str] = None
+    numero_nota_fiscal: Optional[str] = None
+
     sv_desmontagem_ordem: SimNaoEnum = SimNaoEnum.NAO
     sv_montagem_teste_ordem: SimNaoEnum = SimNaoEnum.NAO
     limpeza_quimica_ordem: SimNaoEnum = SimNaoEnum.NAO
     laudo_tecnico_ordem: SimNaoEnum = SimNaoEnum.NAO
     desmontagem_ordem: SimNaoEnum = SimNaoEnum.NAO
 
-    # referencia_produto: Optional[str] = None
+    data_rec_ordem: datetime
+    hora_inicial_ordem: Optional[datetime] = None
+    data_final_ordem: Optional[datetime] = None
+    hora_final_ordem: Optional[datetime] = None
 
-    # Relacionamento com outros objetos através dos IDs
-    cliente_id: int  # ID do cliente
+    img1_ordem: Optional[str] = None
+    img2_ordem: Optional[str] = None
+    img3_ordem: Optional[str] = None
+    img4_ordem: Optional[str] = None
+
+    created_at: datetime
+    updated_at: datetime
+    deleted_at: Optional[datetime] = None
+
+    usuario_id: Optional[int] = None
+    cliente_id: Optional[int] = None
+
 
     # Lista de itens que vão ser relacionados a esse recebimento
-    itens_recebimento: List[
+    itens: List[
         "ItensRecebimentoSchema"
     ]  # Usar string para Forward Reference
 
@@ -40,28 +78,7 @@ class RecebimentoSchema(BaseModel):
 # Esquema para exibição pública de Recebimento
 class RecebimentoPublic(RecebimentoSchema):
     id: int  # ID do recebimento no banco de dados
-
-    cliente: Optional["ClientePublic"]  # Usando Forward Reference
-    produtos: List["ProdutoPublic"]
-    vendedor: Optional["FuncionarioPublic"]
-    ordem_checklist: List["ChecklistRecebimentoPublic"]
-    status_ordem: "StatusOrdemEnum"  # Usando a referência adiada corretamente
-    processos_ordem: "ProcessosOrdemEnum"  # Da mesma forma
-
-    # Outros campos que podem ser retornados
-    data_producao_ordem_servicos: datetime
-    sv_desmontagem_ordem: SimNaoEnum
-    sv_montagem_teste_ordem: SimNaoEnum
-    limpeza_quimica_ordem: SimNaoEnum
-    laudo_tecnico_ordem: SimNaoEnum
-    desmontagem_ordem: SimNaoEnum
-    data_cadastro: datetime
-    usuario_cadastro: str
-    status_producao: Optional[str]
-    num_orcamento: Optional[str]
-    acao: Optional[str]
-
-
+    
 # Esquema para listagem de Recebimentos
 class RecebimentoList(BaseModel):
     recebimentos: List[RecebimentoPublic]  # Lista de recebimentos

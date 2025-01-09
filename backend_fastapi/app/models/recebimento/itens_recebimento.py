@@ -44,6 +44,7 @@ class ItensRecebimento(settings.Base):
     preco_unitario: Mapped[float] = mapped_column(Float, nullable=True)
     preco_total: Mapped[float] = mapped_column(Float, nullable=True)
     referencia_produto: Mapped[str | None] = mapped_column(Text, nullable=True)
+    
 
     # Adicionando o campo status_ordem como ENUM, mas armazenando o valor inteiro no banco
     status_ordem: Mapped[StatusOrdem] = mapped_column(
@@ -88,3 +89,13 @@ class ItensRecebimento(settings.Base):
     def __repr__(self):
         # Representação amigável do objeto, para exibição no log ou debug
         return f"<ItensRecebimento id={self.id} produto={self.produto.id} quantidade={self.qtd_produto}>"
+    
+
+    def mudar_status(self, novo_status: StatusOrdem):
+        """
+        Altera o status do item de recebimento e, se o novo status for FINALIZADO ou CANCELADO,
+        atualiza a data final da ordem.
+        """
+        if novo_status in [StatusOrdem.FINALIZADO, StatusOrdem.CANCELADO]:
+            self.data_final_ordem = datetime.now(pytz.timezone('America/Sao_Paulo'))
+        self.status_ordem = novo_status
