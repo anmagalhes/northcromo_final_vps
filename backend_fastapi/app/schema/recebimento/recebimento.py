@@ -10,8 +10,12 @@ from app.schema.variavel_global.enums import (
     StatusOrdemEnum,
     ProcessosOrdemEnum,
 )
-from app.schema.recebimento.itens_recebimento import ItensRecebimentoSchema
+from app.schema.recebimento.itens_recebimento import ItensRecebimentoSchema, ItensRecebimentoPublic2
 from app.schema.produto import ProdutoSchema
+
+from app.schema.recebimento.nota_fiscal import NotaFiscalPublic
+from app.schema.cliente import ClientePublic
+from app.schema.funcionario import FuncionarioPublic
 
 
 # Enum's do Pydantic (similares aos do SQLAlchemy)
@@ -154,6 +158,18 @@ class RecebimentoResponse(BaseModel):
     cliente_id: int
     status_ordem: StatusOrdemEnum
 
+class RecebimentoListResponse(BaseModel):
+    id: int
+    tipo_ordem: str
+    numero_ordem: str
+    cliente: ClientePublic  # Dados do cliente relacionados
+    funcionario: FuncionarioPublic  # Dados do funcionário que atendeu
+    nota_fiscal: NotaFiscalPublic  # Dados da Nota Fiscal
+    status_ordem: str
+    data_rec_ordem: str  # Data como string no formato ISO 8601
+    created_at: str
+    updated_at: str
+    itens: List[ItensRecebimentoPublic2]
 
 # Agora você pode importar as dependências no final do arquivo para evitar ciclo de importações
 from app.schema.cliente import ClientePublic  # Agora importando ClientePublic

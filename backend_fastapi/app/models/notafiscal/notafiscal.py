@@ -1,5 +1,4 @@
 # app/models/notafiscal/notaFiscal.py
-# app/models/notafiscal/notaFiscal.py
 from sqlalchemy import Integer, String, ForeignKey, DateTime, Float
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.core.config import settings

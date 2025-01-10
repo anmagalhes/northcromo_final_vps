@@ -1,18 +1,23 @@
 from datetime import datetime
-from typing import Annotated, List
+from typing import Annotated, List, Optional
 
 import pytz
+from sqlalchemy import func
 from core.desp import get_current_user, get_session
-from fastapi import APIRouter, Depends, File, HTTPException, UploadFile, status
+from fastapi import APIRouter, Depends, File, HTTPException, UploadFile, status, Query
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
+from sqlalchemy.orm import joinedload
+from sqlalchemy.orm import selectinload
 
 from app.models.checklist_recebimento.checklist_recebimento import Checklist_Recebimento
 from app.models.cliente import Cliente
+from app.schema.cliente import ClientePublic
+
 from app.models.recebimento.foto_recebimento import FotoRecebimento
 from app.models.recebimento.itens_recebimento import ItensRecebimento
-from app.models.recebimento.recebimento import Recebimento
+from app.models.recebimento.recebimento import Recebimento, SimNaoEnum
 from app.models.user import User
 from app.schema.recebimento.itens_recebimento import (
     ItensRecebimentoList,
@@ -25,8 +30,20 @@ from app.schema.recebimento.recebimento import (
     RecebimentoResponse,
     RecebimentoSchema,
     SimNaoEnum,
-    StatusOrdemEnum
+    StatusOrdemEnum,
+    RecebimentoListResponse,
 )
+
+from app.schema.recebimento.nota_fiscal import (
+    NotaFiscalPublic,
+
+)
+
+from app.models.notafiscal.notaRecebimento import NotaRecebimento
+from app.models.notafiscal.notafiscal import NotaFiscal
+from app.models.funcionario import Funcionario
+from app.schema.funcionario import FuncionarioPublic
+
 
 # Definir o fuso horário de São Paulo
 sp_tz = pytz.timezone("America/Sao_Paulo")
@@ -285,3 +302,107 @@ async def upload_foto(
         return foto
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erro ao salvar foto: {str(e)}")
+
+
+@router.get("/", response_model=List[RecebimentoListResponse])
+async def list_recebimentos(
+    db: AsyncSession = Depends(get_session),
+    skip: int = Query(0, alias="page", ge=0),  # Página inicial, começa do 0
+    limit: int = Query(10, le=100),  # Limite máximo de 100 itens por página
+    tipo_ordem: Optional[str] = None,  # Filtro por tipo de ordem (opcional)
+    status_ordem: Optional[str] = None,  # Filtro por status de ordem (opcional)
+):
+    try:
+        # Consulta principal com 'joinedload' para carregar dados relacionados
+        query = select(Recebimento).distinct().options(
+            selectinload(Recebimento.itens),  # Carregar os itens do recebimento
+            selectinload(Recebimento.cliente),  # Carregar o cliente relacionado
+            selectinload(Recebimento.usuario),  # Carregar o funcionário relacionado
+            selectinload(Recebimento.notas_fiscais)  # Carregar as notas fiscais diretamente
+        )
+
+        # Adicionar filtros, se fornecidos
+        if tipo_ordem:
+            query = query.where(Recebimento.tipo_ordem == tipo_ordem)
+
+        if status_ordem:
+            query = query.where(Recebimento.status_ordem == status_ordem)
+
+        # Adicionar paginação
+        query_paginated = query.offset(skip).limit(limit)
+
+        # Executando a consulta paginada
+        result = await db.execute(query_paginated)
+        recebimentos = result.scalars().all()
+
+        # Contando o total de registros que atendem aos filtros
+        count_query  = select(func.count()).select_from(Recebimento)
+        if tipo_ordem:
+            count_query = count_query.where(Recebimento.tipo_ordem == tipo_ordem)
+        if status_ordem:
+            count_query = count_query.where(Recebimento.status_ordem == status_ordem)
+
+        total_result = await db.execute(count_query)
+        total_count = total_result.scalar()
+
+        # Preparar a resposta com os dados necessários
+        response = []
+        for recebimento in recebimentos:
+            # Processando a lista de notas fiscais
+            nota_fiscais = [
+                {"id_nota": nota.id_nota, "recebimento_ordem": nota.recebimento_ordem}
+                for nota in recebimento.notas_fiscais  # Agora acessando o relacionamento corretamente
+            ]
+
+            response.append(
+                RecebimentoListResponse(
+                    id=recebimento.id,
+                    tipo_ordem=recebimento.tipo_ordem,
+                    numero_ordem=recebimento.numero_ordem,
+                    cliente=ClientePublic(
+                        id=recebimento.cliente.id,
+                        nome_cliente=recebimento.cliente.nome_cliente,
+                        email=recebimento.cliente.email,
+                        telefone=recebimento.cliente.telefone
+                    ),
+                    funcionario=FuncionarioPublic(
+                        id=recebimento.usuario.id,
+                        nome=recebimento.usuario.nome,
+                        cargo=recebimento.usuario.cargo
+                    ),
+                    nota_fiscal=NotaFiscalPublic(
+                        numero=recebimento.nota_fiscal.numero,
+                       # data_emissao=recebimento.nota_fiscal.data_emissao.isoformat(),
+                       # valor_total=recebimento.nota_fiscal.valor_total
+                    ),
+                    notas_recebimento=nota_fiscais,  # Incluindo as notas de recebimento
+                    status_ordem=recebimento.status_ordem,
+                    data_rec_ordem=recebimento.data_rec_ordem.isoformat(),
+                    created_at=recebimento.created_at.isoformat(),
+                    updated_at=recebimento.updated_at.isoformat(),
+                    itens=[
+                        ItensRecebimentoPublic(
+                            id=item.id,
+                            qtd_produto=item.qtd_produto,
+                            preco_unitario=item.preco_unitario,
+                            preco_total=item.preco_total,
+                            referencia_produto=item.referencia_produto,
+                            status_ordem=item.status_ordem,
+                            produto_id=item.produto_id,
+                            funcionario_id=item.funcionario_id,
+                        )
+                        for item in recebimento.itens
+                    ],
+                )
+            )
+
+        # Retornar a resposta paginada com o total de registros
+        return {
+            "total_count": total_count,
+            "page": skip,
+            "per_page": limit,
+            "data": response,
+        }
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Erro ao listar os recebimentos: {str(e)}")

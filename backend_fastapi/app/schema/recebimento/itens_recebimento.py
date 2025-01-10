@@ -53,7 +53,6 @@ class ItensRecebimentoList(BaseModel):
     offset: int
     limit: int
 
-
 # Atualizar Item de Recebimento
 class ItensRecebimentoUpdate(BaseModel):
     qtd_produto: Optional[int] = None
@@ -63,6 +62,10 @@ class ItensRecebimentoUpdate(BaseModel):
     status_ordem: Optional[StatusOrdemEnum] = None
     fotos: Optional[List[str]] = None  # Permite atualizar a lista de fotos
 
+
+# Para levar o recebimento lista tabela
+class ItensRecebimentoPublic2(BaseModel):
+    itensRecebimento: List[ItensRecebimentoPublic]
 
 # Chame o update_forward_refs após a definição dos modelos
 def update_references():
