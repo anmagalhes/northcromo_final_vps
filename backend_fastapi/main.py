@@ -14,6 +14,8 @@ from fastapi import Request
 
 from fastapi.middleware.cors import CORSMiddleware
 
+from fastapi.staticfiles import StaticFiles
+
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "app")))
 
 from app.routes import (
@@ -47,6 +49,11 @@ app.add_middleware(
     allow_methods=["*"],  # Permite todos os métodos (GET, POST, etc.)
     allow_headers=["*"],  # Permite todos os cabeçalhos
 )
+
+
+
+# Servir arquivos estáticos gerados pelo Vite
+app.mount("/static", StaticFiles(directory="frontend/dist/assets"), name="static")
 
 
 # PARA O HTML

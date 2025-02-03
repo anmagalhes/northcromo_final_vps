@@ -9,7 +9,6 @@ class NotaRecebimentoPublic(BaseModel):
     id_nota: int
     recebimento_ordem: int
 
-
 class NotaFiscalPublic(BaseModel):
     id_nota: int
     numero: str
