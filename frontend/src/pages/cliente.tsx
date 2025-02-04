@@ -4,7 +4,7 @@ import { Cliente } from '../types/Cliente'; // Tipo Cliente
 import ClienteForm from '../components/ClienteForm/ClienteForm'; // Formulário de Cliente
 import ClienteList from '../components/ClienteList/ClienteList'; // Lista de Clientes
 import Button from '../components/Button/Button'; // Componente de Botão
-import CameraCapture from '../components/Camera/CameraCapture'; // Componente de Captura de Foto
+import CameraCapture from '../components/Camera/CameraCapture';; // Componente de Captura de Foto
 import { salvarComExpiracao } from '../utils/salva_component_com_expiracao'; // Funções de expiração
 
 // API
@@ -180,6 +180,11 @@ const ClientePage: React.FC = () => {
     }
   };
 
+   // Função para atualizar a foto
+   const handleCapturePhoto = (photo: string): void => {
+    setPhoto(photo); // Atualiza o estado com a foto capturada
+  };
+
   return (
     <div>
       <h2>Gestão de Clientes</h2>
@@ -190,7 +195,11 @@ const ClientePage: React.FC = () => {
       {/* Lista de Clientes */}
       <ClienteList clientes={clientes} onDelete={handleDeleteCliente} onEdit={handleEditCliente} />
 
-      <CameraCapture onCapture={setPhoto} /> {/* Adicionando o componente de captura de foto */}
+      {/* Componente para capturar foto */}
+      <CameraCapture onCapture={setPhoto} />
+
+      {photo && <img src={photo} alt="Foto Capturada" />} {/* Exibe a foto capturada */}
+
 
       {/* Botão de ação */}
       <Button label="Clique aqui" onClick={() => alert('Ação de botão executada!')} />
