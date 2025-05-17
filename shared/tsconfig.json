@@ -15,8 +15,7 @@
     "paths": {
       "@utils/*": ["src/utils/*"],         // Define o alias para @utils
       "@components/*": ["src/components/*"], // Adicionando alias para @components também (opcional)
-      "@assets/*": ["src/assets/*"],        // Adicionando alias para @assets (opcional)
-      "@shared/*": ["shared/*"]  // Alias para a pasta shared
+      "@assets/*": ["src/assets/*"]        // Adicionando alias para @assets (opcional)
     }
   },
   "include": [

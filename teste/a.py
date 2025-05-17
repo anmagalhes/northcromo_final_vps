@@ -1,0 +1,3 @@
+npx expo prebuild
+
+# androind

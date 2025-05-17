@@ -24,7 +24,6 @@ router = APIRouter(prefix="/cliente", tags=["clientes"])
 DbSession = Annotated[AsyncSession, Depends(get_session)]
 Current_user = Annotated[User, Depends(get_current_user)]
 
-
 # CRIAR Cliente
 @router.post("/", response_model=ClientePublic)
 async def create_cliente(
