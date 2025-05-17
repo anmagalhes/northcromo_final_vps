@@ -1,0 +1,7 @@
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import Config from 'react-native-config';  // Importando o pacote
+
+GoogleSignin.configure({
+  webClientId: Config.WEB_CLIENT_ID,  // Usando a variável do arquivo .env
+  offlineAccess: true,  // Permite acesso offline (necessário para fazer upload no Drive)
+});
