@@ -39,7 +39,8 @@ __pycache__/
 
 .env
 
-sistemaNortrCromo_googleConsole.json
+backend_mobile/sistemaNortrCromo_googleConsole.json
+teste/backend_mobile/sistemaNortrCromo_googleConsole.json
 
 
 
