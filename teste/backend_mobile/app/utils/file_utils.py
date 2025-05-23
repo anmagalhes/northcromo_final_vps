@@ -5,14 +5,17 @@ import io
 from app.config import GOOGLE_CREDENTIALS_PATH
 from fastapi import UploadFile
 
+
 def authenticate_google_drive():
-    SCOPES = ['https://www.googleapis.com/auth/drive.file']
+    SCOPES = ["https://www.googleapis.com/auth/drive.file"]
 
     credentials = service_account.Credentials.from_service_account_file(
-        GOOGLE_CREDENTIALS_PATH, scopes=SCOPES)
+        GOOGLE_CREDENTIALS_PATH, scopes=SCOPES
+    )
 
-    service = build('drive', 'v3', credentials=credentials)
+    service = build("drive", "v3", credentials=credentials)
     return service
+
 
 def upload_file_to_drive(file: UploadFile, file_name: str):
     service = authenticate_google_drive()
@@ -29,8 +32,7 @@ def upload_file_to_drive(file: UploadFile, file_name: str):
 
     # Realizar o upload para o Google Drive
     request = service.files().create(
-        media_body=media,
-        body={'name': file_name, 'mimeType': mime_type}
+        media_body=media, body={"name": file_name, "mimeType": mime_type}
     )
 
     # Executar o request
