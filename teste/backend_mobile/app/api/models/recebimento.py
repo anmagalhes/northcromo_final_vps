@@ -36,62 +36,62 @@ class Recebimento(Base, TimestampMixin):  # <-- usa Base do app.db.base
         Integer,
         unique=True,
         index=True,
-        nullable=False,
+        nullable=True,
         comment="Número único da ordem de serviço"
     )
     recebimento_ordem: Mapped[str] = mapped_column(
         String(12),
         unique=True,
-        nullable=False,
+        nullable=True,
         comment="Código único de recebimento"
     )
 
     referencia_produto: Mapped[str] = mapped_column(
         String(100),
-        nullable=False,
+        nullable=True,
         comment="Referência do produto conforme sistema ERP"
     )
     numero_nota_fiscal: Mapped[str] = mapped_column(
         String(20),
-        nullable=False,
+       nullable=True,
         comment="Número da nota fiscal vinculada"
     )
 
     queixa_cliente: Mapped[str] = mapped_column(
         Text,
-        nullable=False,
+        nullable=True,
         comment="Descrição detalhada da queixa do cliente"
     )
     data_prazo_desmontagem: Mapped[date] = mapped_column(
         Date,
-        nullable=False,
+        nullable=True,
         comment="Data limite para conclusão da desmontagem"
     )
 
     sv_desmontagem_ordem: Mapped[SimNaoEnum] = mapped_column(
         Enum(SimNaoEnum),
         default=SimNaoEnum.NAO,
-        nullable=False
+        nullable=True
     )
     sv_montagem_teste_ordem: Mapped[SimNaoEnum] = mapped_column(
         Enum(SimNaoEnum),
         default=SimNaoEnum.NAO,
-        nullable=False
+        nullable=True
     )
     limpeza_quimica_ordem: Mapped[SimNaoEnum] = mapped_column(
         Enum(SimNaoEnum),
         default=SimNaoEnum.NAO,
-        nullable=False
+        nullable=True
     )
     laudo_tecnico_ordem: Mapped[SimNaoEnum] = mapped_column(
         Enum(SimNaoEnum),
         default=SimNaoEnum.NAO,
-        nullable=False
+        nullable=True
     )
     desmontagem_ordem: Mapped[SimNaoEnum] = mapped_column(
         Enum(SimNaoEnum),
         default=SimNaoEnum.NAO,
-        nullable=False
+        nullable=True
     )
 
     data_recebimento: Mapped[datetime] = mapped_column(
