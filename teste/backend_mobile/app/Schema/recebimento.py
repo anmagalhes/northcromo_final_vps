@@ -10,7 +10,6 @@ from app.utils.datetime import get_current_time_in_sp
 from app.api.models.enums import SimNaoEnum, TipoOrdemEnum
 from app.api.models.mixins import TimestampMixin
 
-
 class Recebimento(settings.Base, TimestampMixin):
     __tablename__ = "recebimentos"
     __table_args__ = {"extend_existing": True}
@@ -69,3 +68,6 @@ class Recebimento(settings.Base, TimestampMixin):
     img2_ordem: Mapped[Optional[str]] = mapped_column(String(500))
     img3_ordem: Mapped[Optional[str]] = mapped_column(String(500))
     img4_ordem: Mapped[Optional[str]] = mapped_column(String(500))
+
+
+

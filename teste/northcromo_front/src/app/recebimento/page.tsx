@@ -8,6 +8,7 @@ import ProdutoInput from '@/components/ProdutoInput'
 import ProdutoModal from '@/components/ProdutoModal'
 import BotaoAcao from '@/components/BotaoAcao'
 import axios from 'axios'
+import { useRef } from 'react';
 
 import { getDataHoraSaoPaulo } from '../../utils/DataHora'
 
@@ -19,9 +20,15 @@ interface Produto {
 export default function Recebimento() {
   const router = useRouter()
 
+
   // Estados do formulário
   const [tipoOrdem, setTipoOrdem] = useState<'Novo' | 'Outro'>('Novo')
   const [numeroControle, setNumeroControle] = useState('')
+
+   //Ordem nova
+  const [ordemBase, setOrdemBase] = useState<string | null>(null)
+  const [numeroOrdem, setNumeroOrdem] = useState('');
+
   const [dataRecebimento, setDataRecebimento] = useState('')
   const [horaRecebimento, setHoraRecebimento] = useState('')
   const [cliente, setCliente] = useState('')
@@ -33,6 +40,7 @@ export default function Recebimento() {
 
   // Fotos: armazenar array de arquivos
   const [fotos, setFotos] = useState<File[]>([])
+  const inputFileRef = useRef<HTMLInputElement | null>(null);
 
   // Produto selecionado
   const [codigoProduto, setCodigoProduto] = useState('')
@@ -54,6 +62,27 @@ export default function Recebimento() {
 
   // Campo ativo para estilo
   const [campoAtivo, setCampoAtivo] = useState('')
+
+    useEffect(() => {
+    const carregarNumeroOrdem = async () => {
+      try {
+        const response = await fetch('http://localhost:8000/ordemnova')
+        const data = await response.json()
+
+        if (data.proximo_numero_ordem) {
+          const ordemFormatada = String(data.proximo_numero_ordem).padStart(4, '0')
+          setOrdemBase(ordemFormatada)
+          setNumeroOrdem(ordemFormatada)
+        }
+      } catch (error) {
+        console.error('Erro ao carregar número da ordem:', error)
+        setErro('Erro ao carregar número da ordem')
+      }
+    }
+
+    carregarNumeroOrdem()
+  }, [])
+
 
   // Carregar produtos mockados
   const carregarProdutos = async () => {
@@ -86,23 +115,28 @@ export default function Recebimento() {
 
   // Atualizar número de ordem ao mudar tipoOrdem
   useEffect(() => {
+    // Só roda se ordemBase tiver valor válido
+    if (!ordemBase) return;
+
     const buscarUltimaOrdem = async (): Promise<string> => {
-      const ultimaOrdem = '0256'
-      const proxima = String(Number(ultimaOrdem) + 1).padStart(4, '0')
-      return proxima
-    }
+
+      // Aqui ordemBase já tem valor, só calcula próximo
+      const proxima = String(Number(ordemBase)).padStart(4, '0');
+      return proxima;
+    };
 
     const atualizarNumeroOrdem = async () => {
       if (tipoOrdem === 'Novo') {
-        const novoNumero = await buscarUltimaOrdem()
-        setNumeroControle(novoNumero)
+        const novoNumero = await buscarUltimaOrdem();
+        setNumeroControle(novoNumero);
+        console.log('Numero Controle atualizado para:', novoNumero);
       } else {
-        setNumeroControle('')
+        setNumeroControle('');
       }
-    }
+    };
 
-    atualizarNumeroOrdem()
-  }, [tipoOrdem])
+  atualizarNumeroOrdem();
+}, [tipoOrdem, ordemBase]);
 
   // Selecionar produto do modal
   const handleProdutoSelecionado = (indice: number) => {
@@ -137,45 +171,87 @@ export default function Recebimento() {
 
 
   // Função para enviar fotos e dados
-  const enviarFotos = async () => {
-    if (fotos.length === 0) {
-      alert('Você precisa adicionar pelo menos uma foto.')
-      return
-    }
-    setLoading(true)
-    const formData = new FormData()
-    formData.append('cliente', cliente)
-    formData.append('numero_ordem', numeroControle)
+    const enviarFotos = async () => {
+      if (fotos.length === 0) {
+        alert('Você precisa adicionar pelo menos uma foto.')
+        return
+      }
+      setLoading(true)
 
-    fotos.forEach((foto) => {
-      formData.append('fotos', foto)
-    })
+      const formData = new FormData()
+      formData.append('cliente', cliente)
+      formData.append('numero_ordem', numeroControle)
 
-    try {
-      const response = await axios.post('http://localhost:8000/adicionarOrdem', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
+      fotos.forEach((foto) => {
+        formData.append('fotos', foto)
       })
 
-      if (response.status === 200) {
-        const fileLinks = response.data.file_links
-        console.log('Links das fotos:', fileLinks)
+      try {
+        const response = await axios.post('http://localhost:8000/adicionarOrdem', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        })
 
-        await salvarLinksFotosNaOrdem(numeroControle, fileLinks)
-        alert('Fotos enviadas com sucesso!')
-        // Limpar fotos após envio
-        setFotos([])
-      } else {
-        alert('Erro ao enviar as fotos')
+        if (response.status === 200) {
+          const fileLinks = response.data.file_links
+          console.log('Links das fotos:', fileLinks)
+
+          // Espera salvar os links antes de seguir
+          await salvarLinksFotosNaOrdem(numeroControle, fileLinks)
+          alert('Fotos enviadas com sucesso!')
+
+          // Resetar input de fotos e estado
+          setFotos([])
+          if (inputFileRef.current) {
+            inputFileRef.current.value = '' // <-- limpa o input visualmente
+          }
+
+          setCliente('');
+          setQuantidade('1');
+          setCodigoProduto('');
+          setNomeProduto('');
+          setReferencia('');
+          setNfRemessa('');
+          setObservacao('');
+
+          // **Atualizar número da ordem após envio**
+          try {
+            const novaOrdemResponse = await fetch('http://localhost:8000/ordemnova');
+            const novaOrdemData = await novaOrdemResponse.json();
+
+            if (typeof novaOrdemData === 'number') {
+              const novaOrdemFormatada = novaOrdemData.toString().padStart(4, '0');
+              setOrdemBase(novaOrdemFormatada);
+              setNumeroOrdem(novaOrdemFormatada);
+
+              if (tipoOrdem === 'Novo') {
+                const proximaOrdem = String(Number(novaOrdemFormatada) + 1).padStart(4, '0');
+                setNumeroControle(proximaOrdem);
+              } else {
+                setNumeroControle('');
+              }
+            } else {
+              console.error('Formato inesperado na resposta da ordem nova:', novaOrdemData);
+            }
+          } catch (error) {
+            console.error('Erro ao buscar nova ordem após envio:', error);
+          }
+
+        // ✅ Resetar a página (refrescar componentes do App Router)
+        router.refresh()
+
+        } else {
+          alert('Erro ao enviar as fotos');
+        }
+      } catch (error) {
+        console.error('Erro ao enviar fotos:', error);
+        alert('Erro ao enviar as fotos');
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      console.error('Erro ao enviar fotos:', error)
-      alert('Erro ao enviar as fotos')
-    } finally {
-      setLoading(false)
-    }
-  }
+    };
+
 
   const salvarLinksFotosNaOrdem = async (numeroOrdem: string, linksFotos: string[]) => {
     try {
@@ -196,6 +272,8 @@ export default function Recebimento() {
         foto4: linksLimitados[3] || null,
       }
 
+    console.log('Dados que serão enviados:', dadosAdicionais);
+
       const response = await axios.post('http://localhost:8000/salvarLinksFotos', dadosAdicionais)
 
       if (response.status === 200) {
@@ -215,6 +293,34 @@ export default function Recebimento() {
     setMensagemNotificacao(mensagem)
     setModalVisivel(true)
   }
+
+    useEffect(() => {
+      async function fetchNumeroOrdem() {
+        try {
+          const response = await fetch('http://localhost:8000/ordemnova');
+          const data = await response.json();
+
+          if (typeof data === 'number') {
+            const ordemFormatada = data.toString().padStart(4, '0');
+            setOrdemBase(ordemFormatada);
+            setNumeroOrdem(ordemFormatada);
+
+            // 👇 Já calcula e define aqui, evitando esperar outro useEffect
+            if (tipoOrdem === 'Novo') {
+              const proxima = String(Number(ordemFormatada) + 1).padStart(4, '0');
+              setNumeroControle(proxima);
+              console.log('Numero Controle definido diretamente após fetch:', proxima);
+            }
+          } else {
+            console.error('Número de ordem inesperado:', data);
+          }
+        } catch (error) {
+          console.error('Erro ao buscar número de ordem:', error);
+        }
+      }
+
+  fetchNumeroOrdem();
+}, []);
 
   return (
     <div className="min-h-screen bg-slate-100 px-4 sm:px-6 md:px-12">
@@ -403,6 +509,7 @@ export default function Recebimento() {
               </label>
 
               <input
+                ref={inputFileRef}
                 type="file"
                 accept="image/*"
                 capture="environment"
@@ -492,3 +599,4 @@ export default function Recebimento() {
     </div>
   )
 }
+

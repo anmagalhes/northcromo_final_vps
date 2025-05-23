@@ -23,11 +23,9 @@ class FotoRecebimentoInDB(FotoRecebimentoBase):
     updated_at: datetime
     deleted_at: Optional[datetime] = None
 
-    class Config:
-        orm_mode = (
-            True  # Permite a conversão automática de objetos SQLAlchemy para Pydantic
-        )
-
+    model_config = {
+            "from_attributes": True  # Permite conversão automática de objetos SQLAlchemy para Pydantic
+        }
 class LinksFotos(BaseModel):
     numero_ordem: str  # vem como string do frontend
     foto1: str
@@ -36,3 +34,7 @@ class LinksFotos(BaseModel):
     foto4: str
     cliente: str
     quantidade: int
+
+    model_config = {
+        "from_attributes": True  # Permite conversão automática de objetos SQLAlchemy para Pydantic
+    }

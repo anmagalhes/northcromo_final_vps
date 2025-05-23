@@ -1,3 +1,4 @@
+#app/api/models/recebimento.py
 from __future__ import annotations
 from datetime import datetime, date
 from typing import Optional
@@ -9,6 +10,11 @@ from app.utils.datetime import utcnow
 from app.api.models.enums import SimNaoEnum, TipoOrdemEnum
 from app.api.models.mixins import TimestampMixin
 from app.api.models.base import Base
+
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from app.api.models.checklist_recebimento import ChecklistRecebimento
+
 class Recebimento(Base, TimestampMixin):  # <-- usa Base do app.db.base
     __tablename__ = "recebimentos"
 
@@ -144,6 +150,12 @@ class Recebimento(Base, TimestampMixin):  # <-- usa Base do app.db.base
         Integer,
         nullable=True,  # ou False, dependendo se esse campo é obrigatório
         comment="Quantidade associada"
+    )
+
+     # Relacionamentos entre Recebimento
+    # Relação com o checklist
+    checklist: Mapped[Optional["ChecklistRecebimento"]] = relationship(
+        "ChecklistRecebimento", back_populates="recebimento", uselist=False, cascade="all, delete"
     )
 
 

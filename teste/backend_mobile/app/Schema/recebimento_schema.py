@@ -28,5 +28,6 @@ class RecebimentoSchema(BaseModel):
     img3_ordem: Optional[str]
     img4_ordem: Optional[str]
 
-    class Config:
-        orm_mode = True
+    model_config = {
+        "from_attributes": True  # Permite conversão automática de objetos SQLAlchemy para Pydantic
+    }

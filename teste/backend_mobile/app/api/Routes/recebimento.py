@@ -5,51 +5,61 @@ from app.database.session import get_db
 from app.api.models.recebimento import Recebimento
 from app.Schema.recebimento_schema import LinksFotos, RecebimentoSchema
 from typing import List
+import re
+from app.api.models.checklist_recebimento import ChecklistRecebimento
 
 router = APIRouter()
 
 @router.post("/salvarLinksFotos")
 def salvar_links_fotos(link_data: LinksFotos, db: Session = Depends(get_db)):
-    try:
-        numero_ordem_int = int(link_data.numero_ordem)
-    except ValueError:
+    # Validação do numero_ordem
+    if not re.match(r'^\d+$', link_data.numero_ordem):
         raise HTTPException(status_code=400, detail="Número da ordem deve ser um inteiro válido.")
 
+    numero_ordem_int = int(link_data.numero_ordem)
+
+    # Busca ou cria o registro
+    recebimento = db.query(Recebimento).filter(Recebimento.numero_ordem == numero_ordem_int).first()
+
+    if not recebimento:
+        recebimento = Recebimento(
+            numero_ordem=numero_ordem_int,
+            img1_ordem=link_data.foto1,
+            img2_ordem=link_data.foto2,
+            img3_ordem=link_data.foto3,
+            img4_ordem=link_data.foto4,
+            cliente=link_data.cliente,
+            quantidade=link_data.quantidade
+        )
+        db.add(recebimento)
+        db.flush()
+
+        checklist = ChecklistRecebimento(recebimento_id=recebimento.id)
+        db.add(checklist)
+
+    else:
+        # Atualiza recebimento existente
+        recebimento.img1_ordem = link_data.foto1
+        recebimento.img2_ordem = link_data.foto2
+        recebimento.img3_ordem = link_data.foto3
+        recebimento.img4_ordem = link_data.foto4
+        recebimento.cliente = link_data.cliente
+        recebimento.quantidade = link_data.quantidade
+
+     # Verifica checklist (se não existir, cria)
+    checklist = db.query(ChecklistRecebimento).filter(ChecklistRecebimento.recebimento_id == recebimento.id).first()
+    if not checklist:
+        checklist = ChecklistRecebimento(recebimento_id=recebimento.id)
+        db.add(checklist)
+
     try:
-        recebimento = db.query(Recebimento).filter(Recebimento.numero_ordem == numero_ordem_int).first()
-
-        if not recebimento:
-            # Cria um novo registro se não existir
-            recebimento = Recebimento(
-                numero_ordem=numero_ordem_int,
-                img1_ordem=link_data.foto1,
-                img2_ordem=link_data.foto2,
-                img3_ordem=link_data.foto3,
-                img4_ordem=link_data.foto4,
-                cliente=link_data.cliente,
-                quantidade=link_data.quantidade
-            )
-            db.add(recebimento)
-        else:
-            # Atualiza os campos se já existir
-            recebimento.img1_ordem = link_data.foto1
-            recebimento.img2_ordem = link_data.foto2
-            recebimento.img3_ordem = link_data.foto3
-            recebimento.img4_ordem = link_data.foto4
-            recebimento.cliente = link_data.cliente
-            recebimento.quantidade = link_data.quantidade
-
         db.commit()
         db.refresh(recebimento)
-
         return {"success": True, "message": "Dados processados com sucesso!", "data": recebimento}
 
-    except SQLAlchemyError as e:
-        db.rollback()
-        raise HTTPException(status_code=500, detail=f"Erro de banco de dados: {str(e)}")
-
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Erro inesperado: {str(e)}")
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"Erro ao salvar os dados: {str(e)}")
 
 
 @router.get("/verificarOrdem/{numero_ordem}")
@@ -88,4 +98,3 @@ def listar_links_fotos(db: Session = Depends(get_db)):
         return dados
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erro ao buscar os dados: {str(e)}")
-

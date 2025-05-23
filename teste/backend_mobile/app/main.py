@@ -30,6 +30,8 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "app")))
 # Importando as rotas de recebimento
 from app.api.Routes.recebimento import router as recebimento_router
 from app.api.Routes.file_upload import router as file_upload_router
+from app.api.Routes.ordem_nova import router as  ordemnova_router
+from app.api.Routes.gerar_pdf_chcklistrecebimento import router as gerar_pdf_router
 
 # Definição do FastAPI
 app = FastAPI()
@@ -60,4 +62,12 @@ async def log_request(request: Request, call_next):
 # Inclui as rotas de upload de arquivos
 app.include_router(file_upload_router)
 app.include_router(recebimento_router)
-# app.include_router(produto_tarefa)
+app.include_router(ordemnova_router)
+app.include_router(gerar_pdf_router)
+
+@app.on_event("startup")
+async def startup_event():
+    print("Rotas carregadas:")
+    for route in app.routes:
+        print(route.path)
+
