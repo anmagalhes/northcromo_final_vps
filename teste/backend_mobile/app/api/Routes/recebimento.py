@@ -3,7 +3,8 @@ from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
 from app.database.session import get_db
 from app.api.models.recebimento import Recebimento
-from app.Schema.recebimento_schema import LinksFotos
+from app.Schema.recebimento_schema import LinksFotos, RecebimentoSchema
+from typing import List
 
 router = APIRouter()
 
@@ -70,3 +71,25 @@ def verificar_ordem(numero_ordem: int, db: Session = Depends(get_db)):
 
     except SQLAlchemyError as e:
         raise HTTPException(status_code=500, detail=f"Erro de banco de dados: {str(e)}")
+
+@router.get("/listarLinksFotos", response_model=List[RecebimentoSchema])
+def listar_links_fotos(db: Session = Depends(get_db)):
+    try:
+        dados = db.query(Recebimento).all()
+
+        # Ajusta cada registro para garantir que quantidade seja int
+        for item in dados:
+            if not isinstance(item.quantidade, int):
+                try:
+                    item.quantidade = int(item.quantidade)
+                except (ValueError, TypeError):
+                    item.quantidade = 0  # Se não for possível converter, coloca 0
+
+        return dados
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Erro ao buscar os dados: {str(e)}")
+
+@app.get("/next-numero-ordem")
+async def next_numero_ordem(session: AsyncSession = Depends(get_async_session)):
+    proximo_numero = await get_next_numero_ordem(session)
+    return {"proximo_numero_ordem": proximo_numero}
