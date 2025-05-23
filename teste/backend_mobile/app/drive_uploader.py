@@ -6,18 +6,21 @@ from app.config import GOOGLE_CREDENTIALS_PATH
 from fastapi import UploadFile
 
 # ID da pasta no Google Drive onde os arquivos serão armazenados
-FOLDER_ID = '1xXBXQKFydOjsXgC3j4Sqiaya873Yx31o'
+FOLDER_ID = "1xXBXQKFydOjsXgC3j4Sqiaya873Yx31o"
+
 
 def authenticate_google_drive():
-    SCOPES = ['https://www.googleapis.com/auth/drive.file']
+    SCOPES = ["https://www.googleapis.com/auth/drive.file"]
 
     # Carrega as credenciais do arquivo JSON
     credentials = service_account.Credentials.from_service_account_file(
-        GOOGLE_CREDENTIALS_PATH, scopes=SCOPES)
+        GOOGLE_CREDENTIALS_PATH, scopes=SCOPES
+    )
 
     # Constrói o serviço para a API do Google Drive
-    service = build('drive', 'v3', credentials=credentials)
+    service = build("drive", "v3", credentials=credentials)
     return service
+
 
 def upload_file_to_drive(file: UploadFile, file_name: str):
     service = authenticate_google_drive()
@@ -36,16 +39,13 @@ def upload_file_to_drive(file: UploadFile, file_name: str):
 
     # Criação do arquivo no Google Drive com a pasta específica
     file_metadata = {
-        'name': file_name,        # Nome do arquivo
-        'parents': [FOLDER_ID]    # Pasta onde o arquivo será armazenado
+        "name": file_name,  # Nome do arquivo
+        "parents": [FOLDER_ID],  # Pasta onde o arquivo será armazenado
     }
 
     try:
         # Solicita a criação do arquivo no Google Drive
-        request = service.files().create(
-            media_body=media,
-            body=file_metadata
-        )
+        request = service.files().create(media_body=media, body=file_metadata)
 
         # Executa a solicitação e retorna o arquivo criado
         uploaded_file = request.execute()

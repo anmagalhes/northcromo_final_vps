@@ -1,3 +1,6 @@
-npx expo prebuild
+#npx expo prebuild
 
-# androind
+# GERAR UM APK
+#eas build --platform android --profile producti
+
+

@@ -50,7 +50,6 @@
     const [nfRemessa, setNfRemessa] = useState('');
     const [observacao, setObservacao] = useState('');
 
-
     interface FotoInfo {
       uri: string;
       name: string;
@@ -198,281 +197,308 @@
 
 
     const enviarFotos = async () => {
-      if (fotos.length === 0) {
-        Alert.alert("Nenhuma foto", "Você precisa adicionar pelo menos uma foto.");
-        return;
+  if (fotos.length === 0) {
+    alert("Você precisa adicionar pelo menos uma foto.");
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append('cliente', cliente);
+  formData.append('numero_ordem', numeroControle);
+
+  fotos.forEach((file, index) => {
+    formData.append('fotos', file);
+  });
+
+  try {
+    const response = await axios.post('http://localhost:8000/adicionarOrdem', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        Accept: 'application/json',
+      },
+    });
+
+    if (response.status === 200) {
+      const fileLinks = response.data.file_links;
+      if (fileLinks && fileLinks.length > 0) {
+        console.log('Links das fotos:', fileLinks);
+        const linksFotos = fileLinks.join(', ');
+        await salvarLinksFotosNaOrdem(numeroControle, linksFotos);
+        alert('Fotos enviadas com sucesso!');
+      } else {
+        alert('Nenhum link foi gerado para as fotos.');
       }
+    } else {
+      alert('Erro ao enviar as fotos');
+    }
+  } catch (error) {
+    console.error("Erro ao enviar fotos:", error);
+    alert('Erro ao enviar as fotos');
+  }
+};
 
-      // Cria um FormData para enviar as fotos
-      const formData = new FormData();
-
-      // Adiciona o nome do cliente ao FormData
-      formData.append('cliente', cliente);
-
-      // Adicionando as fotos ao FormData
-      fotos.forEach((foto, index) => {
-        console.log(`Foto ${index + 1}:`);
-        console.log("URI:", foto.uri);
-        console.log("Tipo:", foto.type);
-        console.log("Nome:", foto.name);
-
-        const mimeType = foto.type || 'image/jpeg';
-        const fileName = foto.name || `foto_${index + 1}.jpg`;
-
-        // Cria o Blob a partir do base64
-        const blob = base64ToBlob(foto.base64, mimeType);
-
-        // Transforma em um "file" (com nome e tipo)
-        const file = new File([blob], fileName, { type: mimeType });
-
-        // Adiciona ao FormData
-        formData.append('fotos', file);
-      });
-
-      // (opcional) log para ver se o formData está ok
-      for (const pair of formData.entries()) {
-        console.log(`${pair[0]}:`, pair[1]);
-      }
-
+    // Função para salvar os links das fotos e os dados adicionais na ordem
+    const salvarLinksFotosNaOrdem = async (numeroOrdem, linksFotos) => {
       try {
-        // Realizando a requisição POST com Axios
-        const response = await axios.post('http://localhost:8000/adicionarOrdem', formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-            Accept: 'application/json',
-          },
-        });
+        // Garantir que só 4 links sejam enviados
+        const linksLimitados = linksFotos.slice(0, 4);  // Se houver mais de 4, pegamos apenas os 4 primeiros.
+
+        // Preenche as colunas com os links, colocando null onde não houver link.
+        const dadosAdicionais = {
+          cliente,
+          numero_ordem: numeroOrdem,
+          quantidade,
+          referencia,
+          nfRemessa,
+          observacao,
+          dataRecebimento,
+          horaRecebimento,
+          foto1: linksLimitados[0] || null,
+          foto2: linksLimitados[1] || null,
+          foto3: linksLimitados[2] || null,
+          foto4: linksLimitados[3] || null,
+        };
+
+        // Enviar os dados para a API que salva os dados na tabela 'ordem_recebimento'
+        const response = await axios.post('http://localhost:8000/salvarLinksFotos', dadosAdicionais);
 
         if (response.status === 200) {
-          // Obtemos os links das fotos retornados pela API
-          const fileLinks = response.data.file_links;
-
-          if (fileLinks && fileLinks.length > 0) {
-            // Exibe os links das fotos carregadas
-            fileLinks.forEach((link, index) => {
-              console.log(`Link da Foto ${index + 1}: ${link}`);
-            });
-
-            // Exibe o alerta de sucesso com os links
-            Alert.alert('Sucesso', 'Fotos enviadas com sucesso!\n' + fileLinks.join('\n'));
-          } else {
-            Alert.alert('Erro', 'Nenhum link foi gerado para as fotos.');
-          }
+          console.log('Links das fotos e dados adicionais salvos com sucesso!');
+          Alert.alert('Sucesso', 'Links das fotos e dados adicionais salvos com sucesso!');
         } else {
-          Alert.alert('Erro', 'Erro ao enviar as fotos');
+          console.log('Erro ao salvar os links das fotos e dados adicionais');
+          Alert.alert('Erro', 'Erro ao salvar os links das fotos e dados adicionais');
         }
       } catch (error) {
-        console.error("Erro ao enviar fotos:", error);
-        Alert.alert('Erro', 'Erro ao enviar as fotos');
+        console.error('Erro ao salvar os links das fotos e dados adicionais:', error);
+        Alert.alert('Erro', 'Erro ao salvar os links das fotos e dados adicionais');
       }
     };
 
-    return (
+  return (
+    <Box
+      sx={{
+        backgroundColor: '#CBD5E1', // bg-slate-200
+        minHeight: '100vh',
+        p: 2,
+      }}
+    >
+      {/* Header fake */}
+      <Box
+        sx={{
+          backgroundColor: '#047857', // green-700
+          px: 2,
+          py: 1,
+          mb: 2,
+          color: 'white',
+          fontWeight: 'bold',
+        }}
+      >
+        {/* Aqui seu Header component */}
+        <Typography variant="h6">Header</Typography>
+      </Box>
 
-      <ScrollView style={{ flex: 1 }} className="bg-slate-200" showsVerticalScrollIndicator={false}>
-      <View className="w-full px-4 bg-green-700" style={{ marginTop: statusBarHeight + 8 }}>
-        <Header openDrawer={() => navigation.openDrawer()} />
-      </View>
+      <Typography variant="h5" fontWeight="bold" color="success.main" mb={3}>
+        Cadastro de Nova Ordem
+      </Typography>
 
-      <View className="px-2 py-2">
-              <Text className="text-lg font-bold text-green-700">Cadastro de Nova Ordem</Text>
-            </View>
+      {/* Tipo de Ordem */}
+      <Stack direction="row" spacing={2} justifyContent="center" mb={4}>
+        {['Novo', 'Outro'].map((tipo) => (
+          <Button
+            key={tipo}
+            variant={tipoOrdem === tipo ? 'contained' : 'outlined'}
+            color="success"
+            onClick={() => setTipoOrdem(tipo)}
+          >
+            {tipo}
+          </Button>
+        ))}
+      </Stack>
 
-        {/* Tipo de Ordem */}
-        <View className="flex-row justify-center mb-4 gap-4">
-          {['Novo', 'Outro'].map(tipo => (
-            <Pressable
-              key={tipo}
-              onPress={() => setTipoOrdem(tipo as 'Novo' | 'Outro')}
-              className={`px-4 py-2 rounded-full ${
-                tipoOrdem === tipo ? 'bg-green-700' : 'bg-gray-300'
-              }`}
-            >
-              <Text className="text-white font-bold">{tipo}</Text>
-            </Pressable>
-          ))}
-        </View>
-
+      <Grid container spacing={2}>
         {/* Número de Controle */}
-        <Text className="text-gray-700 mb-1">Número de Controle</Text>
-        <TextInput
-          className={`border border-gray-300 rounded px-3 py-2 mb-4 ${
-            campoAtivo === 'numeroControle' ? 'bg-white' : 'bg-gray-50'
-          }`}
-          value={numeroControle}
-          onChangeText={setNumeroControle}
-          onFocus={() => setCampoAtivo('numeroControle')}
-          onBlur={() => setCampoAtivo('')}
-        />
+        <Grid item xs={12} sm={6} md={4}>
+          <TextField
+            fullWidth
+            label="Número de Controle"
+            variant="outlined"
+            value={numeroControle}
+            onChange={(e) => setNumeroControle(e.target.value)}
+          />
+        </Grid>
 
-        {/* Data e Hora */}
-        <View className="flex-row gap-4 mb-4">
-          <View className="flex-1">
-            <Text className="text-gray-700 mb-1">Data Recebimento</Text>
-            <TextInput
-              placeholder="DD/MM/AAAA"
-              className="border border-gray-300 rounded px-3 py-2"
-              value={dataRecebimento}
-              onChangeText={setDataRecebimento}
-              onFocus={() => setCampoAtivo('numeroControle')}
-              onBlur={() => setCampoAtivo('')}
-            />
-          </View>
+        {/* Data Recebimento */}
+        <Grid item xs={6} sm={3} md={2}>
+          <TextField
+            fullWidth
+            label="Data Recebimento"
+            placeholder="DD/MM/AAAA"
+            variant="outlined"
+            value={dataRecebimento}
+            onChange={(e) => setDataRecebimento(e.target.value)}
+          />
+        </Grid>
 
-          <View className="flex-1">
-            <Text className="text-gray-700 mb-1">Hora Recebimento</Text>
-            <TextInput
-              placeholder="HH:MM"
-              className="border border-gray-300 rounded px-3 py-2"
-              value={horaRecebimento}
-              onChangeText={setHoraRecebimento}
-              onFocus={() => setCampoAtivo('numeroControle')}
-              onBlur={() => setCampoAtivo('')}
-            />
-          </View>
-        </View>
+        {/* Hora Recebimento */}
+        <Grid item xs={6} sm={3} md={2}>
+          <TextField
+            fullWidth
+            label="Hora Recebimento"
+            placeholder="HH:MM"
+            variant="outlined"
+            value={horaRecebimento}
+            onChange={(e) => setHoraRecebimento(e.target.value)}
+          />
+        </Grid>
 
         {/* Cliente com dropdown */}
-        <Text className="text-gray-700 mb-1">Cliente</Text>
-        <Pressable
-          onPress={() => setMostrarListaClientes(!mostrarListaClientes)}
-          className="flex-row justify-between items-center border border-gray-300 rounded px-3 py-2 bg-white shadow-sm mb-1"
-        >
-          <Text className={`text-base ${cliente ? 'text-black' : 'text-gray-400'}`}>
+        <Grid item xs={12} sm={6} md={4}>
+          <Button
+            variant="outlined"
+            fullWidth
+            onClick={abrirDropdownCliente}
+            endIcon={
+              anchorEl ? (
+                <Feather name="chevron-up" size={20} />
+              ) : (
+                <Feather name="chevron-down" size={20} />
+              )
+            }
+          >
             {cliente || 'Selecione um cliente'}
-          </Text>
-          <Feather name={mostrarListaClientes ? 'chevron-up' : 'chevron-down'} size={20} color="#555" />
-        </Pressable>
-
-        {mostrarListaClientes && (
-          <View className="border border-gray-300 rounded mb-4 bg-white shadow-md">
-            {clientesMock.map(nome => (
-              <Pressable
+          </Button>
+          <Menu
+            anchorEl={anchorEl}
+            open={Boolean(anchorEl)}
+            onClose={fecharDropdownCliente}
+          >
+            {clientesMock.map((nome) => (
+              <MenuItem
                 key={nome}
-                className={`px-4 py-3 border-b border-gray-200 ${
-                  cliente === nome ? 'bg-green-100' : 'bg-white'
-                }`}
-                onPress={() => {
-                  setCliente(nome);
-                  setMostrarListaClientes(false);
-                }}
+                selected={cliente === nome}
+                onClick={() => selecionarCliente(nome)}
               >
-                <Text className="text-sm text-gray-800">{nome}</Text>
-              </Pressable>
+                {nome}
+              </MenuItem>
             ))}
-          </View>
-        )}
+          </Menu>
+        </Grid>
 
         {/* Quantidade */}
-        <Text className="text-gray-700 mb-1">Quantidade</Text>
-        <TextInput
-          keyboardType="numeric"
-          className={`border border-gray-300 rounded px-3 py-2 mb-4 ${
-            campoAtivo === 'quantidade' ? 'bg-white' : 'bg-gray-50'
-          }`}
-          value={quantidade}
-          onChangeText={text => setQuantidade(text === '0' ? '1' : text)}
-          onFocus={() => setCampoAtivo('quantidade')}
-          onBlur={() => setCampoAtivo('')}
-        />
+        <Grid item xs={12} sm={6} md={4}>
+          <TextField
+            fullWidth
+            label="Quantidade"
+            variant="outlined"
+            type="number"
+            inputProps={{ min: 1 }}
+            value={quantidade}
+            onChange={(e) =>
+              setQuantidade(e.target.value === '0' ? '1' : e.target.value)
+            }
+          />
+        </Grid>
 
-        {/* Produto com autocomplete e ícone de lupa */}
-        <ProdutoInput
-         // produtos={carregarProdutos}
-          produtos={produtos} // ← ✅ Correto agora
-          codigoProduto={codigoProduto}
-          setCodigoProduto={setCodigoProduto}
-          nomeProduto={nomeProduto}
-          setNomeProduto={setNomeProduto}
-          abrirModal={() => setProdutoModalVisivel(true)} // Abre o modal ao clicar no campo
-        />
+        {/* ProdutoInput */}
+        <Grid item xs={12} md={8}>
+          <ProdutoInput
+            produtos={produtos}
+            codigoProduto={codigoProduto}
+            setCodigoProduto={setCodigoProduto}
+            nomeProduto={nomeProduto}
+            setNomeProduto={setNomeProduto}
+            abrirModal={() => setProdutoModalVisivel(true)}
+          />
+        </Grid>
 
-        {/* Modal de Produto */}
+        {/* ProdutoModal */}
         <ProdutoModal
           visible={produtoModalVisivel}
           onClose={() => setProdutoModalVisivel(false)}
-         // produtosDisponiveis={carregarProdutos}
           produtosDisponiveis={produtos}
-          onSelect={handleProdutoSelecionado} // Passa a função para manipular a seleção do produto
+          onSelect={handleProdutoSelecionado}
         />
 
         {/* Referência do Produto */}
-        <Text className="text-gray-700 mb-1">Referência do Produto</Text>
-        <TextInput
-          className={`border border-gray-300 rounded px-3 py-2 mb-4 ${
-            campoAtivo === 'referencia' ? 'bg-white' : 'bg-gray-50'
-          }`}
-          value={referencia}
-          onChangeText={setReferencia}
-          onFocus={() => setCampoAtivo('referencia')}  // Quando o campo ganha foco
-          onBlur={() => setCampoAtivo('')}             // Quando o campo perde o foco
-        />
+        <Grid item xs={12} sm={6} md={4}>
+          <TextField
+            fullWidth
+            label="Referência do Produto"
+            variant="outlined"
+            value={referencia}
+            onChange={(e) => setReferencia(e.target.value)}
+          />
+        </Grid>
 
         {/* NF Remessa */}
-        <Text className="text-gray-700 mb-1">NF Remessa</Text>
-        <TextInput
-          className={`border border-gray-300 rounded px-3 py-2 mb-4 ${
-            campoAtivo === 'nfRemessa' ? 'bg-white' : 'bg-gray-50'
-          }`}
-          value={nfRemessa}
-          onChangeText={setNfRemessa}
-          onFocus={() => setCampoAtivo('nfRemessa')}  // Quando o campo ganha foco
-          onBlur={() => setCampoAtivo('')}            // Quando o campo perde o foco
-        />
+        <Grid item xs={12} sm={6} md={4}>
+          <TextField
+            fullWidth
+            label="NF Remessa"
+            variant="outlined"
+            value={nfRemessa}
+            onChange={(e) => setNfRemessa(e.target.value)}
+          />
+        </Grid>
 
         {/* Observação */}
-        <Text className="text-gray-700 mb-1">Observação</Text>
-        <TextInput
-          multiline
-          className={`border border-gray-300 rounded px-3 py-2 mb-4 h-20 ${
-            campoAtivo === 'observacao' ? 'bg-white' : 'bg-gray-50'
-          }`}
-          value={observacao}
-          onChangeText={setObservacao}
-          onFocus={() => setCampoAtivo('observacao')}  // Quando o campo ganha foco
-          onBlur={() => setCampoAtivo('')}            // Quando o campo perde o foco
-        />
+        <Grid item xs={12}>
+          <TextField
+            fullWidth
+            label="Observação"
+            multiline
+            minRows={4}
+            variant="outlined"
+            value={observacao}
+            onChange={(e) => setObservacao(e.target.value)}
+          />
+        </Grid>
 
-
-        {/* Fotos */}
-
-          {/* Componente FotoPicker recebe o nome do cliente e a função onAddFoto */}
+        {/* FotoPicker */}
+        <Grid item xs={12}>
           <FotoPicker
-          nomeCliente={cliente}
-          numeroOrdem={numeroControle}
-          onAddFoto={handleAddFoto}
-        />
-
-        <View className="flex-row justify-between mt-6 mb-10 gap-3">
-          <BotaoAcao
-          label="Adicionar"
-          cor="verde"
-          onPress={() => {
-            console.log('Botão pressionadosssss');
-            enviarFotos();
-          }}
-          />''
-          <BotaoAcao
-            label="Editar"
-            cor="azul"
-            icone={<Feather name="edit" size={20} color="white" />}  // Ícone 'edit'
-            onPress={() => handleNotificacao('Editar', 'Você está editando esta ordem.')}
+            nomeCliente={cliente}
+            numeroOrdem={numeroControle}
+            onAddFoto={handleAddFoto}
           />
-          <BotaoAcao
-            label="Deletar"
-            cor="vermelho"
-            icone={<Feather name="trash-2" size={20} color="white" />}  // Ícone 'trash-2'
-            onPress={() => handleNotificacao('Excluir', 'Você está prestes a excluir uma ordem.')}
-          />
-        </View>
+        </Grid>
 
-        {/* Modal de Notificação */}
+        {/* Botões de ação */}
+        <Grid item xs={12}>
+          <Stack direction="row" spacing={2} justifyContent="space-between" mt={3}>
+            <BotaoAcao
+              label="Adicionar"
+              cor="verde"
+              onPress={enviarFotos}
+            />
+            <BotaoAcao
+              label="Editar"
+              cor="azul"
+              icone={<Feather name="edit" size={20} color="white" />}
+              onPress={() =>
+                handleNotificacao('Editar', 'Você está editando esta ordem.')
+              }
+            />
+            <BotaoAcao
+              label="Deletar"
+              cor="vermelho"
+              icone={<Feather name="trash-2" size={20} color="white" />}
+              onPress={() =>
+                handleNotificacao('Excluir', 'Você está prestes a excluir uma ordem.')
+              }
+            />
+          </Stack>
+        </Grid>
+
+        {/* ModalNotificacao */}
         <ModalNotificacao
           visible={modalVisivel}
           onClose={() => setModalVisivel(false)}
           titulo={tituloNotificacao}
           mensagem={mensagemNotificacao}
         />
-      </ScrollView>
-    );
-  }
+      </Grid>
+    </Box>
+  );
+}

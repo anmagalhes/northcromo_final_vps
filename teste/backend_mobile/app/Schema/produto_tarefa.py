@@ -2,6 +2,7 @@
 from pydantic import BaseModel
 from typing import List, Optional
 
+
 class Produto_tarefaSchema(BaseModel):
     name: str
 
