@@ -89,7 +89,3 @@ def listar_links_fotos(db: Session = Depends(get_db)):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erro ao buscar os dados: {str(e)}")
 
-@app.get("/next-numero-ordem")
-async def next_numero_ordem(session: AsyncSession = Depends(get_async_session)):
-    proximo_numero = await get_next_numero_ordem(session)
-    return {"proximo_numero_ordem": proximo_numero}

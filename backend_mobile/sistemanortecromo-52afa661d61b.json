@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "sistemanortecromo",
+  "private_key_id": "52afa661d61b766622bcdbbc13d075e44618d2c5",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEuwIBADANBgkqhkiG9w0BAQEFAASCBKUwggShAgEAAoIBAQCma+ErznT2oYW4\nBJS0NTkqru0gyohIPKHWD+1+MD7Dn6uQ2ajZAxBC51ikI68dKjpUqnv7fjFiMTkX\n7VdZYukMZzRUV5k64K0W9/nJ1KoMmuMdOlY5Bpe9hhDriwl10cfDKsjHGcMUzHOs\n/pTRQDlpGzW94AFOk9BKrmnW6zBhNz+g7J3nl5de6Hd0iWOBXg053Ahfw9uLMOmm\nGO9IAl4m/638yS+hv5xrtie5bFMm8lv5RcrC5RQkQjxI2Vim0SL0E7Qh9EaSkecl\ny08/OC01yGBcv69yRGwoTMed/ncrhvQhnG+jtM5AFUCJ5MWmBePy/ClIqSz1W/pM\n7KekrqRPAgMBAAECgf9jnMavpUBiO53D2hkRWQTkfPpLnWeVP290uswqy35+RJ/N\n2hJOhlbN4qvgNqsG6Cgg/Ho86fZVTkhk0CHJT55UekKBE/RjcyiJpN3FjpnlrR5W\nFiINVO98+y0aHgWWMRkiNYx8MvN1TDS+h7ps8tq28nKzomIKKdTIhsRpTIyUagAj\nDzxFbueQVNhKsGFctTUDbHI082G40iwJl4hhAaTjRBGjHINrBcVeyBnl9bhaKUDB\nTpcU284r2gRC4AAv0STohxk594K1DByX3t9fQAukBznoBOtVULnEqfmK0B3tz0wC\n0AQkccWvU5NYSWSbOSkIwQTWesGzcUSFknNqWuUCgYEA5P87kdJh1xvuEUirx5O0\nYPEzzzHsJ5gi1+/vIeaWfL6tZUP4BIqNL3c2MbZHjbTU03vC8VLq3jnWt7dz5gWi\nuqDu7ny4xVh2CunzAkQr/bML75F0z7XQzkBCl/i1dvfZXGbG/u7xmELU8G/r7ABt\neVa9P1nk2HQHVP4c1/UaLW0CgYEAuguq9Jv1mCj4eKginJJmhJhZQPPgfPyTSZ4K\nV2cWFbckWXELYSV/TQTmgoVf8iTk1OPhUcoHXFFO1EScFWD+uY+V6zhvLRQU59JA\nD7fnfocu8D8Rb94BSRAmXh9PmpF5kCejQkz/Q2/AFSfe61dHaXj4R4noPvFQyvk5\n/fl6LysCgYBgGZh3LrHuowL6b+PfAmZtVGvopMu1JgxhUIirUmiO+zorSCXaSgbM\nB5xPqm5G0r+J7OM3gROdpOot+SgDPRQ4e/cpUF/+OYx4MgvQRKmtcyksJX++908k\nbyVDP5Vv0r1+IIecTsxGmK1iJaX9SYSnqjYLUv9NswusqGOUYYDV1QKBgHn37kLh\nABiaO5M2f0JwhD9HdbQsbi7ik1j/AD6euY7Q+0ab4t70a0m9/bTx5Z3k7BRZtT0e\nmsa+E1T8CevGJBjY9ms4G0LNWItGfnMPmPeNfotIfZD+VY9lxBGOq2xlFPIZ2mE8\nA1ldqOr1saJOHOYbxYF4+sZRBCudSpSjeqPzAoGBANimjeoABww8x0c4f0vAzJQO\nEJ8WsU+CVzvOEWQoF18H+8eyhp1Lp4cnXVgH/LZ4lnQJi3K3xBGD5QZJATPiTnSi\nkwvAKvFUa2Zy7mt/VzXxa8O2YuavwOqrk9H4pyRtJ4xXLYC8eQT9OUbTTaudIr4+\nyliqJhf58/TMeZeymG9/\n-----END PRIVATE KEY-----\n",
+  "client_email": "nort-cromo-ordem-servico@sistemanortecromo.iam.gserviceaccount.com",
+  "client_id": "101845995330923391705",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/nort-cromo-ordem-servico%40sistemanortecromo.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
