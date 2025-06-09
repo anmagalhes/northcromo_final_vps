@@ -1,10 +1,9 @@
-# app/api/routes/checklist_recebimento.py
-
 from fastapi import APIRouter, HTTPException, Depends
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.future import select
 from sqlalchemy.exc import SQLAlchemyError
 
-from app.database.session import get_db
+from app.database.session import get_async_session
 from app.api.models.checklist_recebimento import ChecklistRecebimento as ChecklistRecebimentoModel
 from app.api.models.recebimento import Recebimento
 from app.Schema.checklist_recebimento_schema import ChecklistRecebimentoCreate, ChecklistRecebimentoRead
@@ -12,17 +11,21 @@ from app.Schema.checklist_recebimento_schema import ChecklistRecebimentoCreate, 
 router = APIRouter()
 
 @router.post("/checklist/", response_model=ChecklistRecebimentoRead)
-def criar_ou_atualizar_checklist(
+async def criar_ou_atualizar_checklist(
     checklist_data: ChecklistRecebimentoCreate,
-    db: Session = Depends(get_db),
+    db: AsyncSession = Depends(get_async_session),
 ):
-    recebimento = db.query(Recebimento).filter(Recebimento.id == checklist_data.recebimento_id).first()
+    result_recebimento = await db.execute(select(Recebimento).filter(Recebimento.id == checklist_data.recebimento_id))
+    recebimento = result_recebimento.scalars().first()
     if not recebimento:
         raise HTTPException(status_code=404, detail="Recebimento não encontrado")
 
-    checklist = db.query(ChecklistRecebimentoModel).filter(
-        ChecklistRecebimentoModel.recebimento_id == checklist_data.recebimento_id
-    ).first()
+    result_checklist = await db.execute(
+        select(ChecklistRecebimentoModel).filter(
+            ChecklistRecebimentoModel.recebimento_id == checklist_data.recebimento_id
+        )
+    )
+    checklist = result_checklist.scalars().first()
 
     if not checklist:
         checklist = ChecklistRecebimentoModel(**checklist_data.model_dump())
@@ -32,18 +35,20 @@ def criar_ou_atualizar_checklist(
             setattr(checklist, field, value)
 
     try:
-        db.commit()
-        db.refresh(checklist)
+        await db.commit()
+        await db.refresh(checklist)
         return checklist
     except SQLAlchemyError as e:
-        db.rollback()
+        await db.rollback()
         raise HTTPException(status_code=500, detail=f"Erro ao salvar checklist: {str(e)}")
 
+
 @router.get("/checklist/{recebimento_id}", response_model=ChecklistRecebimentoRead)
-def obter_checklist(recebimento_id: int, db: Session = Depends(get_db)):
-    checklist = db.query(ChecklistRecebimentoModel).filter(
-        ChecklistRecebimentoModel.recebimento_id == recebimento_id
-    ).first()
+async def obter_checklist(recebimento_id: int, db: AsyncSession = Depends(get_async_session)):
+    result = await db.execute(
+        select(ChecklistRecebimentoModel).filter(ChecklistRecebimentoModel.recebimento_id == recebimento_id)
+    )
+    checklist = result.scalars().first()
     if not checklist:
         raise HTTPException(status_code=404, detail="Checklist não encontrado")
     return checklist

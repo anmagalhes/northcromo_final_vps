@@ -40,7 +40,6 @@ class Recebimento(Base, TimestampMixin):  # <-- usa Base do app.db.base
     )
     numero_ordem: Mapped[int] = mapped_column(
         Integer,
-        unique=True,
         index=True,
         nullable=True,
         comment="Número único da ordem de serviço"
@@ -50,6 +49,14 @@ class Recebimento(Base, TimestampMixin):  # <-- usa Base do app.db.base
         unique=True,
         nullable=True,
         comment="Código único de recebimento"
+    )
+
+    os_formatado: Mapped[str] = mapped_column(
+        String(10),
+        unique=False,
+        index=True,
+        nullable=True,
+        comment="Número os Data"
     )
 
     referencia_produto: Mapped[str] = mapped_column(

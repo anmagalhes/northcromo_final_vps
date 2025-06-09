@@ -22,6 +22,7 @@ class Recebimento(settings.Base, TimestampMixin):
         Enum(TipoOrdemEnum), default=TipoOrdemEnum.NAO
     )
     numero_ordem: Mapped[Optional[int]] = mapped_column(index=True)
+    os_formatado: Mapped[Optional[str]] = mapped_column(String(10))
     recebimento_ordem: Mapped[Optional[str]] = mapped_column(String(12))
 
     # Produto
@@ -29,7 +30,7 @@ class Recebimento(settings.Base, TimestampMixin):
     numero_nota_fiscal: Mapped[Optional[str]] = mapped_column(String(20))
 
     # Queixa e prazo
-    queixa_cliente: Mapped[Optional[str]] = mapped_column(Text)
+ queixa_cliente: Mapped[Optional[str]] = mapped_column(Text)
     data_prazo_desmont: Mapped[Optional[date]] = mapped_column(Date)
 
     # Checklist

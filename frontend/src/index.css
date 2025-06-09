@@ -41,8 +41,8 @@ body {
   --text-color2: #fff; /* Claro */
   --background-situacao: #43a04d; /* Verde claro */
   --background-meio_cinza: #f5f5f5; /* Verde claro */
-  --background-mais_suave:  #ddd; 
-  --background-mais_suave2: #6c757d; 
+  --background-mais_suave:  #ddd;
+  --background-mais_suave2: #6c757d;
   --cor-border-inpunt: 2px solid #f1c40f;
   --background-color-inpunt:#fef7e1;
   --color-inpunt: #ffffff;
@@ -73,7 +73,7 @@ header {
 
 .logo-northcromo {
   max-width: 200px;
-  height: auto; 
+  height: auto;
   margin-right: 1rem; /* Espaçamento entre a imagem e o texto, ajuste conforme necessário */
 }
 
@@ -254,7 +254,7 @@ h2 {
   display: flex;
   align-items: center;
   color: var(--text-color);
-  transition: color 0.2s; 
+  transition: color 0.2s;
 }
 
 .nav-link-text {
@@ -1163,21 +1163,21 @@ input[type='radio']:checked + .checkmark {
     cursor: pointer;
     position: relative;
   }
-  
+
   .menu .expandable {
     display: flex;
     align-items: center;
   }
-  
+
   .menu .expandable i.material-icons {
     margin-right: 8px;
   }
-  
+
   .menu-top img {
     vertical-align: middle;
     margin-right: 10px;
   }
-  
+
   .menu li[data-selected='true'],
   .menu-header:hover,
   .menu li:hover,
@@ -1185,7 +1185,7 @@ input[type='radio']:checked + .checkmark {
     background-color: var(--background-situacao); /* Cor de destaque ao passar o mouse ou quando está selecionado */
     color:var(--text-color2);
   }
-  
+
   .submenu {
     display: none;
     list-style-type: none;
@@ -1204,52 +1204,52 @@ input[type='radio']:checked + .checkmark {
   .submenu {
     display: none;
   }
-  
+
   .submenu .material-icons {
     color: white;
   }
-  
+
   .menu ul {
     list-style-type: none;
     padding: 0;
   }
-  
+
   .menu ul li {
     padding: 8px;
     display: flex;
     align-items: center;
     cursor: pointer;
   }
-  
+
   .menu ul li i {
     margin-right: 10px;
   }
-  
+
   .menu nav ul li {
     justify-content: space-between;
   }
-  
+
   /* Estilo para quando um item do menu está selecionado */
   .menu nav ul li[data-selected='true'] {
     background-color:var(--background-situacao);
     color: white;
   }
-  
+
   .menu.collapsed li,
   .menu.collapsed span,
   .menu.collapsed button.close-menu-btn {
     display: none; /* esconde os elementos */
   }
-  
+
   .menu.collapsed .material-icons {
     display: inline-block; /* garante que os ícones ainda estejam visíveis */
   }
-  
+
   /* Estilo para ocultar o menu lateral */
   .change2 #lado_direito {
     width: 80vw;
   }
-  
+
   #lado_direito {
     grid-column: 1;
     overflow: auto; /* Alterar para overflow: auto para mostrar a barra de rolagem somente quando necessário */
@@ -1314,7 +1314,7 @@ input.filled {
   font-size: 14px;
   color: #6c757d; /* Cor de texto cinza escura */
   margin-bottom: 10px;
-  white-space: nowrap; 
+  white-space: nowrap;
 }
 
 /* Estilo para o container com fundo branco */
@@ -1402,7 +1402,7 @@ footer {
       width: 20vw;
       left: -20vw;
     }
-  
+
     .change2 .main-section {
       left: 20vw;
       width: 80vw;
@@ -1414,13 +1414,13 @@ footer {
     background-color: var(--background-color-inpunt); /* Cor de fundo */
     color:  var(--color-inpunt); /* Cor do texto branco */
   }
-  
+
   @media (max-width: 1200px) {
     .sidebar {
       width: 25vw;
       left: -25vw;
     }
-  
+
     .change2 .main-section {
       left: 25vw;
       width: 75vw;
@@ -1460,12 +1460,12 @@ footer {
       width: 30vw;
       left: -30vw;
     }
-  
+
     .change2 .main-section {
       left: 30vw;
       width: 70vw;
     }
-  
+
     .heading {
       font-size: 10rem;
     }
@@ -1476,18 +1476,18 @@ footer {
     background-color: var(--background-color-inpunt); /* Cor de fundo */
     color:  var(--color-inpunt); /* Cor do texto branco */
   }
-  
+
   @media (max-width: 700px) {
     .sidebar {
       width: 50vw;
       left: -50vw;
     }
-  
+
     .change2 .main-section {
       left: 50vw;
       width: 50vw;
     }
-  
+
     .heading {
       display: none;
     }
@@ -1497,18 +1497,18 @@ footer {
     background-color: var(--background-color-inpunt); /* Cor de fundo */
     color:  var(--color-inpunt); /* Cor do texto branco */
   }
-  
+
   @media (max-width: 400px) {
     .sidebar {
       width: 100vw;
       left: -100vw;
     }
-  
+
     .change2 .main-section {
       left: 100vw;
       width: 0;
     }
-  
+
     .heading {
       display: none;
     }
@@ -1530,7 +1530,7 @@ footer {
 }
 
 
-  
+
 
 
 

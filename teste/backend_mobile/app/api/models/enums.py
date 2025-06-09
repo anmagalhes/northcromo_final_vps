@@ -9,6 +9,7 @@ class SimNaoEnum(enum.Enum):
 class TipoOrdemEnum(enum.Enum):
     NOVO = "NOVO"
     NAO = "NAO"
+    SIM = "SIM"
 
 
 class StatusOrdem(enum.Enum):

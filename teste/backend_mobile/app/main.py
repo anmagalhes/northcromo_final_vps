@@ -32,9 +32,18 @@ from app.api.Routes.recebimento import router as recebimento_router
 from app.api.Routes.file_upload import router as file_upload_router
 from app.api.Routes.ordem_nova import router as  ordemnova_router
 from app.api.Routes.gerar_pdf_chcklistrecebimento import router as gerar_pdf_router
+from app.api.Routes.componente import router as  componente_router
+from app.api.Routes.operacao import router as operacao_router
+from app.api.Routes.posto_trabalho import router as postotrabalho_router
+from app.api.Routes.defeito import router as defeito_router
+
 
 # Definição do FastAPI
 app = FastAPI()
+
+title="Northcromo API",
+description="Documentação da API de Recebimento, Componentes e Checklists",
+version="1.0.0"
 
 # Adicionar middleware CORS
 app.add_middleware(
@@ -60,10 +69,16 @@ async def log_request(request: Request, call_next):
 
 
 # Inclui as rotas de upload de arquivos
-app.include_router(file_upload_router)
-app.include_router(recebimento_router)
-app.include_router(ordemnova_router)
-app.include_router(gerar_pdf_router)
+app.include_router(file_upload_router, prefix="/api", tags=["Recebimento"])
+app.include_router(recebimento_router, prefix="/api", tags=["Recebimento"])
+app.include_router(ordemnova_router, prefix="/api", tags=["Recebimento"])
+app.include_router(gerar_pdf_router, prefix="/api", tags=["Checklist Recebimento"])
+app.include_router(componente_router, prefix="/api", tags=["Cadastro"])
+app.include_router(operacao_router, prefix="/api", tags=["Cadastro"])
+app.include_router(postotrabalho_router, prefix="/api", tags=["Cadastro"])
+app.include_router(defeito_router, prefix="/api", tags=["Cadastro"])
+
+
 
 @app.on_event("startup")
 async def startup_event():

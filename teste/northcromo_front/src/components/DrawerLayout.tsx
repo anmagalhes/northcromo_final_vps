@@ -1,4 +1,3 @@
-// src/components/DrawerLayout.tsx
 "use client";
 
 import { useState, useEffect } from "react";
@@ -115,6 +114,75 @@ const DrawerLayout = () => {
             href="/configuracoes"
             className="flex items-center gap-2 p-3 hover:bg-green-700 rounded"
             onClick={() => setIsOpen(false)}
+          >
+            <svg
+              className="w-5 h-5"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M12 4v16m8-8H4"
+              />
+            </svg>
+            Configurações
+          </Link>
+        </nav>
+      </div>
+
+      {/* Sidebar fixa para telas grandes */}
+      <div className="hidden sm:block fixed top-0 left-0 h-full w-64 bg-gray-800 text-white z-50">
+        <div className="flex justify-between items-center p-4">
+          <h2 className="text-xl font-bold">Northcromo</h2>
+        </div>
+        <nav className="mt-4 space-y-4">
+          <Link
+            href="/"
+            className="flex items-center gap-2 p-3 hover:bg-green-700 rounded"
+          >
+            <svg
+              className="w-5 h-5"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M3 8h18M3 12h18M3 16h18"
+              />
+            </svg>
+            Início
+          </Link>
+          <Link
+            href="/recebimento"
+            className="flex items-center gap-2 p-3 hover:bg-green-700 rounded"
+          >
+            <svg
+              className="w-5 h-5"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M15 10l4.5-4.5M15 10l4.5 4.5M15 10h6"
+              />
+            </svg>
+            Recebimento
+          </Link>
+          <Link
+            href="/configuracoes"
+            className="flex items-center gap-2 p-3 hover:bg-green-700 rounded"
           >
             <svg
               className="w-5 h-5"

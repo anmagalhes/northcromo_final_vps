@@ -10,7 +10,10 @@ import BotaoAcao from '@/components/BotaoAcao'
 import axios from 'axios'
 import { useRef } from 'react';
 
-import { getDataHoraSaoPaulo } from '../../utils/DataHora'
+import { getDataHoraSaoPaulo } from '../../../utils/DataHora'
+
+import { useClientes } from '@/hooks/useClientes';
+import { useProdutos } from '@/hooks/useProdutos';
 
 interface Produto {
   codigo: string
@@ -20,14 +23,18 @@ interface Produto {
 export default function Recebimento() {
   const router = useRouter()
 
+  // Query React - lado usuario
+  //const { data: produtos = [], isLoading: loadingProdutos } = useProdutos();
+  //const { data: clientes = [], isLoading: loadingClientes } = useClientes();
 
   // Estados do formulário
-  const [tipoOrdem, setTipoOrdem] = useState<'Novo' | 'Outro'>('Novo')
+  const [tipoOrdem, setTipoOrdem] = useState<'NOVO' | 'NAO'>('NOVO')
   const [numeroControle, setNumeroControle] = useState('')
 
    //Ordem nova
   const [ordemBase, setOrdemBase] = useState<string | null>(null)
   const [numeroOrdem, setNumeroOrdem] = useState('');
+  const [numeroOrdemFormatado, setNumeroOrdemFormatado] = useState('');
 
   const [dataRecebimento, setDataRecebimento] = useState('')
   const [horaRecebimento, setHoraRecebimento] = useState('')
@@ -126,12 +133,20 @@ export default function Recebimento() {
     };
 
     const atualizarNumeroOrdem = async () => {
-      if (tipoOrdem === 'Novo') {
+
+      if (tipoOrdem === 'NOVO') {
         const novoNumero = await buscarUltimaOrdem();
-        setNumeroControle(novoNumero);
+        const anoAtual = new Date().getFullYear().toString().slice(-2);
+        const numeroFormatado = `${novoNumero}-${anoAtual}`;
+
+        setNumeroControle(numeroFormatado);  //INPUNT
+        setNumeroOrdemFormatado(novoNumero); // BANCO
+
+       // setNumeroControle(novoNumero);
         console.log('Numero Controle atualizado para:', novoNumero);
       } else {
         setNumeroControle('');
+        setNumeroOrdemFormatado('');
       }
     };
 
@@ -187,7 +202,7 @@ export default function Recebimento() {
       })
 
       try {
-        const response = await axios.post('http://localhost:8000/adicionarOrdem', formData, {
+        const response = await axios.post('http://localhost:8000/api/adicionarOrdem', formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
@@ -217,7 +232,7 @@ export default function Recebimento() {
 
           // **Atualizar número da ordem após envio**
           try {
-            const novaOrdemResponse = await fetch('http://localhost:8000/ordemnova');
+            const novaOrdemResponse = await fetch('http://localhost:8000/api/ordemnova');
             const novaOrdemData = await novaOrdemResponse.json();
 
             if (typeof novaOrdemData === 'number') {
@@ -225,7 +240,7 @@ export default function Recebimento() {
               setOrdemBase(novaOrdemFormatada);
               setNumeroOrdem(novaOrdemFormatada);
 
-              if (tipoOrdem === 'Novo') {
+              if (tipoOrdem === 'NOVO') {
                 const proximaOrdem = String(Number(novaOrdemFormatada) + 1).padStart(4, '0');
                 setNumeroControle(proximaOrdem);
               } else {
@@ -259,11 +274,13 @@ export default function Recebimento() {
 
       const dadosAdicionais = {
         cliente,
-        numero_ordem: numeroOrdem,
-        quantidade,
+        tipoOrdem,
+        numero_ordem: tipoOrdem === 'NOVO' ? numeroOrdemFormatado :'0',
+        os_formatado: numeroOrdem,
+        quantidade: Number(quantidade),
         referencia,
         nfRemessa,
-        observacao,
+        queixa_cliente: observacao,
         dataRecebimento,
         horaRecebimento,
         foto1: linksLimitados[0] || null,
@@ -274,7 +291,7 @@ export default function Recebimento() {
 
     console.log('Dados que serão enviados:', dadosAdicionais);
 
-      const response = await axios.post('http://localhost:8000/salvarLinksFotos', dadosAdicionais)
+      const response = await axios.post('http://localhost:8000/api/salvarLinksFotos', dadosAdicionais)
 
       if (response.status === 200) {
         console.log('Links das fotos e dados adicionais salvos com sucesso!')
@@ -297,7 +314,7 @@ export default function Recebimento() {
     useEffect(() => {
       async function fetchNumeroOrdem() {
         try {
-          const response = await fetch('http://localhost:8000/ordemnova');
+          const response = await fetch('http://localhost:8000/api/ordemnova');
           const data = await response.json();
 
           if (typeof data === 'number') {
@@ -305,8 +322,8 @@ export default function Recebimento() {
             setOrdemBase(ordemFormatada);
             setNumeroOrdem(ordemFormatada);
 
-            // 👇 Já calcula e define aqui, evitando esperar outro useEffect
-            if (tipoOrdem === 'Novo') {
+            // 👇 Já calcula e define aqui, evitando esperar NAO useEffect
+            if (tipoOrdem === 'NOVO') {
               const proxima = String(Number(ordemFormatada) + 1).padStart(4, '0');
               setNumeroControle(proxima);
               console.log('Numero Controle definido diretamente após fetch:', proxima);
@@ -323,17 +340,18 @@ export default function Recebimento() {
 }, []);
 
   return (
-    <div className="min-h-screen bg-slate-100 px-4 sm:px-6 md:px-12">
-      <div className="max-w-3xl mx-auto py-6">
-        <h1 className="text-2xl font-bold text-green-700 mb-6 text-center">Cadastro de Nova Ordem</h1>
+   <div className="min-h-screen bg-slate-100 px-2 sm:px-4 md:px-6">
+       <div className="w-full py-6">
+        <h1 className="text-2xl font-bold text-green-700 mb-6 text-center">
+          Cadastro de Nova Ordem</h1>
 
         <div className="bg-white rounded-lg shadow-md p-6">
           {/* Tipo de Ordem */}
           <div className="flex justify-center mb-6 gap-4 flex-wrap">
-            {['Novo', 'Outro'].map(tipo => (
+            {['NOVO', 'NAO'].map(tipo => (
               <button
                 key={tipo}
-                onClick={() => setTipoOrdem(tipo as 'Novo' | 'Outro')}
+                onClick={() => setTipoOrdem(tipo as 'NOVO' | 'NAO')}
                 className={`px-4 py-2 rounded-full transition-colors min-w-[100px] text-center ${
                   tipoOrdem === tipo
                     ? 'bg-green-700 text-white'

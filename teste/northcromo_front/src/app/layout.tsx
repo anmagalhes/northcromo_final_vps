@@ -1,53 +1,35 @@
 // src/app/layout.tsx
-"use client";  // Marque este arquivo como um componente de cliente
-
-
-import { useState } from "react";
+import type { Metadata } from "next";
 import { GeistSans, GeistMono } from "geist/font";
-import "./globals.css";  // Estilos globais
+import "./globals.css";
+import AppWrapper from "./AppWrapper";
+import CoreProvider from "@/components/query_lado_cliente/core-provider"; //
+export const metadata = {
+  title: "Northcromo - Sistema de Manutenção",
+  description: "Sistema de Gestão da Northcromo",
+  icons: {
+    icon: "/favicon.ico",
+  },
+  authors: [{ name: "Northcromo" }],
+};
 
-import Header from "@/components/header";  // Importa o Header
-import Footer from "@/components/Footer";  // Importa o Footer
-import Sidebar from "@/components/sidebar";  // Sidebar fixa (opcional)
-import DrawerLayout from "@/components/DrawerLayout";  // Drawer para mobile
+export function generateViewport() {
+  return {
+    themeColor: "#ffffff",
+  };
+}
 
-// Definindo o layout global
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-
-  // Funções para controlar o Drawer (menu móvel)
-  const openDrawer = () => setIsDrawerOpen(true);
-  const closeDrawer = () => setIsDrawerOpen(false);
-
-// Função para alternar a visibilidade da sidebar
-  const toggleSidebar = () => setSidebarAberta(prevState => !prevState);
-
   return (
-    <html lang="pt-BR" className={`${GeistSans.variable} ${GeistMono.variable}`}>
-      <body className="antialiased bg-gray-50 min-h-screen flex flex-col">
-        {/* Cabeçalho global */}
-        <Header openDrawer={openDrawer} />  {/* O Header será incluído globalmente */}
+    <html lang="pt-BR" className={`${GeistSans.variable} ${GeistMono.variable} h-full`}>
+      <body className="antialiased bg-gray-50 min-h-screen flex flex-col overflow-y-auto">
 
-        {/* Conteúdo principal */}
-        <div className="flex flex-grow w-full">
-          {/* Sidebar fixa para telas grandes */}
-          <aside className="hidden sm:block w-64">
-            <Sidebar />
-          </aside>
-
-          {/* Conteúdo das páginas */}
-          <main className="flex-grow container mx-auto p-4">
-            {children}  {/* As páginas serão renderizadas aqui */}
-          </main>
-        </div>
-
-        {/* Drawer para telas pequenas */}
-        <div className="sm:hidden">
-          <DrawerLayout isOpen={isDrawerOpen} closeDrawer={closeDrawer} />
-        </div>
-
-        {/* Rodapé global */}
-        <Footer />
+        {/* Chama o componente client que gerencia a UI */}
+        <CoreProvider>
+        <AppWrapper>
+          {children}
+          </AppWrapper>
+          </CoreProvider>
       </body>
     </html>
   );
