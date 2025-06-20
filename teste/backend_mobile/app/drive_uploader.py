@@ -17,6 +17,8 @@ def authenticate_google_drive():
         GOOGLE_CREDENTIALS_PATH, scopes=SCOPES
     )
 
+
+
     # Constrói o serviço para a API do Google Drive
     service = build("drive", "v3", credentials=credentials)
     return service

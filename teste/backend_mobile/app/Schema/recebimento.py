@@ -30,7 +30,7 @@ class Recebimento(settings.Base, TimestampMixin):
     numero_nota_fiscal: Mapped[Optional[str]] = mapped_column(String(20))
 
     # Queixa e prazo
- queixa_cliente: Mapped[Optional[str]] = mapped_column(Text)
+    queixa_cliente: Mapped[Optional[str]] = mapped_column(Text)
     data_prazo_desmont: Mapped[Optional[date]] = mapped_column(Date)
 
     # Checklist

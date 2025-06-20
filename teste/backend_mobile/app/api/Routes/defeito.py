@@ -78,7 +78,7 @@ async def listar_defeitos(db: AsyncSession = Depends(get_async_session)):
         ]
 
 
-        await manager.broadcast("update")  # Notifica clientes via WebSocket
+        #await manager.broadcast("update")  # Notifica clientes via WebSocket
 
         return response
     except SQLAlchemyError as e:
@@ -101,7 +101,7 @@ async def buscar_defeito(defeito_id: int, db: AsyncSession = Depends(get_async_s
             def_nome=defeito.def_nome,
             data=defeito.data,
             componente_id=defeito.componente_id,
-            componente_nome=defeito.componente.nome if defeito.componente else None,
+            componente_nome=defeito.componente.componente_nome if defeito.componente else None,
         )
     except SQLAlchemyError as e:
         raise HTTPException(status_code=500, detail=f"Erro ao buscar defeito: {str(e)}")
@@ -132,7 +132,7 @@ async def atualizar_defeito(defeito_id: int, defeito_data: DefeitoCreate, db: As
             def_nome=defeito.def_nome,
             data=defeito.data,
             componente_id=defeito.componente_id,
-            componente_nome=defeito.componente.nome if defeito.componente else None,
+            componente_nome=defeito.componente.componente_nome if defeito.componente else None,
         )
 
     except SQLAlchemyError as e:

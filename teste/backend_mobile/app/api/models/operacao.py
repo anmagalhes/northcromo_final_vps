@@ -1,7 +1,8 @@
 from __future__ import annotations
 from datetime import datetime
 from sqlalchemy import Integer, String, DateTime, func
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+from typing import List  # Importando o tipo List
 
 from app.utils.datetime import utcnow
 from app.api.models.mixins import TimestampMixin
@@ -34,5 +35,11 @@ class Operacao(Base, TimestampMixin):
         default=utcnow,
         nullable=False,
         server_default=func.now(),
-        comment="Data e hora do registro do componente"
+        comment="Data e hora do registro da operação"
+    )
+
+    # Relacionamento com Produto
+    produtos: Mapped[List[Produto]] = relationship(
+        "Produto",
+        back_populates="operacao"
     )

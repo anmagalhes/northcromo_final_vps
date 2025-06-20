@@ -24,6 +24,8 @@ from typing import List
 from app.core.database import engine
 from app.api.models import Base  # ou onde estiver seu Base declarativo
 
+from app.utils.google_auth_init import garantir_credenciais_google
+
 # Incluindo diretórios no sys.path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "app")))
 
@@ -36,6 +38,13 @@ from app.api.Routes.componente import router as  componente_router
 from app.api.Routes.operacao import router as operacao_router
 from app.api.Routes.posto_trabalho import router as postotrabalho_router
 from app.api.Routes.defeito import router as defeito_router
+from app.api.Routes.produto_tarefa import router as tarefa_router
+from app.api.Routes.produto import router as produto_router
+from app.api.Routes.funcionario import router as funcionario_router
+from app.api.Routes.funcao import router as funcao_router
+from app.api.Routes.checklist_recebimento import router as checklist_recebimento_router
+
+
 
 
 # Definição do FastAPI
@@ -77,7 +86,11 @@ app.include_router(componente_router, prefix="/api", tags=["Cadastro"])
 app.include_router(operacao_router, prefix="/api", tags=["Cadastro"])
 app.include_router(postotrabalho_router, prefix="/api", tags=["Cadastro"])
 app.include_router(defeito_router, prefix="/api", tags=["Cadastro"])
-
+app.include_router(tarefa_router, prefix="/api", tags=["Cadastro"])
+app.include_router(produto_router, prefix="/api", tags=["Cadastro"])
+app.include_router(funcionario_router, prefix="/api", tags=["Cadastro"])
+app.include_router(funcao_router, prefix="/api", tags=["Cadastro"])
+app.include_router(checklist_recebimento_router, prefix="/api", tags=["Checklist Recebimento"])
 
 
 @app.on_event("startup")
@@ -85,4 +98,6 @@ async def startup_event():
     print("Rotas carregadas:")
     for route in app.routes:
         print(route.path)
+    garantir_credenciais_google()
+
 

@@ -13,7 +13,7 @@ import { useRef } from 'react';
 import { getDataHoraSaoPaulo } from '../../../utils/DataHora'
 
 import { useClientes } from '@/hooks/useClientes';
-import { useProdutos } from '@/hooks/useProdutos';
+import { useProdutos } from '@/hooks/useProdutoWS';
 
 interface Produto {
   codigo: string

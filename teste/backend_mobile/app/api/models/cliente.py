@@ -1,111 +1,124 @@
 # app/models/cliente.py
-from datetime import datetime
-import pytz
-from sqlalchemy import (
-    JSON,
-    Boolean,
-    DateTime,
-    Integer,
-    String,
-    ForeignKey,
-    Column,
-    UniqueConstraint,
-)
+from __future__ import annotations
+from sqlalchemy import Integer, String, DateTime, ForeignKey, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from app.core.config import settings
-from typing import Optional, List
+from datetime import datetime
 
-from app.core.base_class import Base
+from app.utils.datetime import utcnow
+from app.api.models.mixins import TimestampMixin
+from app.api.models.base import Base
 
-# Criando um timezone para São Paulo (UTC-3)
-SP_TZ = pytz.timezone("America/Sao_Paulo")
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from app.api.models.fornecedor import Fornecedor
 
-
-# Função auxiliar para garantir o uso correto do timezone
-def get_current_time_in_sp() -> datetime:
-    return datetime.now(SP_TZ).astimezone(SP_TZ)
-
-
-class Cliente(Base):  # Substituímos db.Model por Base
+class Cliente(Base, TimestampMixin):
     __tablename__ = "clientes"
 
-    # Definir __table_args__ corretamente
-    # Definindo o UniqueConstraint para a coluna doc_cliente
-    __table_args__ = (
-        UniqueConstraint(
-            "doc_cliente", name="uix_doc_cliente"
-        ),  # Garantindo unicidade de 'doc_cliente'
+    id: Mapped[int] = mapped_column(
+        Integer,
+        primary_key=True,
+        autoincrement=True,
+        comment="Identificador único do cliente"
     )
 
-    # Usando Mapped e mapped_column para definir as colunas
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)
-
-    tipo_cliente: Mapped[Optional[str]] = mapped_column(String(50))  # Tipo de Cliente
-    nome_cliente: Mapped[Optional[str]] = mapped_column(String(100))  # Nome do Cliente
-    doc_cliente: Mapped[Optional[str]] = mapped_column(
-        String(20)
-    )  # Documento do Cliente (CPF/CNPJ)
-    endereco_cliente: Mapped[Optional[str]] = mapped_column(
-        String(255)
-    )  # Endereço do Cliente
-    num_cliente: Mapped[Optional[str]] = mapped_column(String(20))  # Número do endereço
-    bairro_cliente: Mapped[Optional[str]] = mapped_column(String(100))  # Bairro
-    cidade_cliente: Mapped[Optional[str]] = mapped_column(String(100))  # Cidade
-    uf_cliente: Mapped[Optional[str]] = mapped_column(String(16))  # UF
-    cep_cliente: Mapped[Optional[str]] = mapped_column(String(16))  # CEP
-    telefone_cliente: Mapped[Optional[str]] = mapped_column(
-        String(20)
-    )  # Telefone do Cliente
-
-    # Colunas opcionais
-    telefone_rec_cliente: Mapped[Optional[str]] = mapped_column(
-        String(20)
-    )  # Telefone de recado
-    whatsapp_cliente: Mapped[Optional[str]] = mapped_column(String(20))  # WhatsApp
-    email_funcionario: Mapped[Optional[str]] = mapped_column(
-        String(100)
-    )  # E-mail do Funcionário responsável
-    acao: Mapped[Optional[str]] = mapped_column(
-        String(255)
-    )  # Ação/observações adicionais
-    fornecedor_cliente: Mapped[Optional[str]] = mapped_column(
-        String(100)
-    )  # Fornecedor associado ao cliente
-
-    # Relacionamento com o modelo User
-    usuario_id: Mapped[Optional[int]] = mapped_column(
-        Integer, ForeignKey("usuario.id")
-    )  # Tabela Campo
-
-    # Relacionamentos com Recebimentos e Checklist_Recebimento
-    usuario: Mapped["User"] = relationship(
-        "User",
-        back_populates="clientes",
+    tipo_cliente: Mapped[str] = mapped_column(
+        String(10),
+        nullable=False,
+        comment="Tipo de cliente: CPF ou CNPJ"
     )
 
-    recebimentos: Mapped[List["Recebimento"]] = relationship(
-        "Recebimento",
-        back_populates="cliente",
+    nome_cliente: Mapped[str] = mapped_column(
+        String(255),
+        nullable=False,
+        comment="Nome do cliente"
     )
 
-    checklists: Mapped[List["Checklist_Recebimento"]] = relationship(
-        "Checklist_Recebimento",
-        back_populates="cliente",
+    doc_cliente: Mapped[str] = mapped_column(
+        String(18),  # 11 caracteres para CPF e 18 para CNPJ
+        nullable=False,
+        unique=True,
+        comment="Documento do cliente (CPF ou CNPJ)"
     )
 
-    # Campos de auditoria
-    created_at: Mapped[datetime] = mapped_column(
+    endereco_cliente: Mapped[str] = mapped_column(
+        String(255),
+        nullable=True,
+        comment="Endereço do cliente"
+    )
+
+    num_cliente: Mapped[str] = mapped_column(
+        String(20),
+        nullable=True,
+        comment="Número do endereço do cliente"
+    )
+
+    bairro_cliente: Mapped[str] = mapped_column(
+        String(100),
+        nullable=True,
+        comment="Bairro do cliente"
+    )
+
+    cidade_cliente: Mapped[str] = mapped_column(
+        String(100),
+        nullable=True,
+        comment="Cidade do cliente"
+    )
+
+    uf_cliente: Mapped[str] = mapped_column(
+        String(2),
+        nullable=True,
+        comment="Estado (UF) do cliente"
+    )
+
+    cep_cliente: Mapped[str] = mapped_column(
+        String(10),
+        nullable=True,
+        comment="CEP do cliente"
+    )
+
+    telefone_cliente: Mapped[str] = mapped_column(
+        String(20),
+        nullable=True,
+        comment="Telefone do cliente"
+    )
+
+    telefone_rec_cliente: Mapped[str] = mapped_column(
+        String(20),
+        nullable=True,
+        comment="Telefone de referência do cliente"
+    )
+
+    whatsapp_cliente: Mapped[str] = mapped_column(
+        String(20),
+        nullable=True,
+        comment="WhatsApp do cliente"
+    )
+
+    email_cliente: Mapped[str] = mapped_column(
+        String(100),
+        nullable=True,
+        comment="Email do cliente"
+    )
+
+    data_cadastro_cliente: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
-        default=get_current_time_in_sp,  # timezone=True garante que seja "aware"
+        default=utcnow,
+        nullable=False,
+        server_default=func.now(),
+        comment="Data de cadastro do cliente"
     )
-    updated_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True),
-        default=get_current_time_in_sp,
-        onupdate=get_current_time_in_sp,
+
+    fornecedor_cliente_id: Mapped[int] = mapped_column(
+        Integer,
+        ForeignKey("fornecedores.id", ondelete="CASCADE"),
+        nullable=True,
+        comment="ID do fornecedor associado ao cliente, caso aplicável"
     )
-    deleted_at: Mapped[Optional[datetime]] = mapped_column(
-        DateTime, nullable=True
-    )  # Permite que seja None
+
+    # Relacionamento com Fornecedor
+    fornecedor_cliente: Mapped[Fornecedor] = relationship("Fornecedor", back_populates="clientes")
 
     def __repr__(self):
-        return f"<Cliente {self.nome_cliente}, ID {self.id}>"
+        return f"<Cliente(id={self.id}, nome={self.nome_cliente}, doc={self.doc_cliente})>"
+

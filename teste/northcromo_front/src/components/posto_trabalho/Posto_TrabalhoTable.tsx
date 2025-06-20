@@ -19,7 +19,9 @@ interface Props {
   modoEdicaoMultipla: boolean
   editaveis: PostoTrabalhoItem[]
   setEditaveis: React.Dispatch<React.SetStateAction<PostoTrabalhoItem[]>>
-  onSalvarEdicao: (item: PostoTrabalhoItem) => void
+  onSalvarMultiplos: () => Promise<void>
+  onCancelarMultiplos: () => void
+  onSalvarEdicao: (item: PostoTrabalhoItem) => Promise<void>
 }
 
 export default function PostoTrabalhoTable({
@@ -34,6 +36,8 @@ export default function PostoTrabalhoTable({
   modoEdicaoMultipla,
   editaveis,
   setEditaveis,
+  onSalvarMultiplos,
+  onCancelarMultiplos,
   onSalvarEdicao,
 }: Props) {
   return (
@@ -66,7 +70,7 @@ export default function PostoTrabalhoTable({
             postos.map((item) => {
               const estaEditando = idEditar === item.id
               const editavel = modoEdicaoMultipla && selecionados.includes(item.id)
-              const editavelItem = editaveis.find(e => e.id === item.id)
+              const editavelItem = editaveis?.find(e => e.id === item.id)
 
               return (
                 <tr

@@ -35,3 +35,6 @@ class Componente(Base, TimestampMixin):
     )
 
     defeitos: Mapped[List[Defeito]] = relationship("Defeito", back_populates="componente")
+
+    produtos: Mapped[List[Produto]] = relationship("Produto", back_populates="componente")
+

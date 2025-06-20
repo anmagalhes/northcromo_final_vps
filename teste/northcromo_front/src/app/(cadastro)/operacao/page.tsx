@@ -1,7 +1,7 @@
 //src/app/operacao/page.tsx
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect,  useMemo  } from 'react';
 import useOperacoesWS from '@/hooks/useOperacoesWS';
 import OperacaoForm from '@/components/operacao/OperacaoForm';
 import OperacaoTable from '@/components/operacao/OperacaoTable';
@@ -10,8 +10,9 @@ import { OperacaoItem } from '@/types/operacao';
 
 export default function OperacaoPage() {
   const { operacoesQuery } = useOperacoesWS();
-  const listaOperacoes = operacoesQuery.data || [];
-  const loading = operacoesQuery.isLoading;
+  const listaOperacoes = useMemo(() => operacoesQuery.data || [], [operacoesQuery.data]);
+  //const listaOperacoes = operacoesQuery.data || [];
+//  const loading = operacoesQuery.isLoading;
 
   const [idEditar, setIdEditar] = useState<number | null>(null);
   const [nomeEditar, setNomeEditar] = useState('');
@@ -140,6 +141,25 @@ export default function OperacaoPage() {
     }
   };
 
+  const salvarEdicaoIndividual = async (item: OperacaoItem) => {
+  try {
+    const res = await fetch(`${baseURL}/operacao/${item.id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(item),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      alert(data.detail || 'Erro ao atualizar operação individual.');
+    }
+  } catch {
+    alert('Erro de conexão ao editar operação individual.');
+  }
+};
+
+
   return (
     <div className="min-h-screen bg-slate-100 px-4 sm:px-6 md:px-12 py-8">
       <div className="max-w-5xl mx-auto bg-white rounded-lg shadow-md p-6">
@@ -189,6 +209,7 @@ export default function OperacaoPage() {
             setModoEdicaoMultipla(false);
             setEditaveis([]);
           }}
+          onSalvarEdicao={salvarEdicaoIndividual}
         />
       </div>
     </div>

@@ -14,6 +14,8 @@ interface Props {
   editaveis: ComponenteItem[]
   setEditaveis: React.Dispatch<React.SetStateAction<ComponenteItem[]>>
   onSalvarEdicao: (item: ComponenteItem) => void
+  onSalvarMultiplos: () => Promise<void>  // função para salvar múltiplos itens
+  onCancelarMultiplos: () => void
 }
 
 export default function ComponenteTable({
@@ -29,6 +31,7 @@ export default function ComponenteTable({
   editaveis,
   setEditaveis,
   onSalvarEdicao,
+  onSalvarMultiplos,
 }: Props) {
 
 

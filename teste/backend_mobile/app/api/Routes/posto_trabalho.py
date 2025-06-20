@@ -1,12 +1,15 @@
+#app/api/Routes/posto_trabalho.py
 from fastapi import APIRouter, HTTPException, Depends, WebSocket, WebSocketDisconnect
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from sqlalchemy.exc import SQLAlchemyError
 from typing import List
+from sqlalchemy.orm.attributes import flag_modified
+
 
 from app.database.session import get_async_session
 from app.api.models.posto_trabalho import Posto_Trabalho
-from app.Schema.posto_trabalho_schema import Posto_TrabalhoCreate, Posto_TrabalhoRead
+from app.Schema.posto_trabalho_schema import Posto_TrabalhoCreate, Posto_TrabalhoRead, Posto_TrabalhoUpdate
 
 
 router = APIRouter()
@@ -76,7 +79,9 @@ async def buscar_posto_trabalho(posto_id: int, db: AsyncSession = Depends(get_as
 
 @router.put("/posto_trabalho/{posto_id}", response_model=Posto_TrabalhoRead)
 async def atualizar_posto_trabalho(
-    posto_id: int, posto_data: Posto_TrabalhoCreate, db: AsyncSession = Depends(get_async_session)
+    posto_id: int,
+    posto_data: Posto_TrabalhoUpdate,
+    db: AsyncSession = Depends(get_async_session)
 ):
     try:
         result = await db.execute(select(Posto_Trabalho).where(Posto_Trabalho.id == posto_id))
@@ -85,7 +90,7 @@ async def atualizar_posto_trabalho(
         if not posto:
             raise HTTPException(status_code=404, detail="Posto de trabalho não encontrado")
 
-        posto.Posto_trabalho_nome = posto_data.posto_trabalho_nome
+        posto.posto_trabalho_nome = posto_data.posto_trabalho_nome
         posto.data_execucao = posto_data.data_execucao
 
         await db.commit()

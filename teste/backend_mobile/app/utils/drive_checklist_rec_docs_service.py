@@ -1,3 +1,4 @@
+import asyncio
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaIoBaseDownload
@@ -16,6 +17,9 @@ SCOPES = [
     "https://www.googleapis.com/auth/documents"
 ]
 
+import json
+
+
 def build_services():
     credentials = service_account.Credentials.from_service_account_file(
         GOOGLE_CREDENTIALS_PATH, scopes=SCOPES
@@ -24,8 +28,16 @@ def build_services():
     docs_service = build("docs", "v1", credentials=credentials)
     return drive_service, docs_service
 
+async def gerar_pdf_async(id_recebimento: int, dados: dict):
+    return await asyncio.to_thread(gerar_pdf_dinamico, id_recebimento, dados)
+
 
 def gerar_pdf_dinamico(id_recebimento: int, dados: dict):
+
+    with open(GOOGLE_CREDENTIALS_PATH) as f:
+        creds_json = json.load(f)
+        print("📢 Conta de serviço em uso:", creds_json.get("client_email"))
+
     drive_service, docs_service = build_services()
 
     nome_arquivo = f"NothCromo_ChecklistRecebimento_{id_recebimento}"

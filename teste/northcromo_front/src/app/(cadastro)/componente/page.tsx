@@ -13,9 +13,11 @@ interface ComponenteItem {
 
 export default function ComponentePage() {
   const { componentesQuery } = useComponentesWS()
-  const listaComponentesRaw = componentesQuery.data || []
-  // Memoiza para evitar re-execução desnecessária no useEffect
-  const listaComponentes = useMemo(() => listaComponentesRaw, [listaComponentesRaw])
+
+  const listaComponentes = useMemo(() => {
+  return componentesQuery.data || []
+}, [componentesQuery.data])
+
 
   const [idEditar, setIdEditar] = useState<number | null>(null)
   const [nomeEditar, setNomeEditar] = useState('')

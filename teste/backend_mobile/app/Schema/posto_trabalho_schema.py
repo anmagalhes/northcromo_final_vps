@@ -9,11 +9,16 @@ class Posto_TrabalhoBase(BaseModel):
         default=None, description="Data e hora"
     )
 
+class Posto_TrabalhoUpdate(BaseModel):
+    posto_trabalho_nome: str
+    data_execucao: datetime  # Obrigatório aqui
+
 class Posto_TrabalhoCreate(Posto_TrabalhoBase):
     pass
 
 class Posto_TrabalhoRead(Posto_TrabalhoBase):
     id: int
 
-    class Config:
-        orm_mode = True
+    model_config = {
+        "from_attributes": True
+    }

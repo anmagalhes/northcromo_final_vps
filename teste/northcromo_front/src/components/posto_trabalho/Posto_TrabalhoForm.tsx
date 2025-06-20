@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react'
 interface Props {
   postoId?: string
   postoNome?: string
-  onSave: (nome: string, dataExecucao: string) => void
+  onSave: (nome: string, dataExecucao: string, id?: string) => void
   onCancel?: () => void
 }
 
@@ -29,8 +29,7 @@ export default function PostoTrabalhoForm({
 
     // Data de execução = data atual do sistema em ISO (YYYY-MM-DD)
     const dataAtual = new Date().toISOString().slice(0, 10)
-
-    onSave(nome.toUpperCase(), dataAtual)
+     onSave(nome.toUpperCase(), dataAtual)
   }
 
   return (

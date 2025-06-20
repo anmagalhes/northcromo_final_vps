@@ -10,7 +10,8 @@ const WS_URL = 'ws://localhost:8000/api/ws/operacoes';
 
 export interface Operacao {
   id: number;
-  operacao_nome: string;
+  op_nome: string;
+  op_grupo_processo: string;
   data_execucao: string;
 }
 

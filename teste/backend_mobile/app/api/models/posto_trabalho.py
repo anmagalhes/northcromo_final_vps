@@ -1,12 +1,12 @@
-# app/api/models/posto_trabalho.py
 from __future__ import annotations
 from datetime import datetime
 from sqlalchemy import Integer, String, DateTime, func
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship  # Importando relationship
 
 from app.utils.datetime import utcnow
 from app.api.models.mixins import TimestampMixin
 from app.api.models.base import Base
+from app.api.models.produto import Produto  # Importando Produto, já que é necessário para o relacionamento
 
 class Posto_Trabalho(Base, TimestampMixin):
     __tablename__ = "posto_trabalhos"
@@ -30,4 +30,10 @@ class Posto_Trabalho(Base, TimestampMixin):
         nullable=False,
         server_default=func.now(),
         comment="Data e hora do registro do componente"
+    )
+
+    # Relacionamento com o modelo Produto
+    produtos: Mapped[list[Produto]] = relationship(
+        "Produto",
+        back_populates="posto_trabalho"
     )

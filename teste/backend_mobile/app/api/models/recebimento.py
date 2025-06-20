@@ -14,6 +14,7 @@ from app.api.models.base import Base
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from app.api.models.checklist_recebimento import ChecklistRecebimento
+    from app.api.models.notafiscal import NotaFiscal
 
 class Recebimento(Base, TimestampMixin):  # <-- usa Base do app.db.base
     __tablename__ = "recebimentos"
@@ -64,10 +65,17 @@ class Recebimento(Base, TimestampMixin):  # <-- usa Base do app.db.base
         nullable=True,
         comment="Referência do produto conforme sistema ERP"
     )
-    numero_nota_fiscal: Mapped[str] = mapped_column(
-        String(20),
-       nullable=True,
-        comment="Número da nota fiscal vinculada"
+
+    nota_fiscal_id: Mapped[Optional[int]] = mapped_column(
+        ForeignKey("notas_fiscais.id"),
+        nullable=True,
+        index=True,  # Adicione index para melhor performance
+        comment="Vinculo com nota fiscal"
+    )
+
+    nota_fiscal: Mapped[Optional["NotaFiscal"]] = relationship(
+        "NotaFiscal",
+        back_populates="recebimentos"
     )
 
     queixa_cliente: Mapped[str] = mapped_column(
@@ -158,6 +166,7 @@ class Recebimento(Base, TimestampMixin):  # <-- usa Base do app.db.base
         nullable=True,  # ou False, dependendo se esse campo é obrigatório
         comment="Quantidade associada"
     )
+
 
      # Relacionamentos entre Recebimento
     # Relação com o checklist

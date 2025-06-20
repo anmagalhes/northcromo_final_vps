@@ -1,3 +1,4 @@
+// src/components/operacao/OperacaoTable.tsx
 import { FiEdit, FiTrash2 } from 'react-icons/fi'
 
 interface OperacaoItem {
@@ -20,6 +21,8 @@ interface Props {
   editaveis: OperacaoItem[]
   setEditaveis: React.Dispatch<React.SetStateAction<OperacaoItem[]>>
   onSalvarEdicao: (item: OperacaoItem) => void
+  onSalvarMultiplos: () => void;
+  onCancelarMultiplos: () => void;
 }
 
 export default function OperacaoTable({

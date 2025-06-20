@@ -1,27 +1,35 @@
-import { FiEdit, FiTrash2 } from 'react-icons/fi';
+import { FiEdit, FiTrash2, FiCheck, FiX } from 'react-icons/fi'
+import React, { useState } from 'react'
 
-interface DefeitoTableProps {
-  defeitos: Defeito[];
-  selecionados: number[];
-  toggleSelecionado: (id: number) => void;
-  toggleSelecionarTodos: () => void;
-  todosSelecionados: boolean;
-  idEditar: number | null;
-  modoEdicaoMultipla: boolean;
-  editaveis: Defeito[];
-  setEditaveis: React.Dispatch<React.SetStateAction<Defeito[]>>;
-  onEdit: (item: Defeito) => void;
-  onDelete: (id: number) => void;
-  onSalvarEdicao: (itemEditado: Defeito) => void;
-  onCancelarEdicao: () => void;
-  componentes: { id: number, componente_nome: string }[]; // Passando os componentes para o select
-  onDeleteEmMassa: (ids: number[]) => void; // Função para excluir múltiplos
-  onEditarEmMassa: (itens: Defeito[]) => void; // Função para editar múltiplos
+interface Funcionario {
+  id: number
+  nome: string
+  cargo: string
+  status: 'ativo' | 'inativo'
 }
 
-export default function DefeitoTable({
-  defeitos,
-  selecionados,
+interface FuncionarioTableProps {
+  funcionarios?: Funcionario[]
+  loading?: boolean
+  selecionados?: number[]
+  toggleSelecionado: (id: number) => void
+  toggleSelecionarTodos: () => void
+  todosSelecionados: boolean
+  idEditar: number | null
+  modoEdicaoMultipla: boolean
+  editaveis: Funcionario[]
+  setEditaveis: React.Dispatch<React.SetStateAction<Funcionario[]>>
+  onEdit: (func: Funcionario) => void
+  onDelete: (id: number) => void
+  onSalvarEdicao: (funcEditado: Funcionario) => void
+  onCancelarEdicao: () => void
+  onDeleteEmMassa: (ids: number[]) => void
+  onEditarEmMassa: (funcs: Funcionario[]) => void
+}
+
+export default function FuncionarioTable({
+  funcionarios = [],
+  selecionados = [],
   toggleSelecionado,
   toggleSelecionarTodos,
   todosSelecionados,
@@ -33,187 +41,301 @@ export default function DefeitoTable({
   onDelete,
   onSalvarEdicao,
   onCancelarEdicao,
-  componentes,
   onDeleteEmMassa,
   onEditarEmMassa,
-}: DefeitoTableProps) {
+  loading = false,
+}: FuncionarioTableProps) {
+  // Estado local para validar campos na edição individual
+  const [erros, setErros] = useState<{ [id: number]: { nome?: string; cargo?: string } }>({})
 
-  // Função para atualizar campos na edição
-  const handleChangeEditavel = (id: number, campo: keyof Defeito, valor: any) => {
-    setEditaveis(prev =>
-      prev.map(item =>
-        item.id === id ? { ...item, [campo]: valor } : item
-      )
-    );
-  };
+  // Função para validar um funcionário editável
+  const validarFuncionario = (func: Funcionario) => {
+    const errosLocais: { nome?: string; cargo?: string } = {}
+    if (!func.nome.trim()) errosLocais.nome = 'Nome é obrigatório'
+    if (!func.cargo.trim()) errosLocais.cargo = 'Cargo é obrigatório'
+    return errosLocais
+  }
 
-  // Função para editar múltiplos defeitos ao mesmo tempo
-  const handleEditarEmMassa = () => {
-    const itensSelecionados = editaveis.filter(item => selecionados.includes(item.id));
-    if (itensSelecionados.length > 0) {
-      onEditarEmMassa(itensSelecionados);
+  // Função para salvar edição individual com validação
+  const salvarEdicaoIndividual = (func: Funcionario) => {
+    const errosLocais = validarFuncionario(func)
+    if (Object.keys(errosLocais).length > 0) {
+      setErros(prev => ({ ...prev, [func.id]: errosLocais }))
+      return
     }
-  };
+    setErros(prev => ({ ...prev, [func.id]: {} }))
+    onSalvarEdicao(func)
+  }
 
-  // Função para excluir múltiplos defeitos ao mesmo tempo
-  const handleExcluirEmMassa = () => {
-    onDeleteEmMassa(selecionados);
-  };
+  // Função cancelar edição individual limpa erros desse id
+  const cancelarEdicaoIndividual = () => {
+    setErros({})
+    onCancelarEdicao()
+  }
 
   return (
-    <div className="overflow-x-auto max-h-[400px] overflow-y-auto">
+    <div className="overflow-x-auto max-h-[600px] overflow-y-auto">
+      {selecionados.length > 0 && !modoEdicaoMultipla && (
+        <div className="flex justify-between items-center bg-gray-100 p-3 rounded-md mb-3 shadow-sm">
+          <span className="text-sm text-gray-700">
+            {selecionados.length} funcionário(s) selecionado(s)
+          </span>
+          <div className="flex gap-3">
+            <button
+              onClick={() => {
+                const paraEditar = funcionarios.filter(f => selecionados.includes(f.id))
+                setEditaveis(paraEditar)
+                onEditarEmMassa(paraEditar)
+              }}
+              className="bg-blue-600 text-white px-4 py-1 rounded hover:bg-blue-700 text-sm"
+              aria-label="Editar selecionados"
+            >
+              Editar Selecionados
+            </button>
+            <button
+              onClick={() => onDeleteEmMassa(selecionados)}
+              className="bg-red-600 text-white px-4 py-1 rounded hover:bg-red-700 text-sm"
+              aria-label="Excluir selecionados"
+            >
+              Excluir Selecionados
+            </button>
+          </div>
+        </div>
+      )}
+
       <table className="w-full table-auto border border-gray-200 rounded-md shadow-sm">
         <thead className="bg-green-700 text-white">
           <tr>
-            <th className="px-4 py-2 text-left">
+            <th className="px-4 py-2 text-left">Nome</th>
+            <th className="px-4 py-2 text-left">Cargo</th>
+            <th className="px-4 py-2 text-left">Status</th>
+            <th className="px-4 py-2 text-left">Ações</th>
+            <th className="px-4 py-2 text-center">
               <input
                 type="checkbox"
                 checked={todosSelecionados}
                 onChange={toggleSelecionarTodos}
-                className="accent-green-600 w-5 h-5 rounded border-gray-300 focus:ring-2 focus:ring-green-500"
+                className="accent-green-600 w-5 h-5"
+                aria-label="Selecionar todos"
               />
             </th>
-            <th className="px-4 py-2 text-left">Componente</th>
-            <th className="px-4 py-2 text-left">Descrição do Defeito</th>
-            <th className="px-4 py-2 text-left">Data</th>
-            <th className="px-4 py-2 text-center">Ações</th>
           </tr>
         </thead>
         <tbody>
-          {defeitos.length === 0 ? (
+          {loading ? (
             <tr>
               <td colSpan={5} className="text-center p-4">
-                Nenhum defeito cadastrado.
+                Carregando funcionários...
+              </td>
+            </tr>
+          ) : funcionarios.length === 0 ? (
+            <tr>
+              <td colSpan={5} className="text-center p-4">
+                Nenhum funcionário cadastrado.
               </td>
             </tr>
           ) : (
-            defeitos.map((defeito) => {
-              const estaEditando = idEditar === defeito.id;
-              const editavel = editaveis.find(e => e.id === defeito.id) || defeito;
-              const dataISO = editavel.data ? new Date(editavel.data).toISOString().slice(0, 16) : '';
+            funcionarios.map(func => {
+              const estaEditando = idEditar === func.id
+              const emEdicaoMultipla = modoEdicaoMultipla && selecionados.includes(func.id)
+              const editavel = editaveis.find(f => f.id === func.id)
 
               return (
                 <tr
-                  key={defeito.id}
+                  key={func.id}
                   className={`hover:bg-gray-50 border-t border-gray-200 ${
-                    estaEditando ? 'bg-yellow-100' : ''
+                    (estaEditando || emEdicaoMultipla) ? 'bg-yellow-100' : ''
                   }`}
                 >
-                  <td className="px-4 py-2 text-center">
-                    <input
-                      type="checkbox"
-                      checked={selecionados.includes(defeito.id)}
-                      onChange={() => toggleSelecionado(defeito.id)}
-                      className="accent-green-600 w-5 h-5 rounded border-gray-300 focus:ring-2 focus:ring-green-500"
-                    />
-                  </td>
-
+                  {/* Nome */}
                   <td className="px-4 py-2">
-                    {estaEditando ? (
-                      <select
-                        value={editavel.componente_id}
-                        onChange={e => handleChangeEditavel(defeito.id, 'componente_id', Number(e.target.value))}
-                        className="border rounded px-2 py-1 w-full"
-                      >
-                        {componentes.map(comp => (
-                          <option key={comp.id} value={comp.id}>
-                            {comp.componente_nome}
-                          </option>
-                        ))}
-                      </select>
-                    ) : (
-                      defeito.componente_nome
-                    )}
-                  </td>
-
-                  <td className="px-4 py-2">
-                    {estaEditando ? (
-                      <input
-                        type="text"
-                        value={editavel.def_nome}
-                        onChange={e => handleChangeEditavel(defeito.id, 'def_nome', e.target.value)}
-                        className="border rounded px-2 py-1 w-full"
-                      />
-                    ) : (
-                      defeito.def_nome
-                    )}
-                  </td>
-
-                  <td className="px-4 py-2">
-                    {estaEditando ? (
-                      <input
-                        type="datetime-local"
-                        value={dataISO}
-                        onChange={e => {
-                          const valor = new Date(e.target.value).toISOString();
-                          handleChangeEditavel(defeito.id, 'data', valor);
-                        }}
-                        className="border rounded px-2 py-1 w-full"
-                      />
-                    ) : (
-                      new Date(defeito.data).toLocaleString()
-                    )}
-                  </td>
-
-                  <td className="px-4 py-2 text-center flex gap-3">
-                    {estaEditando ? (
+                    {(estaEditando || emEdicaoMultipla) ? (
                       <>
-                        <button
-                          onClick={() => onSalvarEdicao(editavel)}
-                          className="text-blue-600 hover:text-blue-800"
-                        >
-                          Salvar
-                        </button>
-                        <button
-                          onClick={onCancelarEdicao}
-                          className="text-red-600 hover:text-red-800"
-                        >
-                          Cancelar
-                        </button>
+                        <input
+                          type="text"
+                          value={editavel?.nome || ''}
+                          onChange={e =>
+                            setEditaveis(prev =>
+                              prev.map(f =>
+                                f.id === func.id ? { ...f, nome: e.target.value } : f
+                              )
+                            )
+                          }
+                          className={`border rounded px-2 py-1 w-full ${
+                            erros[func.id]?.nome ? 'border-red-500' : ''
+                          }`}
+                          aria-label={`Editar nome do funcionário ${func.nome}`}
+                        />
+                        {erros[func.id]?.nome && (
+                          <p className="text-red-600 text-xs mt-1">{erros[func.id]?.nome}</p>
+                        )}
                       </>
                     ) : (
+                      func.nome
+                    )}
+                  </td>
+
+                  {/* Cargo */}
+                  <td className="px-4 py-2">
+                    {(estaEditando || emEdicaoMultipla) ? (
+                      <>
+                        <input
+                          type="text"
+                          value={editavel?.cargo || ''}
+                          onChange={e =>
+                            setEditaveis(prev =>
+                              prev.map(f =>
+                                f.id === func.id ? { ...f, cargo: e.target.value } : f
+                              )
+                            )
+                          }
+                          className={`border rounded px-2 py-1 w-full ${
+                            erros[func.id]?.cargo ? 'border-red-500' : ''
+                          }`}
+                          aria-label={`Editar cargo do funcionário ${func.nome}`}
+                        />
+                        {erros[func.id]?.cargo && (
+                          <p className="text-red-600 text-xs mt-1">{erros[func.id]?.cargo}</p>
+                        )}
+                      </>
+                    ) : (
+                      func.cargo
+                    )}
+                  </td>
+
+                  {/* Status */}
+                  <td className="px-4 py-2 capitalize">
+                    {(estaEditando || emEdicaoMultipla) ? (
+                      <select
+                        value={editavel?.status || 'ativo'}
+                        onChange={e => {
+                          const novoStatus = e.target.value as 'ativo' | 'inativo'
+                          setEditaveis(prev =>
+                            prev.map(f => (f.id === func.id ? { ...f, status: novoStatus } : f))
+                          )
+                        }}
+                        className="border rounded px-2 py-1 w-full"
+                        aria-label={`Editar status do funcionário ${func.nome}`}
+                      >
+                        <option value="ativo">Ativo</option>
+                        <option value="inativo">Inativo</option>
+                      </select>
+                    ) : (
+                      func.status
+                    )}
+                  </td>
+
+                  {/* Ações */}
+                  <td className="px-4 py-2 flex gap-2 items-center">
+                    {/* Edição única */}
+                    {estaEditando && (
                       <>
                         <button
-                          onClick={() => onEdit(defeito)}
+                          onClick={() => {
+                            if (editavel) salvarEdicaoIndividual(editavel)
+                          }}
+                          className="text-green-600 hover:text-green-800"
+                          aria-label={`Salvar edição do funcionário ${func.nome}`}
+                          title="Salvar"
+                        >
+                          <FiCheck />
+                        </button>
+                        <button
+                          onClick={cancelarEdicaoIndividual}
+                          className="text-red-600 hover:text-red-800"
+                          aria-label={`Cancelar edição do funcionário ${func.nome}`}
+                          title="Cancelar"
+                        >
+                          <FiX />
+                        </button>
+                      </>
+                    )}
+
+                    {/* Se não estiver editando e não estiver em modo edição múltipla */}
+                    {!modoEdicaoMultipla && !estaEditando && (
+                      <>
+                        <button
+                          onClick={() => onEdit(func)}
                           className="text-blue-600 hover:text-blue-800"
                           title="Editar"
+                          aria-label={`Editar funcionário ${func.nome}`}
                         >
                           <FiEdit />
                         </button>
                         <button
-                          onClick={() => onDelete(defeito.id)}
+                          onClick={() => onDelete(func.id)}
                           className="text-red-600 hover:text-red-800"
                           title="Excluir"
+                          aria-label={`Excluir funcionário ${func.nome}`}
                         >
                           <FiTrash2 />
                         </button>
                       </>
                     )}
                   </td>
+
+                  {/* Checkbox */}
+                  <td className="px-4 py-2 text-center">
+                    <input
+                      type="checkbox"
+                      checked={selecionados.includes(func.id)}
+                      onChange={() => toggleSelecionado(func.id)}
+                      className="accent-green-600 w-5 h-5"
+                      aria-label={`Selecionar funcionário ${func.nome}`}
+                      disabled={loading}
+                    />
+                  </td>
                 </tr>
-              );
+              )
             })
           )}
         </tbody>
       </table>
 
-      {/* Botões de ações em massa */}
+      {/* Ações em massa */}
       {modoEdicaoMultipla && (
         <div className="flex gap-4 mt-4">
           <button
-            onClick={handleExcluirEmMassa}
-            className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-800"
+            onClick={() => {
+              const editados = editaveis.filter(f => selecionados.includes(f.id))
+
+              // Validação básica para todos editados
+              let validos = true
+              const errosLocais: { [id: number]: { nome?: string; cargo?: string } } = {}
+              for (const func of editados) {
+                const errosFunc = validarFuncionario(func)
+                if (Object.keys(errosFunc).length > 0) {
+                  errosLocais[func.id] = errosFunc
+                  validos = false
+                }
+              }
+
+              if (!validos) {
+                setErros(errosLocais)
+                alert('Por favor, corrija os erros nos campos destacados antes de salvar.')
+                return
+              }
+              setErros({})
+              onEditarEmMassa(editados)
+            }}
+            className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+            aria-label="Salvar edição múltipla"
           >
-            Excluir Selecionados
+            Salvar edição múltipla
           </button>
+
           <button
-            onClick={handleEditarEmMassa}
-            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-800"
+            onClick={() => {
+              setErros({})
+              onCancelarEdicao()
+            }}
+            className="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500"
+            aria-label="Cancelar edição múltipla"
           >
-            Editar Selecionados
+            Cancelar
           </button>
         </div>
       )}
     </div>
-  );
+  )
 }

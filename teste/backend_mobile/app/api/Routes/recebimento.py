@@ -8,6 +8,10 @@ from app.Schema.recebimento_schema import LinksFotos, RecebimentoSchema
 from typing import List
 import re
 from app.api.models.checklist_recebimento import ChecklistRecebimento
+from app.api.models.notafiscal import NotaFiscal
+
+from datetime import datetime
+
 
 router = APIRouter()
 
@@ -18,6 +22,29 @@ async def salvar_links_fotos(link_data: LinksFotos, db: AsyncSession = Depends(g
         raise HTTPException(status_code=400, detail="Número da ordem deve ser um inteiro válido.")
 
     numero_ordem_int = int(link_data.numero_ordem)
+
+    # --- NOVO: trata nota fiscal ---
+    nota_fiscal = None
+    if link_data.nfRemessa:
+        result_nf = await db.execute(
+            select(NotaFiscal).filter(NotaFiscal.numero_nota_fiscal == link_data.nfRemessa)
+        )
+        nota_fiscal = result_nf.scalars().first()
+
+        if not nota_fiscal:
+            # Converte string "17/06/2025" para datetime.date
+            data_emissao = datetime.strptime(link_data.dataRecebimento, "%d/%m/%Y").date()
+
+            nota_fiscal = NotaFiscal(
+            numero_nota_fiscal=link_data.nfRemessa,
+                data_emissao=data_emissao
+
+            )
+            db.add(nota_fiscal)
+            await db.flush()  # gera o ID para usar abaixo
+
+    nota_fiscal_id = nota_fiscal.id if nota_fiscal else None
+    # --- FIM do bloco nota fiscal --
 
     if numero_ordem_int == 0:
         # Se vier zero do front, cria direto um novo registro sem consultar o banco
@@ -32,6 +59,7 @@ async def salvar_links_fotos(link_data: LinksFotos, db: AsyncSession = Depends(g
             tipo_ordem=link_data.tipoOrdem,
             os_formatado=link_data.os_formatado,
             queixa_cliente=link_data.queixa_cliente,
+            nota_fiscal_id=nota_fiscal_id,
         )
         db.add(recebimento)
         await db.flush()
@@ -56,6 +84,7 @@ async def salvar_links_fotos(link_data: LinksFotos, db: AsyncSession = Depends(g
                 tipo_ordem=link_data.tipoOrdem,
                 os_formatado=link_data.os_formatado,
                 queixa_cliente=link_data.queixa_cliente,
+                nota_fiscal_id=nota_fiscal_id,
             )
             db.add(recebimento)
             await db.flush()
@@ -74,6 +103,7 @@ async def salvar_links_fotos(link_data: LinksFotos, db: AsyncSession = Depends(g
             recebimento.tipo_ordem = link_data.tipoOrdem
             recebimento.os_formatado = link_data.os_formatado
             recebimento.queixa_cliente=link_data.queixa_cliente
+            recebimento.nota_fiscal_id = nota_fiscal_id
 
     # Verifica checklist (se não existir, cria)
     result_checklist = await db.execute(select(ChecklistRecebimento).filter(ChecklistRecebimento.recebimento_id == recebimento.id))

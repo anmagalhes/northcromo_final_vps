@@ -1,26 +1,22 @@
-// src/components/CustomTable.tsx
-"use client";
-
 import React from "react";
 import { ReactTabulator } from "react-tabulator";
-import "react-tabulator/lib/styles.css"; // estilos padrões do Tabulator
-import "tabulator-tables/dist/css/tabulator.min.css"; // estilos padrões Tabulator
+import { CellComponent } from "tabulator-tables";  // importando tipo correto
+import "react-tabulator/lib/styles.css";
+import "tabulator-tables/dist/css/tabulator.min.css";
 
-// Dados de exemplo
 const data = [
   { id: 1, name: "João", age: 29, active: true },
   { id: 2, name: "Maria", age: 34, active: false },
   { id: 3, name: "Pedro", age: 42, active: true },
 ];
 
-// Colunas da tabela
 const columns = [
   {
     formatter: "rowSelection",
     titleFormatter: "rowSelection",
     hozAlign: "center",
     headerSort: false,
-    cellClick: function (e: any, cell: any) {
+    cellClick: function (e: MouseEvent, cell: CellComponent) {
       cell.getRow().toggleSelect();
     },
     width: 50,
@@ -48,7 +44,6 @@ export default function CustomTable() {
           selectable: true,
           movableColumns: true,
           resizableRows: true,
-          // mais opções aqui se precisar
         }}
         className="tabulator"
       />

@@ -3,6 +3,7 @@ from typing import List
 from typing import Optional
 from pydantic import HttpUrl
 from enum import Enum
+from datetime import datetime
 
 class TipoOrdemEnum(str, Enum):
     NOVO = "NOVO"
@@ -12,10 +13,6 @@ class TipoOrdemEnum(str, Enum):
 from pydantic import BaseModel, Field, validator
 from typing import Optional
 from enum import Enum
-
-class TipoOrdemEnum(str, Enum):
-    NOVO = "NOVO"
-    NAO = "NAO"
 
 class LinksFotos(BaseModel):
     numero_ordem: str
@@ -32,6 +29,17 @@ class LinksFotos(BaseModel):
     queixa_cliente: Optional[str]
     dataRecebimento: Optional[str]
     horaRecebimento: Optional[str]
+
+    # Campo para nota fiscal (opcional)
+    nota_fiscal_id: Optional[int] = Field(
+        default=None,
+        description="ID da nota fiscal associada"
+    )
+    nota_fiscal_numero: Optional[str] = Field(
+        default=None,
+        description="Número da nota fiscal (apenas para exibição)"
+    )
+
 
     @validator(
         "cliente", "referencia", "nfRemessa", "queixa_cliente", "dataRecebimento", "horaRecebimento",
@@ -77,6 +85,17 @@ class RecebimentoSchema(BaseModel):
     tipoOrdem: Optional[TipoOrdemEnum]
     queixa_cliente: Optional[str]
 
+    # Campo para nota fiscal (opcional)
+    nota_fiscal_id: Optional[int] = Field(
+        default=None,
+        description="ID da nota fiscal associada"
+    )
+    numero_nota_fiscal: Optional[str] = Field(
+        default=None,
+        description="Número da nota fiscal (apenas para exibição)"
+    )
+
+
     @validator("tipoOrdem", pre=True, always=True)
     def tipo_ordem_normalize(cls, v):
         if v is None or v == "":
@@ -86,7 +105,33 @@ class RecebimentoSchema(BaseModel):
             return TipoOrdemEnum.NOVO
         elif val in ["NAO", "NÃO", "ANTIGO"]:
             return TipoOrdemEnum.NAO
-        elif val == "NOVO":  # <-- esse bloco nunca será alcançado porque já foi testado antes
-            return TipoOrdemEnum.SIM
         else:
             raise ValueError(f"tipoOrdem inválido: {v}. Use 'NOVO', 'NAO' ou 'NOVO'")
+
+class RecebimentoRead(BaseModel):
+    id: int
+    numero_ordem: Optional[int]
+    os_formatado: str
+    cliente: Optional[str]
+    quantidade: Optional[int] = Field(default=1)
+    tipoOrdem: Optional[TipoOrdemEnum] = None
+    queixa_cliente: Optional[str] = None
+    data_recebimento: Optional[datetime] = None
+    hora_recebimento: Optional[str] = None
+    referencia: Optional[str] = None
+    nfRemessa: Optional[str] = None
+
+    nota_fiscal_id: Optional[int] = None
+    numero_nota_fiscal: Optional[str] = None
+
+    # Imagens
+    img1_ordem: Optional[str] = None
+    img2_ordem: Optional[str] = None
+    img3_ordem: Optional[str] = None
+    img4_ordem: Optional[str] = None
+
+    # LinksFotos agrupado (opcional)
+    fotos: Optional[LinksFotos] = None
+
+    class Config:
+        from_attributes = True

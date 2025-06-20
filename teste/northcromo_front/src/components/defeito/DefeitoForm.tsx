@@ -1,7 +1,18 @@
-// src/app/components/componente/ComponenteFormComModal.tsx
+// src/app/components/defeito/DefeitoForm.tsx
 
 const [erroNome, setErroNome] = useState<string | null>(null)
 const [erroCategoria, setErroCategoria] = useState<string | null>(null)
+
+// Estado para data/hora do defeito (com horário de São Paulo)
+const [dataDefeito, setDataDefeito] = useState<string>(() => {
+  const now = new Date();
+  const utc = now.getTime() + now.getTimezoneOffset() * 60000; // UTC time em ms
+  const spOffset = -3 * 60 * 60000; // São Paulo UTC-3 em ms
+  const spDate = new Date(utc + spOffset);
+
+  // Formato aceito pelo input datetime-local: "YYYY-MM-DDTHH:mm"
+  return spDate.toISOString().slice(0, 16);
+});
 
 const handleSubmit = (e: React.FormEvent) => {
   e.preventDefault()
@@ -16,7 +27,7 @@ const handleSubmit = (e: React.FormEvent) => {
     setErroCategoria('Selecione uma categoria')
     return
   }
-  onSave(nome.toUpperCase(), selectedCategoriaId)
+  onSave(nome.toUpperCase(), selectedCategoriaId, dataDefeito)
 }
 
 return (
@@ -38,6 +49,12 @@ return (
       />
       {erroNome && <p className="text-red-500">{erroNome}</p>}
 
+      <input
+        type="datetime-local"
+        value={dataDefeito}
+        onChange={(e) => setDataDefeito(e.target.value)}
+        className="sm:col-span-3 w-full p-2 border border-gray-300 rounded-md"
+      />
       <input
         type="text"
         value={selectedCategoriaNome}
@@ -132,3 +149,5 @@ return (
     )}
   </>
 )
+
+

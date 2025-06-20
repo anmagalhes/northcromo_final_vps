@@ -26,8 +26,9 @@ class DefeitoBase(BaseModel):
                 raise ValueError("data deve ser uma string ISO 8601 válida")
         return v
 
-    class Config:
-        orm_mode = True
+    model_config = {
+        "from_attributes": True
+    }
 
 
 class DefeitoCreate(DefeitoBase):
@@ -40,7 +41,8 @@ class DefeitoRead(DefeitoBase):
     componente_id: int
     componente_nome: Optional[str]  # <- Adicionado
 
-    class Config:
-        orm_mode = True
+    model_config = {
+        "from_attributes": True
+    }
 
 

@@ -1,68 +1,92 @@
+from fastapi import APIRouter, HTTPException, Depends, WebSocket, WebSocketDisconnect
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.future import select
 from typing import List
-from fastapi import APIRouter, HTTPException
-import pygsheets
-from app.Schema.produto_tarefa import Produto_tarefaPublic, Produto_tarefaList
-from pydantic import BaseModel
+
+from app.database.session import get_async_session
+from app.api.models.produto_tarefa import Produto_Tarefa
+from app.Schema.produto_tarefa_schema import (
+    Produto_TaferaCreate,
+    Produto_TaferaRead,
+    Produto_TaferaUpdate,
+)
 
 
-# Função que busca produtos do Google Sheets utilizando pygsheets
-def get_produtos_from_sheets():
-    # Autenticação com a Google Sheets API usando o Service Account
-    gc = pygsheets.authorize(
-        service_file="path_to_your_credentials.json"
-    )  # Substitua pelo caminho de suas credenciais
+router = APIRouter()
 
-    # ID da planilha, extraído da URL que você forneceu
-    sheet_id = "1ZcG0fYEEE80rTuEpM1dzP_bvI3CX1Jg2CfrhkWVzuJE"  # Substitua pelo ID real da sua planilha
+class ConnectionManager:
+    def __init__(self):
+        self.active_connections: List[WebSocket] = []
 
-    try:
-        # Abra a planilha usando o ID
-        sheet = gc.open_by_key(sheet_id).worksheet(
-            "Produto"
-        )  # 'Produto' é o nome da aba/worksheet
-        rows = sheet.get_all_records()  # Obtém todos os registros (linhas) da planilha
+    async def connect(self, websocket: WebSocket):
+        await websocket.accept()
+        self.active_connections.append(websocket)
 
-        # Convertendo os dados para o formato que o modelo espera
-        produtos = [{"codigo": str(row["Código"]), "nome": row["Nome"]} for row in rows]
+    def disconnect(self, websocket: WebSocket):
+        self.active_connections.remove(websocket)
 
-        return produtos
+    async def broadcast(self, message: str):
+        for connection in self.active_connections:
+            await connection.send_text(message)
 
-    except Exception as e:
-        print(f"Erro ao acessar a planilha: {e}")
-        raise HTTPException(
-            status_code=500, detail="Erro ao acessar a planilha do Google Sheets"
-        )
+manager = ConnectionManager()
 
-
-# Criação do router para produtos
-router = APIRouter(prefix="/produto", tags=["produtos"])
-
-
-# Rota para listar todos os produtos
-@router.get("/produtos", response_model=Produto_tarefaList)
-async def get_produtos(offset: int = 0, limit: int = 10):
-    produtos = get_produtos_from_sheets()
-
-    # Paginação: aplica offset e limit
-    produtos_paginados = produtos[offset : offset + limit]
-
-    return Produto_tarefaList(
-        produto_tarefas=[
-            Produto_tarefaPublic(id=i + 1, name=p["nome"])
-            for i, p in enumerate(produtos_paginados)
-        ],
-        offset=offset,
-        limit=limit,
+@router.post("/produto_tarefa", response_model=Produto_TaferaRead)
+async def criar_produto_tarefa(p_data: Produto_TaferaCreate, db: AsyncSession = Depends(get_async_session)):
+    novo = Produto_Tarefa(
+        produto_taf_nome=p_data.produto_taf_nome,
+        data_execucao=p_data.data_execucao
     )
+    db.add(novo)
+    await db.commit()
+    await db.refresh(novo)
+    await manager.broadcast("update")
+    return novo
 
+@router.get("/produto_tarefa", response_model=List[Produto_TaferaRead])
+async def listar(db: AsyncSession = Depends(get_async_session)):
+    result = await db.execute(select(Produto_Tarefa))
+    return result.scalars().all()
 
-# Rota para buscar um produto específico pelo código
-@router.get("/produto/{codigo}", response_model=Produto_tarefaPublic)
-async def get_produto(codigo: str):
-    produtos = get_produtos_from_sheets()
-    produto = next((p for p in produtos if p["codigo"] == codigo), None)
+@router.get("/produto_tarefa/{p_id}", response_model=Produto_TaferaRead)
+async def buscar(p_id: int, db: AsyncSession = Depends(get_async_session)):
+    result = await db.execute(select(Produto_Tarefa).where(Produto_Tarefa.id == p_id))
+    produto = result.scalars().first()
+    if not produto:
+        raise HTTPException(status_code=404, detail="Produto tarefa não encontrado")
+    return produto
 
-    if produto is None:
-        raise HTTPException(status_code=404, detail="Produto não encontrado")
+@router.put("/produto_tarefa/{p_id}", response_model=Produto_TaferaRead)
+async def atualizar(p_id: int, p_data: Produto_TaferaUpdate, db: AsyncSession = Depends(get_async_session)):
+    result = await db.execute(select(Produto_Tarefa).where(Produto_Tarefa.id == p_id))
+    produto = result.scalars().first()
+    if not produto:
+        raise HTTPException(status_code=404, detail="Produto tarefa não encontrado")
 
-    return Produto_tarefaPublic(id=1, name=produto["nome"])
+    produto.produto_taf_nome = p_data.produto_taf_nome
+    produto.data_execucao = p_data.data_execucao
+
+    await db.commit()
+    await db.refresh(produto)
+    await manager.broadcast("update")
+    return produto
+
+@router.delete("/produto_tarefa/{p_id}", status_code=204)
+async def deletar(p_id: int, db: AsyncSession = Depends(get_async_session)):
+    result = await db.execute(select(Produto_Tarefa).where(Produto_Tarefa.id == p_id))
+    produto = result.scalars().first()
+    if not produto:
+        raise HTTPException(status_code=404, detail="Produto tarefa não encontrado")
+    await db.delete(produto)
+    await db.commit()
+    await manager.broadcast("update")
+    return
+
+@router.websocket("/ws/produto_tarefa")
+async def websocket_endpoint(websocket: WebSocket):
+    await manager.connect(websocket)
+    try:
+        while True:
+            await websocket.receive_text()
+    except WebSocketDisconnect:
+        manager.disconnect(websocket)

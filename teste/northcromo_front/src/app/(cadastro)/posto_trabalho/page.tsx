@@ -1,129 +1,143 @@
-// src/app/posto_trabalho/page.tsx
 'use client';
 
-import React, { useState, useEffect } from 'react'
-import PostoTrabalhoForm from '@/components/posto_trabalho/Posto_TrabalhoForm'
-import PostoTrabalhoTable from '@/components/posto_trabalho/Posto_TrabalhoTable'
+import React, { useState, useEffect } from 'react';
+import PostoTrabalhoForm from '@/components/posto_trabalho/Posto_TrabalhoForm';
+import PostoTrabalhoTable from '@/components/posto_trabalho/Posto_TrabalhoTable';
 
 interface PostoTrabalhoItem {
-  id: number
-  posto_trabalho_nome: string
-  data_execucao: string
+  id: number;
+  posto_trabalho_nome: string;
+  data_execucao: string;
 }
 
 export default function PostoTrabalhoPage() {
-  const baseURL = 'http://localhost:8000/api'
+  const baseURL = 'http://localhost:8000/api';
 
-  // Aqui você precisaria trocar para seu hook ou fetch dos postos trabalho
-  const [listaPostos, setListaPostos] = useState<PostoTrabalhoItem[]>([])
-  const [loading, setLoading] = useState(true)
+  const [listaPostos, setListaPostos] = useState<PostoTrabalhoItem[]>([]);
+  const [loading, setLoading] = useState(true);
 
   // Estados de edição
-  const [idEditar, setIdEditar] = useState<number | null>(null)
-  const [nomeEditar, setNomeEditar] = useState('')
-  const [selecionados, setSelecionados] = useState<number[]>([])
-  const [modoEdicaoMultipla, setModoEdicaoMultipla] = useState(false)
+  const [idEditar, setIdEditar] = useState<number | null>(null);
+  const [nomeEditar, setNomeEditar] = useState('');
+  const [selecionados, setSelecionados] = useState<number[]>([]);
+  const [modoEdicaoMultipla, setModoEdicaoMultipla] = useState(false);
   const [editaveis, setEditaveis] = useState<PostoTrabalhoItem[]>([])
 
   // Carrega lista de postos
   useEffect(() => {
     async function fetchPostos() {
-      setLoading(true)
+      setLoading(true);
       try {
-        const res = await fetch(`${baseURL}/posto_trabalho`)
-        const data = await res.json()
-        setListaPostos(data)
+        const res = await fetch(`${baseURL}/posto_trabalho`);
+        const data = await res.json();
+
+        // Verificar se a resposta é um array
+        if (Array.isArray(data)) {
+          setListaPostos(data);
+        } else {
+          // Se não for um array, normaliza para um array vazio ou lida com a estrutura de resposta
+          console.error('Resposta da API não é um array:', data);
+          setListaPostos([]); // Define um array vazio
+        }
       } catch (e) {
-        alert('Erro ao carregar postos de trabalho')
+        alert('Erro ao carregar postos de trabalho');
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
     }
-    fetchPostos()
-  }, [])
+    fetchPostos();
+  }, []);
 
   // Sincroniza itens editáveis para edição múltipla
   useEffect(() => {
     if (modoEdicaoMultipla) {
       const selecionadosEditaveis = listaPostos.filter(p =>
         selecionados.includes(p.id)
-      )
-      setEditaveis(selecionadosEditaveis)
+      );
+      setEditaveis(selecionadosEditaveis);
+    } else {
+      setEditaveis([]);  // Limpa quando sai do modo de edição múltipla
     }
-  }, [modoEdicaoMultipla, selecionados, listaPostos])
+  }, [modoEdicaoMultipla, selecionados, listaPostos]);
 
   // Salvar novo ou editar existente
   const salvarPosto = async (nome: string) => {
     const corpo = {
       posto_trabalho_nome: nome,
       data_execucao: new Date().toISOString(),
-    }
+    };
 
     try {
-      const metodo = idEditar ? 'PUT' : 'POST'
+      const metodo = idEditar ? 'PUT' : 'POST';
       const url = idEditar
         ? `${baseURL}/posto_trabalho/${idEditar}`
-        : `${baseURL}/posto_trabalho`
+        : `${baseURL}/posto_trabalho`;
 
       const res = await fetch(url, {
         method: metodo,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(corpo),
-      })
+      });
 
-      const data = await res.json()
+      const data = await res.json();
 
       if (res.ok) {
-        alert(idEditar ? 'Posto atualizado!' : 'Posto adicionado!')
-        setIdEditar(null)
-        setNomeEditar('')
+        alert(idEditar ? 'Posto atualizado!' : 'Posto adicionado!');
+        setIdEditar(null);
+        setNomeEditar('');
+
         // Recarregar lista após salvar
-        const res2 = await fetch(`${baseURL}/posto_trabalho`)
-        const updatedList = await res2.json()
-        setListaPostos(updatedList)
+        const res2 = await fetch(`${baseURL}/posto_trabalho`);
+        const updatedList = await res2.json();
+        // Verifica e normaliza resposta
+        if (Array.isArray(updatedList)) {
+          setListaPostos(updatedList);
+        } else {
+          console.error('Erro ao atualizar a lista, a resposta não é um array:', updatedList);
+          setListaPostos([]); // Normaliza para um array vazio
+        }
       } else {
-        alert(data.detail || 'Erro ao salvar.')
+        alert(data.detail || 'Erro ao salvar.');
       }
     } catch {
-      alert('Erro de conexão.')
+      alert('Erro de conexão.');
     }
-  }
+  };
 
   // Excluir um posto
   const deletarPosto = async (id: number) => {
-    if (!confirm('Deseja realmente excluir este posto de trabalho?')) return
+    if (!confirm('Deseja realmente excluir este posto de trabalho?')) return;
 
     try {
-      await fetch(`${baseURL}/posto_trabalho/${id}`, { method: 'DELETE' })
-      alert('Posto excluído.')
-      setSelecionados(prev => prev.filter(x => x !== id))
-      setListaPostos(prev => prev.filter(p => p.id !== id))
+      await fetch(`${baseURL}/posto_trabalho/${id}`, { method: 'DELETE' });
+      alert('Posto excluído.');
+      setSelecionados(prev => prev.filter(x => x !== id));
+      setListaPostos(prev => prev.filter(p => p.id !== id));
     } catch {
-      alert('Erro ao excluir.')
+      alert('Erro ao excluir.');
     }
-  }
+  };
 
   // Excluir selecionados
   const deletarSelecionados = async () => {
     if (selecionados.length === 0) {
-      alert('Nenhum posto selecionado.')
-      return
+      alert('Nenhum posto selecionado.');
+      return;
     }
 
-    if (!confirm(`Deseja excluir ${selecionados.length} posto(s)?`)) return
+    if (!confirm(`Deseja excluir ${selecionados.length} posto(s)?`)) return;
 
     try {
       for (const id of selecionados) {
-        await fetch(`${baseURL}/posto_trabalho/${id}`, { method: 'DELETE' })
+        await fetch(`${baseURL}/posto_trabalho/${id}`, { method: 'DELETE' });
       }
-      alert('Postos selecionados excluídos com sucesso.')
-      setSelecionados([])
-      setListaPostos(prev => prev.filter(p => !selecionados.includes(p.id)))
+      alert('Postos selecionados excluídos com sucesso.');
+      setSelecionados([]);
+      setListaPostos(prev => prev.filter(p => !selecionados.includes(p.id)));
     } catch {
-      alert('Erro ao excluir postos.')
+      alert('Erro ao excluir postos.');
     }
-  }
-
+  };
 
   // Atualizar múltiplos em lote
   const atualizarEmLote = async () => {
@@ -133,69 +147,53 @@ export default function PostoTrabalhoPage() {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(item),
-        })
+        });
       }
-      alert('Postos atualizados com sucesso.')
-      setModoEdicaoMultipla(false)
-      setSelecionados([])
-      setEditaveis([])
+      alert('Postos atualizados com sucesso.');
+      setModoEdicaoMultipla(false);
+      setSelecionados([]);
+      setEditaveis([]);
 
       // Recarregar lista
-      const res2 = await fetch(`${baseURL}/posto_trabalho`)
-      const updatedList = await res2.json()
-      setListaPostos(updatedList)
+      const res2 = await fetch(`${baseURL}/posto_trabalho`);
+      const updatedList = await res2.json();
+      // Verifica e normaliza resposta
+      if (Array.isArray(updatedList)) {
+        setListaPostos(updatedList);
+      } else {
+        console.error('Erro ao atualizar a lista, a resposta não é um array:', updatedList);
+        setListaPostos([]); // Normaliza para um array vazio
+      }
     } catch {
-      alert('Erro ao atualizar postos.')
+      alert('Erro ao atualizar postos.');
     }
-  }
+  };
 
   // Começar edição de um posto
   const editarPosto = (item: PostoTrabalhoItem) => {
-    setIdEditar(item.id)
-    setNomeEditar(item.posto_trabalho_nome)
-  }
+    setIdEditar(item.id);
+    setNomeEditar(item.posto_trabalho_nome);
+  };
 
   // Cancelar edição
   const cancelarEdicao = () => {
-    setIdEditar(null)
-    setNomeEditar('')
-  }
+    setIdEditar(null);
+    setNomeEditar('');
+  };
 
   // Alternar seleção
   const toggleSelecionado = (id: number) => {
     setSelecionados(prev =>
       prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]
-    )
-  }
+    );
+  };
 
   // Selecionar todos ou limpar seleção
   const toggleSelecionarTodos = () => {
     if (selecionados.length === listaPostos.length) {
-      setSelecionados([])
+      setSelecionados([]);
     } else {
-      setSelecionados(listaPostos.map(item => item.id))
-    }
-  }
-
-  const salvarEdicao = async (itemEditado: PostoTrabalhoItem) => {
-    try {
-      const res = await fetch(`${baseURL}/posto_trabalho/${itemEditado.id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(itemEditado),
-      });
-      if (!res.ok) {
-        const data = await res.json();
-        alert(data.detail || 'Erro ao salvar edição.');
-      } else {
-        alert('Posto atualizado com sucesso.');
-        // Atualiza localmente a lista
-        setListaPostos(prev =>
-          prev.map(p => (p.id === itemEditado.id ? itemEditado : p))
-        );
-      }
-    } catch {
-      alert('Erro de conexão ao salvar edição.');
+      setSelecionados(listaPostos.map(item => item.id));
     }
   };
 
@@ -237,19 +235,8 @@ export default function PostoTrabalhoPage() {
           selecionados={selecionados}
           toggleSelecionado={toggleSelecionado}
           toggleSelecionarTodos={toggleSelecionarTodos}
-          todosSelecionados={selecionados.length === listaPostos.length && listaPostos.length > 0}
-          idEditar={idEditar}
-          modoEdicaoMultipla={modoEdicaoMultipla}
-          editaveis={editaveis}
-          setEditaveis={setEditaveis}
-          onSalvarMultiplos={atualizarEmLote} // ✅ salvar em lote
-          onCancelarMultiplos={() => {
-            setModoEdicaoMultipla(false)
-            setEditaveis([])
-          }}
-          onSalvarEdicao={salvarEdicao} // ✅ salvar item individual
         />
       </div>
     </div>
-  )
+  );
 }

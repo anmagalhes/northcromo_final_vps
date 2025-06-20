@@ -26,9 +26,12 @@ const menuItems: MenuItem[] = [
     icon: <FiHome />,
     subItems: [
       { label: "Usuario", href: "/usuario" },
+      { label: "Grupo Responsável", href: "/funcao" },
+      { label: "Funcionario", href: "/funcionario" },
       { label: "Vendedor", href: "/vendedor" },
       { label: "Setor", href: "/setor" },
       { label: "Serviço", href: "/servico" },
+      { label: "Tarefas",href: "/produto_tarefa" },
       { label: "Produto", href: "/produto" },
       { label: "Posto Trabalho", href: "/posto_trabalho" },
       { label: "Operação", href: "/operacao" },

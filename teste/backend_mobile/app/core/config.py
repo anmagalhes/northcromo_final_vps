@@ -3,6 +3,7 @@ from pydantic import validator
 from dotenv import load_dotenv
 from typing import List, Optional
 import secrets
+from pydantic import Extra
 
 # Carrega as variáveis do arquivo .env
 load_dotenv()
@@ -25,10 +26,12 @@ class Settings(BaseSettings):
     MAINTENANCE_ALERT_DAYS: int = 7
     MAX_FILE_UPLOAD_SIZE_MB: int = 10
 
-    class Config:
-        env_file = ".env"
-        env_file_encoding = "utf-8"
-        case_sensitive = True
+    model_config = {
+    "env_file": ".env",
+    "env_file_encoding": "utf-8",
+    "case_sensitive": True,
+    "extra": "ignore"  # importante para ignorar variáveis extras no .env
+}
 
     @validator("ASYNC_DATABASE_URL", pre=True, always=True)
     def build_async_database_url(cls, v, values):
