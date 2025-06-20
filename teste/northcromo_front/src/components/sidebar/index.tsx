@@ -8,8 +8,11 @@ import {
   FiChevronDown,
   FiChevronRight,
   FiChevronLeft,
+  FiTool,
+  FiCode,
 } from "react-icons/fi";
 import Link from "next/link";
+import { AiOutlineFileSearch } from "react-icons/ai";
 
 // Tipagem dos itens do menu
 type MenuItem = {
@@ -40,6 +43,33 @@ const menuItems: MenuItem[] = [
     ],
   },
   { label: "Recebimento", href: "/recebimento", icon: <FiTruck /> },
+  {
+    label: "Desmontagem",
+    href: "/desmontagem",
+    icon: <FiTool />,
+    subItems: [
+      { label: "Checklist", href: "/checklist" },
+    ]
+  },
+    {
+    label: "Programação",
+    href: "/programacao",
+    icon: <FiCode />, // Ícone representando código/programação
+    subItems: [
+       { label: "Checklist", href: "/checklist" },
+     // { label: "Agenda", href: "/programacao/agenda" },
+      //{ label: "Ordens", href: "/programacao/ordens" },
+    ]
+  },
+    {
+      label: "Laudo Técnico",
+      href: "/laudo-tecnico",
+      icon: <AiOutlineFileSearch />,  // ou <AiOutlineFileSearch /> ou <MdAssignment />
+      subItems: [
+         { label: "Checklist", href: "/checklist" },
+      ]
+    },
+
   { label: "Configurações", href: "/configuracoes", icon: <FiSettings /> },
 ];
 
