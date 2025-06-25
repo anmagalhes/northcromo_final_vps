@@ -8,6 +8,14 @@
 
 #.\venv\Scripts\Activate.ps1
 
+# https://script.google.com/home/projects/1KWlVj9rIDzGOo0L3vTWtVsBFoEhhQvKFPcVHTcFC2fPIRaWtzdsVnwhf/edit
+
+# https://www.appsheet.com/template/AppDef?appName=tb_04OrdemServi%C3%A7os-269994888&appId=2a45e25a-6e42-4049-81af-bf20bd203e94&quickStart=False#Data.Columns.Recebimento%20Ordem%20Manuten%C3%A7%C3%A3o
+
+# https://docs.google.com/spreadsheets/d/15Jyo4qMmVK0JTSB95__JaVJveAOflbS1qR0qNOucEgI/edit?gid=1297636631#gid=1297636631
+
+#https://drive.google.com/drive/u/2/folders/1nDQxuDp9JmaBuHjW15fAovv2L6yLgz6i
+
 
 from app.api.models.base import Base  # Base declarativa
 

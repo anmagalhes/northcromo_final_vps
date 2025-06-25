@@ -45,8 +45,6 @@ from app.api.Routes.funcao import router as funcao_router
 from app.api.Routes.checklist_recebimento import router as checklist_recebimento_router
 
 
-
-
 # Definição do FastAPI
 app = FastAPI()
 
