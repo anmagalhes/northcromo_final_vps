@@ -1,5 +1,10 @@
 # app/api/models/__init__.py
 #python create_tables.py
+#python -m venv venv
+
+#pip install -r requirements.txt
+#pip freeze > requirements.txt
+
 
 #uvicorn app.main:app --reload
 
