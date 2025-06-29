@@ -1,21 +1,20 @@
 import { Tarefa } from '@/types/tarefas';
 import { Produto } from '@/types/produto';
 
-type InitialData = {
-  dataLancamento: string;
-  numeroControle: string;
-  clienteNome: string;
-};
-
 type NewTarefa = Omit<Tarefa, 'id'>;
 
-export const fetchInitialData = async (): Promise<InitialData> => {
+export const fetchInitialData = async (): Promise<Partial<Tarefa>> => {
   return new Promise((resolve) => {
     setTimeout(() => {
       resolve({
         dataLancamento: new Date().toISOString().split('T')[0],
         numeroControle: 'CTRL-001',
-        clienteNome: 'Cliente Exemplo',
+        clienteNome: 'João',
+        quantidade: 10,
+        codigoProduto: 'PRD001',
+        descricaoProduto: 'Produto A',
+        operacao: 'Montagem',
+        observacao: 'Urgente',
       });
     }, 500);
   });

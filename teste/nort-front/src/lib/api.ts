@@ -5,12 +5,18 @@ import { Produto } from '@/types/produto';
 // Funções simuladas - substitua por chamadas reais à sua API
 
 export const fetchInitialData = async (): Promise<Partial<Tarefa>> => {
-  return {
-    dataLancamento: new Date().toISOString().split('T')[0],
-    numeroControle: 'CTRL-001',
-    clienteNome: 'Cliente Exemplo',
-  };
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve({
+        dataLancamento: new Date().toISOString().split('T')[0],
+        numeroControle: 'CTRL-003',
+        clienteNome: 'Cliente Exemplo',
+      });
+    }, 500);
+  });
 };
+
+
 
 // Mock de produtos compatível com seu tipo Produto
 export const fetchProducts = async (): Promise<Produto[]> => {
@@ -85,3 +91,36 @@ export const saveTarefa = async (data: Omit<Tarefa, 'id'>): Promise<Tarefa> => {
 export const deleteTarefas = async (ids: number[]): Promise<void> => {
   console.log('Tarefas excluídas:', ids);
 };
+
+// Mock para buscar tarefas salvas (lista para a tabela)
+export const fetchSavedTarefas = async (): Promise<Tarefa[]> => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve([
+        {
+          id: 1,
+          dataLancamento: '2023-10-15',
+          numeroControle: 'CTRL-001',
+          clienteNome: 'Cliente Exemplo',
+          quantidade: 5,
+          codigoProduto: 'PROD-123',
+          descricaoProduto: 'Produto de exemplo',
+          operacao: 'OP-456',
+          observacao: 'Observação de teste',
+        },
+        {
+          id: 2,
+          dataLancamento: '2023-10-16',
+          numeroControle: 'CTRL-002',
+          clienteNome: 'Outro Cliente',
+          quantidade: 3,
+          codigoProduto: 'PROD-456',
+          descricaoProduto: 'Outro produto',
+          operacao: 'OP-789',
+          observacao: 'Mais uma observação',
+        },
+      ]);
+    }, 500);
+  });
+};
+

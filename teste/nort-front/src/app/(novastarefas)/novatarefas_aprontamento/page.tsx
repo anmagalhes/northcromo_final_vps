@@ -12,13 +12,16 @@ export default function SelecionarTarefaPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [tarefaSelecionada, setTarefaSelecionada] = useState<Tarefa | null>(null);
   const router = useRouter();
+  const [initialData, setInitialData] = useState<Partial<Tarefa>>({});
+
+
 
   useEffect(() => {
     async function loadTarefas() {
       try {
         setIsLoading(true);
         const saved = await fetchInitialData();
-        setTarefas(saved);  // Aqui sem .tarefas porque é array direto
+        setInitialData(saved);  // Aqui sem .tarefas porque é array direto
       } catch (error) {
         console.error(error);
         toast.error('Erro ao carregar tarefas');
