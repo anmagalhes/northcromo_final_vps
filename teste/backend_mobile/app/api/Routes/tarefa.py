@@ -13,6 +13,7 @@ from app.Schema.tarefa_schema import (
     TarefaCreate,
     TarefaRead,
     TarefaUpdate,
+    PaginatedTarefas,
 )
 from app.api.models.enums import StatusTarefaEnum
 
@@ -68,7 +69,7 @@ async def criar_tarefa(tarefa_data: TarefaCreate, db: AsyncSession = Depends(get
         await db.rollback()
         raise HTTPException(status_code=500, detail=f"Erro ao criar tarefa: {str(e)}")
 
-@router.get("/tarefas", response_model=List[TarefaRead])
+@router.get("/tarefas", response_model=PaginatedTarefas)
 async def listar_tarefas(
     page: int = Query(1, ge=1),
     limit: int = Query(20, ge=1),
@@ -90,7 +91,14 @@ async def listar_tarefas(
         result = await db.execute(query)
         tarefas = result.scalars().all()
 
-        return tarefas
+        return {
+            "data": tarefas,
+            "page": page,
+            "limit": limit,
+            "total": total,
+            "pages": (total // limit) + int(total % limit > 0)
+        }
+
     except SQLAlchemyError as e:
         raise HTTPException(status_code=500, detail=f"Erro ao listar tarefas: {str(e)}")
 
@@ -151,12 +159,18 @@ async def deletar_tarefa(tarefa_id: int, db: AsyncSession = Depends(get_async_se
     except SQLAlchemyError as e:
         await db.rollback()
         raise HTTPException(status_code=500, detail=f"Erro ao deletar tarefa: {str(e)}")
-
 @router.websocket("/ws/tarefa")
 async def websocket_endpoint(websocket: WebSocket):
     await manager.connect(websocket)
+    print(f"Conexão WS aberta: {websocket.client}")
     try:
         while True:
-            await websocket.receive_text()  # mantém conexão ativa, pode expandir para receber comandos
+            # Aqui você pode enviar ping, ou só esperar com timeout
+            try:
+                await asyncio.wait_for(websocket.receive_text(), timeout=60)
+            except asyncio.TimeoutError:
+                # opcional: enviar ping para manter vivo
+                await websocket.send_text("ping")
     except WebSocketDisconnect:
         manager.disconnect(websocket)
+        print(f"Conexão WS fechada: {websocket.client}")

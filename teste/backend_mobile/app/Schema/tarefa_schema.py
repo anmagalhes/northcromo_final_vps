@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Optional
+from typing import Optional,  List
 from pydantic import BaseModel
 from app.api.models.enums import StatusTarefaEnum
 from app.Schema.recebimento_schema import RecebimentoRead  # Você precisa garantir que existe
@@ -44,3 +44,10 @@ class TarefaRead(TarefaBase):
 
     class Config:
         orm_mode = True
+
+class PaginatedTarefas(BaseModel):
+    data: List[TarefaRead]
+    page: int
+    limit: int
+    total: int
+    pages: int

@@ -9,9 +9,10 @@ from typing import List
 import re
 from app.api.models.checklist_recebimento import ChecklistRecebimento
 from app.api.models.notafiscal import NotaFiscal
-
+from app.api.models.tarefa import Tarefa
 from datetime import datetime
 
+from app.api.models.enums import StatusTarefaEnum
 
 router = APIRouter()
 
@@ -92,6 +93,9 @@ async def salvar_links_fotos(link_data: LinksFotos, db: AsyncSession = Depends(g
             checklist = ChecklistRecebimento(recebimento_id=recebimento.id)
             db.add(checklist)
 
+            tarefa = ChecklistRecebimento(recebimento_id=recebimento.id)
+            db.add(tarefa)
+
         else:
             # Atualiza recebimento existente
             recebimento.img1_ordem = link_data.foto1
@@ -112,9 +116,31 @@ async def salvar_links_fotos(link_data: LinksFotos, db: AsyncSession = Depends(g
         checklist = ChecklistRecebimento(recebimento_id=recebimento.id)
         db.add(checklist)
 
+    # 🚨 Criação da nova tarefa vinculada ao recebimento
+    result_tarefa = await db.execute(
+        select(Tarefa).filter(Tarefa.recebimento_id == recebimento.id)
+    )
+    tarefa = result_tarefa.scalars().first()
+    if not tarefa:
+        tarefa = Tarefa(
+            recebimento_id= recebimento.id,
+            data_rec_ordem= recebimento.data_recebimento,
+            qtde_servico=link_data.quantidade,
+            id_servico=0,
+            id_operacao=0,
+            desc_servico_produto="Tarefa gerada automaticamente",
+            status=StatusTarefaEnum.PENDENTE,
+            referencia_produto=None,
+            nota_interna=nota_fiscal_id,
+            data_checklist_ordem=datetime.now(),
+        )
+        db.add(tarefa)
+
+
     try:
         await db.commit()
         await db.refresh(recebimento)
+
         return {"success": True, "message": "Dados processados com sucesso!", "data": recebimento}
 
     except Exception as e:

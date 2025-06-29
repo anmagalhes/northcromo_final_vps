@@ -1,7 +1,7 @@
 from __future__ import annotations
 from datetime import datetime, date
 from typing import Optional, List
-from sqlalchemy import ForeignKey, Integer, String, DateTime, Text, Date, Enum
+from sqlalchemy import ForeignKey, Integer, String, DateTime, Text, Date, Enum, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.api.models.base import Base
 from app.api.models.enums import StatusTarefaEnum
@@ -24,7 +24,15 @@ class Tarefa(Base, TimestampMixin):
         ForeignKey("recebimentos.id", ondelete="CASCADE"),
         nullable=False, index=True
     )
-    data_rec_ordem: Mapped[datetime]   = mapped_column(DateTime(timezone=True), nullable=False)
+
+    data_rec_ordem: Mapped[datetime] = mapped_column(
+            DateTime(timezone=True),
+            default=utcnow,
+            nullable=False,
+            server_default=func.now(),
+            comment="Data e hora do recebimento automático"
+        )
+
     #id_cliente: Mapped[int]           = mapped_column(Integer, nullable=False)
     qtde_servico: Mapped[int]         = mapped_column(Integer, nullable=False)
     id_servico: Mapped[int]           = mapped_column(Integer, nullable=False)

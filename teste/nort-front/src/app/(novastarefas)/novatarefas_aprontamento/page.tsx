@@ -1,36 +1,25 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { toast } from 'react-hot-toast';
+
 import TabelaTarefas from '@/components/novas_tarefas/NovaTarefasUnicoTable';
 import { Tarefa } from '@/types/tarefas';
-import { fetchInitialData } from '@/utils/api';
-import { toast } from 'react-hot-toast';
-import { useRouter } from 'next/navigation';
+import useNovaTarefasWS from '@/hooks/useNovaTarefasWS';
 
 export default function SelecionarTarefaPage() {
-  const [tarefas, setTarefas] = useState<Tarefa[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
   const [tarefaSelecionada, setTarefaSelecionada] = useState<Tarefa | null>(null);
   const router = useRouter();
-  const [initialData, setInitialData] = useState<Partial<Tarefa>>({});
 
+  const {
+    tarefas,
+    isLoading,
+    isError,
+    refetch,
+  } = useNovaTarefasWS(); // hook com websocket e paginação
 
-
-  useEffect(() => {
-    async function loadTarefas() {
-      try {
-        setIsLoading(true);
-        const saved = await fetchInitialData();
-        setInitialData(saved);  // Aqui sem .tarefas porque é array direto
-      } catch (error) {
-        console.error(error);
-        toast.error('Erro ao carregar tarefas');
-      } finally {
-        setIsLoading(false);
-      }
-    }
-    loadTarefas();
-  }, []);
+  console.log('Dados recebidos do hook useNovaTarefasWS:', tarefas);
 
   const handleSelect = (tarefa: Tarefa) => {
     setTarefaSelecionada(tarefa);
@@ -55,9 +44,13 @@ export default function SelecionarTarefaPage() {
           </h1>
 
           {isLoading ? (
-            <div className="flex justify-center py-16" role="status" aria-live="polite" aria-label="Carregando tarefas">
+            <div className="flex justify-center py-16" role="status" aria-live="polite">
               <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-b-4 border-green-600"></div>
             </div>
+          ) : isError ? (
+            <div className="text-center text-red-600 py-10">
+              Erro ao carregar tarefas.
+              <button onClick={() => refetch()} className="ml-2 underline text-blue-600">Tentar novamente</button>            </div>
           ) : (
             <>
               <TabelaTarefas
@@ -79,11 +72,6 @@ export default function SelecionarTarefaPage() {
                       : 'bg-gray-400 cursor-not-allowed'
                   }`}
                   aria-disabled={!tarefaSelecionada}
-                  aria-label={
-                    tarefaSelecionada
-                      ? 'Incluir nova tarefa com dados selecionados'
-                      : 'Selecione uma tarefa para continuar'
-                  }
                 >
                   Incluir Nova Tarefa
                 </button>
