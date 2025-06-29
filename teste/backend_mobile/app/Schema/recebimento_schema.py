@@ -5,6 +5,8 @@ from pydantic import HttpUrl
 from enum import Enum
 from datetime import datetime
 
+
+#from app.Schema.cliente_schema import ClienteRead
 class TipoOrdemEnum(str, Enum):
     NOVO = "NOVO"
     NAO = "NAO"
@@ -132,6 +134,9 @@ class RecebimentoRead(BaseModel):
 
     # LinksFotos agrupado (opcional)
     fotos: Optional[LinksFotos] = None
+
+    # Relacionamento Cliente
+    #cliente: Optional[ClienteRead]
 
     class Config:
         from_attributes = True

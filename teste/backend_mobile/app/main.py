@@ -43,7 +43,7 @@ from app.api.Routes.produto import router as produto_router
 from app.api.Routes.funcionario import router as funcionario_router
 from app.api.Routes.funcao import router as funcao_router
 from app.api.Routes.checklist_recebimento import router as checklist_recebimento_router
-
+from app.api.Routes.tarefa import router as tarefa_router
 
 # Definição do FastAPI
 app = FastAPI()
@@ -89,6 +89,7 @@ app.include_router(produto_router, prefix="/api", tags=["Cadastro"])
 app.include_router(funcionario_router, prefix="/api", tags=["Cadastro"])
 app.include_router(funcao_router, prefix="/api", tags=["Cadastro"])
 app.include_router(checklist_recebimento_router, prefix="/api", tags=["Checklist Recebimento"])
+app.include_router(tarefa_router, prefix="/api", tags=["Nova Tarefas"])
 
 
 @app.on_event("startup")

@@ -12,6 +12,16 @@ const compat = new FlatCompat({
 const eslintConfig = [
   ...compat.extends("next/core-web-vitals", "next/typescript"),
 
+// Regras globais
+  {
+    rules: {
+      "@typescript-eslint/no-unused-vars": [
+        "warn",
+        { "argsIgnorePattern": "^_" }
+      ],
+    },
+  },
+
   // Override para permitir 'any' no arquivo FuncaoTable.tsx
   {
     files: ["src/components/funcao/FuncaoTable.tsx"],

@@ -1,3 +1,4 @@
+// src/hooks/useChecklistWS.ts
 'use client';
 
 import { useEffect } from 'react';

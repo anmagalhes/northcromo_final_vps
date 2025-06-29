@@ -42,9 +42,7 @@ from app.api.models.produto import Produto
 from app.api.models.funcionario import Funcionario
 from app.api.models.funcao import Funcao
 from app.api.models.notafiscal import NotaFiscal
-
-
-
+from app.api.models.tarefa import Tarefa
 
 
 # python create_tables.py
@@ -65,5 +63,6 @@ __all__ = [
     "ProdutoFornecedor",
     "Funcionario",
     "Funcao",
-    "NotaFiscal"
+    "NotaFiscal",
+    "Tarefa"
 ]

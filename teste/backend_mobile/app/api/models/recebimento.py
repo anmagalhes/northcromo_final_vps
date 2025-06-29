@@ -1,7 +1,7 @@
 #app/api/models/recebimento.py
 from __future__ import annotations
 from datetime import datetime, date
-from typing import Optional
+from typing import Optional, List
 
 from sqlalchemy import ForeignKey, Integer, String, DateTime, Text, Date, Enum, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -15,6 +15,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from app.api.models.checklist_recebimento import ChecklistRecebimento
     from app.api.models.notafiscal import NotaFiscal
+    from app.api.models.tarefa import Tarefa
 
 class Recebimento(Base, TimestampMixin):  # <-- usa Base do app.db.base
     __tablename__ = "recebimentos"
@@ -167,6 +168,11 @@ class Recebimento(Base, TimestampMixin):  # <-- usa Base do app.db.base
         comment="Quantidade associada"
     )
 
+    tarefas: Mapped[List["Tarefa"]] = relationship(
+        "Tarefa",
+        back_populates="recebimento",
+        cascade="all, delete-orphan"
+    )
 
      # Relacionamentos entre Recebimento
     # Relação com o checklist

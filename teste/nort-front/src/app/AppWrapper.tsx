@@ -24,8 +24,8 @@ export default function AppWrapper({ children }: { children: React.ReactNode }) 
         </div>
 
         <main
-          className={`flex-grow pt-0 px-2 min-w-0 ${
-            sidebarExpanded ? "sm:ml-20" : "sm:m15"
+           className={`flex-grow pt-0 px-2 min-w-0 overflow-x-auto ${
+            sidebarExpanded ? "sm:ml-20" : "sm:ml-5"
           }`}
         >
           {children}
