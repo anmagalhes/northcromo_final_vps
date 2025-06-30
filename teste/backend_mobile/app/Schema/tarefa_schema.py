@@ -40,8 +40,7 @@ class TarefaRead(TarefaBase):
     created_at: datetime
     updated_at: datetime
 
-   #recebimento: Optional[RecebimentoRead]  # <- Aqui você acessa o cliente
-
+    recebimento: Optional[RecebimentoRead]  # <- Aqui você acessa o cliente
     class Config:
         orm_mode = True
 

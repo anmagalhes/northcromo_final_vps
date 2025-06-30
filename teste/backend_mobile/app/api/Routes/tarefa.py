@@ -15,6 +15,8 @@ from app.Schema.tarefa_schema import (
     TarefaUpdate,
     PaginatedTarefas,
 )
+
+from app.api.models.recebimento import Recebimento
 from app.api.models.enums import StatusTarefaEnum
 
 router = APIRouter()
@@ -77,17 +79,26 @@ async def listar_tarefas(
     db: AsyncSession = Depends(get_async_session)
 ):
     try:
-        query = select(TarefaModel).options(selectinload(TarefaModel.recebimento))
+        # Consulta para incluir o relacionamento com nota fiscal
+        query = select(TarefaModel).options(
+                selectinload(TarefaModel.recebimento).selectinload(Recebimento.nota_fiscal)
+            )
+
         count_query = select(func.count(TarefaModel.id))
 
+         # Filtro de status, se presente
         if status:
             query = query.where(TarefaModel.status == status)
             count_query = count_query.where(TarefaModel.status == status)
 
+        # Executa a contagem total de tarefas
         total_result = await db.execute(count_query)
         total = total_result.scalar_one()
 
+       # Aplica a paginação (offset + limit)
         query = query.offset((page - 1) * limit).limit(limit)
+
+        # Executa a consulta para obter as tarefas
         result = await db.execute(query)
         tarefas = result.scalars().all()
 

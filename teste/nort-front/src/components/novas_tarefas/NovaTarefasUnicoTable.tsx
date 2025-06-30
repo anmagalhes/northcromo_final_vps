@@ -33,15 +33,35 @@ export default function TabelaTarefas({
   });
 
   const columns: ColumnDef<Tarefa>[] = useMemo(() => [
-    { accessorKey: 'dataLancamento', header: 'Data', cell: info => info.getValue() },
-    { accessorKey: 'numeroControle', header: 'Nº Controle', cell: info => info.getValue() },
-    { accessorKey: 'clienteNome', header: 'Cliente', cell: info => info.getValue() },
-    { accessorKey: 'quantidade', header: 'Qtd', cell: info => info.getValue() },
-    { accessorKey: 'codigoProduto', header: 'Cód', cell: info => info.getValue() },
-    { accessorKey: 'descricaoProduto', header: 'Descrição', cell: info => info.getValue() },
-    { accessorKey: 'operacao', header: 'Op', cell: info => info.getValue() },
-    { accessorKey: 'observacao', header: 'Observação', cell: info => info.getValue() },
-  ], []);
+  {
+    accessorKey: 'data_lancamento',
+    header: 'Data',
+    cell: info => {
+      const date = new Date(info.getValue()); // Converte a string da data para objeto Date
+      const formattedDate = date.toLocaleDateString('pt-BR'); // Formata a data para DD/MM/AAAA
+      return formattedDate; // Exibe a data formatada
+    }
+  },
+  { accessorKey: 'recebimento',
+    header: 'Nº Controle',
+    cell: info => info.getValue()?.os_formatado || 'Não disponível'
+  },
+  { accessorKey: 'recebimento',
+    header: 'Cliente',
+    cell: info => info.getValue()?.cliente || 'Não disponível'
+   },
+  { accessorKey: 'recebimento',
+    header: 'Qtd',
+     cell: info => info.getValue()?.quantidade || 'Não disponível'
+   },
+  { accessorKey: 'codigoProduto', header: 'Cód', cell: info => info.getValue() },
+  { accessorKey: 'descricaoProduto', header: 'Descrição', cell: info => info.getValue() },
+  { accessorKey: 'operacao', header: 'Op', cell: info => info.getValue() },
+  { accessorKey: 'recebimento',
+     header: 'Observação',
+      cell: info => info.getValue()?.queixa_cleinte || 'Não disponível'
+    }
+], []);
 
   const table = useReactTable({
     data: tarefas,

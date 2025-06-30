@@ -9,6 +9,7 @@ from app.utils.datetime import utcnow
 from app.api.models.mixins import TimestampMixin
 
 
+
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from app.api.models.checklist_recebimento import ChecklistRecebimento
