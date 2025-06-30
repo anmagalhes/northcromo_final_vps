@@ -13,20 +13,12 @@ import { useCallback } from 'react';
 
 import { getDataHoraSaoPaulo } from '../../../utils/DataHora'
 
-//import { useClientes } from '@/hooks/useClientes';
-//import { useProdutos } from '@/hooks/useProdutoWS';
-
-interface Produto {
-  codigo: string
-  nome: string
-}
+import useProdutosWS from '@/hooks/useProdutosWS'
+import useClientes from '@/hooks/useClientes'
 
 export default function Recebimento() {
   const router = useRouter()
 
-  // Query React - lado usuario
-  //const { data: produtos = [], isLoading: loadingProdutos } = useProdutos();
-  //const { data: clientes = [], isLoading: loadingClientes } = useClientes();
 
   // Estados do formulário
  // const ordemOriginalRef = useRef<string | null>(null);
@@ -40,8 +32,7 @@ export default function Recebimento() {
 
   const [dataRecebimento, setDataRecebimento] = useState('')
   const [horaRecebimento, setHoraRecebimento] = useState('')
-  const [cliente, setCliente] = useState('')
-  const [mostrarListaClientes, setMostrarListaClientes] = useState(false)
+
   const [quantidade, setQuantidade] = useState('1')
   const [referencia, setReferencia] = useState('')
   const [nfRemessa, setNfRemessa] = useState('')
@@ -65,37 +56,35 @@ export default function Recebimento() {
 
   // Loading e erro para envio
   const [loading, setLoading] = useState(false)
- // const [erro, setErro] = useState('')
 
   // Produtos e clientes mockados
-  const [produtos, setProdutos] = useState<Produto[]>([])
-  const clientesMock = ['Tony Stark', 'Bruce Wayne', 'Diana Prince']
+  const { produtosQuery } = useProdutosWS();
+
 
   // Campo ativo para estilo
   const [campoAtivo, setCampoAtivo] = useState('')
 
   const [ordemNovoOriginal, setOrdemNovoOriginal] = useState<string | null>(null)
 
-  // Carregar produtos mockados
-  const carregarProdutos = async () => {
-    setLoading(true)
-    try {
-      // Mock de produtos
-      const produtosMock = [
-        { codigo: '123', nome: 'Parafuso 3mm' },
-        { codigo: '456', nome: 'Chapa Aço Inox' },
-        { codigo: '789', nome: 'Eixo Central' },
-      ]
-      setProdutos(produtosMock)
-    } catch {
-    } finally {
-      setLoading(false)
-    }
-  }
 
-  useEffect(() => {
-    carregarProdutos()
-  }, [])
+
+// Mapeia os dados para manter a mesma estrutura esperada
+const produtos = (produtosQuery.data || []).map(prod => ({
+  codigo: prod.cod_produto,   // ou prod.codigoProduto, se esse for o nome real
+  nome: prod.produto_nome,       // ou prod.descricao/nomeProduto
+}));
+
+
+const { clientes } = useClientes()
+const [clienteId, setClienteId] = useState<number | null>(null)
+const [clienteNome, setClienteNome] = useState('')
+const [mostrarListaClientes, setMostrarListaClientes] = useState(false)
+
+const clientesFormatados = (clientes || []).map(cliente => ({
+  id: Number(cliente.id),   // depende do que vem no hook
+  nome: cliente.nome,
+}));
+
 
   // Setar data e hora na montagem
   useEffect(() => {
@@ -139,7 +128,7 @@ export default function Recebimento() {
       setLoading(true)
 
       const formData = new FormData()
-      formData.append('cliente', cliente)
+      formData.append('cliente', clienteId?.toString() ?? '');
       formData.append('numero_ordem', numeroControle)
 
       fotos.forEach((foto) => {
@@ -167,7 +156,8 @@ export default function Recebimento() {
             inputFileRef.current.value = '' // <-- limpa o input visualmente
           }
 
-          setCliente('');
+          setClienteId(null);
+          setClienteNome('');
           setQuantidade('1');
           setCodigoProduto('');
           setNomeProduto('');
@@ -195,7 +185,7 @@ export default function Recebimento() {
       const linksLimitados = linksFotos.slice(0, 4)
 
       const dadosAdicionais = {
-        cliente,
+        cliente: clienteId,
         tipoOrdem,
         numero_ordem: tipoOrdem === 'NOVO' ? numeroOrdemFormatado :'0',
         os_formatado: numeroOrdem,
@@ -360,31 +350,32 @@ useEffect(() => {
                     className="flex justify-between items-center w-full p-2 border border-gray-300 rounded-md bg-white"
                     type="button"
                   >
-                    <span className={cliente ? 'text-gray-800' : 'text-gray-400'}>
-                      {cliente || 'Selecione um cliente'}
+                     <span className={clienteNome ? 'text-gray-800' : 'text-gray-400'}>
+                      {clienteNome || 'Selecione um cliente'}
                     </span>
                     {mostrarListaClientes ? <FiChevronUp /> : <FiChevronDown />}
                   </button>
 
-                  {mostrarListaClientes && (
-                    <div className="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-48 overflow-auto">
-                      {clientesMock.map(nome => (
-                        <button
-                          key={nome}
-                          className={`block w-full text-left p-2 hover:bg-gray-100 ${
-                            cliente === nome ? 'bg-green-50' : ''
-                          }`}
-                          onClick={() => {
-                            setCliente(nome)
-                            setMostrarListaClientes(false)
-                          }}
-                          type="button"
-                        >
-                          {nome}
-                        </button>
-                      ))}
-                    </div>
-                  )}
+                 {mostrarListaClientes && (
+                  <div className="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-48 overflow-auto">
+                     {clientesFormatados.map(cliente => (
+                      <button
+                        key={cliente.id}
+                        className={`block w-full text-left p-2 hover:bg-gray-100 ${
+                          clienteId === cliente.id ? 'bg-green-50' : ''
+                        }`}
+                        onClick={() => {
+                          setClienteId(cliente.id)
+                          setClienteNome(cliente.nome)
+                          setMostrarListaClientes(false)
+                        }}
+                        type="button"
+                      >
+                        {cliente.nome}
+                      </button>
+                    ))}
+                  </div>
+                )}
                 </div>
               </div>
 

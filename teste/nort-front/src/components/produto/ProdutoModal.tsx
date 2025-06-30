@@ -60,10 +60,10 @@ export default function ProdutoModal({
   }, [aberto, onClose])
 
   const produtosFiltrados = produtos.filter(produto =>
-    produto.nome.toLowerCase().includes(busca.toLowerCase()) ||
-    produto.codigo.toLowerCase().includes(busca.toLowerCase()) ||
-    (produto.categoria && produto.categoria.toLowerCase().includes(busca.toLowerCase()))
-  )
+  (produto.nome?.toLowerCase() || '').includes(busca.toLowerCase()) ||
+  (produto.codigo?.toLowerCase() || '').includes(busca.toLowerCase()) ||
+  (produto.categoria?.toLowerCase() || '').includes(busca.toLowerCase())
+)
 
   if (!aberto) return null
 

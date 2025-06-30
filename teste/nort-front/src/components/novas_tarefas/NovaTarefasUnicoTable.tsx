@@ -37,29 +37,32 @@ export default function TabelaTarefas({
     accessorKey: 'data_lancamento',
     header: 'Data',
     cell: info => {
-      const date = new Date(info.getValue()); // Converte a string da data para objeto Date
+      const date = new Date(info.getValue() as string); // Converte a string da data para objeto Date
       const formattedDate = date.toLocaleDateString('pt-BR'); // Formata a data para DD/MM/AAAA
       return formattedDate; // Exibe a data formatada
     }
   },
-  { accessorKey: 'recebimento',
-    header: 'Nº Controle',
-    cell: info => info.getValue()?.os_formatado || 'Não disponível'
-  },
-  { accessorKey: 'recebimento',
+       {
+        accessorKey: 'recebimento.os_formatado',  // Nome único
+        header: 'Nº Controle',
+        cell: info => info.getValue() || 'Não disponível'
+      },
+   {
+    accessorKey: 'recebimento.cliente',  // Nome único
     header: 'Cliente',
-    cell: info => info.getValue()?.cliente || 'Não disponível'
-   },
-  { accessorKey: 'recebimento',
+    cell: info => info.getValue() || 'Não disponível'
+  },
+  {
+    accessorKey: 'recebimento.quantidade',  // Nome único
     header: 'Qtd',
-     cell: info => info.getValue()?.quantidade || 'Não disponível'
-   },
+    cell: info => info.getValue() || 'Não disponível'
+  },
   { accessorKey: 'codigoProduto', header: 'Cód', cell: info => info.getValue() },
   { accessorKey: 'descricaoProduto', header: 'Descrição', cell: info => info.getValue() },
   { accessorKey: 'operacao', header: 'Op', cell: info => info.getValue() },
-  { accessorKey: 'recebimento',
+  { accessorKey: 'recebimento.queixa_cliente',
      header: 'Observação',
-      cell: info => info.getValue()?.queixa_cleinte || 'Não disponível'
+     cell: info => info.getValue() || 'Não disponível'
     }
 ], []);
 
