@@ -8,6 +8,8 @@ from sqlalchemy import func
 from sqlalchemy.orm import selectinload
 
 from app.database.session import get_async_session
+from app.api.models.tarefa import Tarefa
+from app.api.models.checklist_recebimento import ChecklistRecebimento
 from app.api.models.tarefa import Tarefa as TarefaModel
 from app.Schema.tarefa_schema import (
     TarefaCreate,
@@ -18,6 +20,7 @@ from app.Schema.tarefa_schema import (
 
 from app.api.models.recebimento import Recebimento
 from app.api.models.enums import StatusTarefaEnum
+from app.api.models.checklist_recebimento import ChecklistRecebimento
 
 router = APIRouter()
 
@@ -81,7 +84,8 @@ async def listar_tarefas(
     try:
         # Consulta para incluir o relacionamento com nota fiscal
         query = select(TarefaModel).options(
-                selectinload(TarefaModel.recebimento).selectinload(Recebimento.nota_fiscal)
+                selectinload(TarefaModel.recebimento).selectinload(Recebimento.cliente),
+                selectinload(Tarefa.checklist).selectinload(ChecklistRecebimento.recebimento).selectinload(Recebimento.cliente)
             )
 
         count_query = select(func.count(TarefaModel.id))
@@ -118,7 +122,10 @@ async def obter_tarefa(tarefa_id: int, db: AsyncSession = Depends(get_async_sess
     try:
         result = await db.execute(
             select(TarefaModel)
-            .options(selectinload(TarefaModel.recebimento))
+            .options(
+                selectinload(TarefaModel.recebimento),
+                selectinload(TarefaModel.checklist)
+            )
             .where(TarefaModel.id == tarefa_id)
         )
         tarefa = result.scalars().first()

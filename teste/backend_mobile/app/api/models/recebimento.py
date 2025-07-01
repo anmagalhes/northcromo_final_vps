@@ -16,6 +16,7 @@ if TYPE_CHECKING:
     from app.api.models.checklist_recebimento import ChecklistRecebimento
     from app.api.models.notafiscal import NotaFiscal
     from app.api.models.tarefa import Tarefa
+    from app.api.models.cliente import Cliente
 
 class Recebimento(Base, TimestampMixin):  # <-- usa Base do app.db.base
     __tablename__ = "recebimentos"
@@ -123,6 +124,8 @@ class Recebimento(Base, TimestampMixin):  # <-- usa Base do app.db.base
         server_default=func.now(),
         comment="Data e hora do recebimento automático"
     )
+
+
     data_inicio_processo: Mapped[Optional[datetime]] = mapped_column(
         DateTime(timezone=True),
         comment="Data e hora de início do processamento"
@@ -156,11 +159,12 @@ class Recebimento(Base, TimestampMixin):  # <-- usa Base do app.db.base
         comment="URL ou caminho da foto 4"
     )
 
-    cliente: Mapped[str] = mapped_column(
-            String(100),
-            nullable=True,
-            comment="Nome do cliente"
-        )
+    cliente_id: Mapped[Optional[int]] = mapped_column(
+        ForeignKey("clientes.id"),
+        nullable=True,
+        index=True,
+        comment="ID do cliente vinculado"
+    )
 
     quantidade: Mapped[int] = mapped_column(
         Integer,
@@ -179,5 +183,7 @@ class Recebimento(Base, TimestampMixin):  # <-- usa Base do app.db.base
     checklist: Mapped[Optional["ChecklistRecebimento"]] = relationship(
         "ChecklistRecebimento", back_populates="recebimento", uselist=False, cascade="all, delete"
     )
+
+    cliente: Mapped[Optional["Cliente"]] = relationship("Cliente", back_populates="recebimentos")
 
 

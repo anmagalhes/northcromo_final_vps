@@ -64,7 +64,7 @@ export default function useNovaTarefasWS(page = 1, limit = 20) {
       ws.onclose = () => {
         console.log('🔌 WebSocket desconectado. Reconectando em 5s...');
         if (reconnectTimeoutRef.current) clearTimeout(reconnectTimeoutRef.current);
-        reconnectTimeoutRef.current = setTimeout(connectWebSocket, 5000);
+        reconnectTimeoutRef.current = setTimeout(connectWebSocket, 1000);
       };
     };
 

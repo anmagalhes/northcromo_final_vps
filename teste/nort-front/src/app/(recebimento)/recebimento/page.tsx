@@ -10,11 +10,19 @@ import BotaoAcao from '@/components/botao/BotaoAcao'
 import axios from 'axios'
 import { useRef } from 'react';
 import { useCallback } from 'react';
+import type { Cliente } from '@/types/cliente'
 
 import { getDataHoraSaoPaulo } from '../../../utils/DataHora'
 
 import useProdutosWS from '@/hooks/useProdutosWS'
 import useClientes from '@/hooks/useClientes'
+
+
+
+type ClienteFormatado = {
+  id: number
+  nome: string
+}
 
 export default function Recebimento() {
   const router = useRouter()
@@ -80,10 +88,15 @@ const [clienteId, setClienteId] = useState<number | null>(null)
 const [clienteNome, setClienteNome] = useState('')
 const [mostrarListaClientes, setMostrarListaClientes] = useState(false)
 
-const clientesFormatados = (clientes || []).map(cliente => ({
+const clientesFormatados = (clientes || []).map((cliente: Cliente) => ({
   id: Number(cliente.id),   // depende do que vem no hook
-  nome: cliente.nome,
+  nome: cliente.nome_cliente,
 }));
+
+
+useEffect(() => {
+  console.log('Clientes carregados:', clientes)
+}, [clientes])
 
 
   // Setar data e hora na montagem
@@ -185,7 +198,7 @@ const clientesFormatados = (clientes || []).map(cliente => ({
       const linksLimitados = linksFotos.slice(0, 4)
 
       const dadosAdicionais = {
-        cliente: clienteId,
+        cliente_id: clienteId,
         tipoOrdem,
         numero_ordem: tipoOrdem === 'NOVO' ? numeroOrdemFormatado :'0',
         os_formatado: numeroOrdem,
@@ -358,7 +371,7 @@ useEffect(() => {
 
                  {mostrarListaClientes && (
                   <div className="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-48 overflow-auto">
-                     {clientesFormatados.map(cliente => (
+                     {clientesFormatados.map((cliente: ClienteFormatado) => (
                       <button
                         key={cliente.id}
                         className={`block w-full text-left p-2 hover:bg-gray-100 ${

@@ -34,7 +34,7 @@ export default function TabelaTarefas({
 
   const columns: ColumnDef<Tarefa>[] = useMemo(() => [
   {
-    accessorKey: 'data_lancamento',
+    accessorKey: 'recebimento.data_recebimento',
     header: 'Data',
     cell: info => {
       const date = new Date(info.getValue() as string); // Converte a string da data para objeto Date
@@ -48,7 +48,7 @@ export default function TabelaTarefas({
         cell: info => info.getValue() || 'Não disponível'
       },
    {
-    accessorKey: 'recebimento.cliente',  // Nome único
+    accessorKey: 'recebimento.cliente.nome_cliente',   // Nome único
     header: 'Cliente',
     cell: info => info.getValue() || 'Não disponível'
   },

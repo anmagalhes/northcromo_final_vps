@@ -18,6 +18,13 @@ router = APIRouter()
 
 @router.post("/salvarLinksFotos")
 async def salvar_links_fotos(link_data: LinksFotos, db: AsyncSession = Depends(get_async_session)):
+
+    # Combinar data e hora em uma string
+    data_hora_str = f"{link_data.dataRecebimento} {link_data.horaRecebimento}"
+
+    # Converter para datetime (ajuste o formato conforme o padrão recebido)
+    data_recebimento = datetime.strptime(data_hora_str, "%d/%m/%Y %H:%M")
+
     # Validação do numero_ordem
     if not re.match(r'^\d+$', link_data.numero_ordem):
         raise HTTPException(status_code=400, detail="Número da ordem deve ser um inteiro válido.")
@@ -55,12 +62,13 @@ async def salvar_links_fotos(link_data: LinksFotos, db: AsyncSession = Depends(g
             img2_ordem=link_data.foto2,
             img3_ordem=link_data.foto3,
             img4_ordem=link_data.foto4,
-            cliente=link_data.cliente,
+            cliente_id=link_data.cliente_id,
             quantidade=link_data.quantidade,
             tipo_ordem=link_data.tipoOrdem,
             os_formatado=link_data.os_formatado,
             queixa_cliente=link_data.queixa_cliente,
             nota_fiscal_id=nota_fiscal_id,
+            data_recebimento=data_recebimento,
         )
         db.add(recebimento)
         await db.flush()
@@ -80,12 +88,13 @@ async def salvar_links_fotos(link_data: LinksFotos, db: AsyncSession = Depends(g
                 img2_ordem=link_data.foto2,
                 img3_ordem=link_data.foto3,
                 img4_ordem=link_data.foto4,
-                cliente=link_data.cliente,
+                cliente_id=link_data.cliente_id,
                 quantidade=link_data.quantidade,
                 tipo_ordem=link_data.tipoOrdem,
                 os_formatado=link_data.os_formatado,
                 queixa_cliente=link_data.queixa_cliente,
                 nota_fiscal_id=nota_fiscal_id,
+                data_recebimento=data_recebimento,
             )
             db.add(recebimento)
             await db.flush()
@@ -93,8 +102,8 @@ async def salvar_links_fotos(link_data: LinksFotos, db: AsyncSession = Depends(g
             checklist = ChecklistRecebimento(recebimento_id=recebimento.id)
             db.add(checklist)
 
-            tarefa = ChecklistRecebimento(recebimento_id=recebimento.id)
-            db.add(tarefa)
+            #tarefa = ChecklistRecebimento(recebimento_id=recebimento.id)
+            #db.add(tarefa)
 
         else:
             # Atualiza recebimento existente
@@ -102,12 +111,13 @@ async def salvar_links_fotos(link_data: LinksFotos, db: AsyncSession = Depends(g
             recebimento.img2_ordem = link_data.foto2
             recebimento.img3_ordem = link_data.foto3
             recebimento.img4_ordem = link_data.foto4
-            recebimento.cliente = link_data.cliente
+            recebimento.cliente_id = link_data.cliente_id
             recebimento.quantidade = link_data.quantidade
             recebimento.tipo_ordem = link_data.tipoOrdem
             recebimento.os_formatado = link_data.os_formatado
             recebimento.queixa_cliente=link_data.queixa_cliente
             recebimento.nota_fiscal_id = nota_fiscal_id
+
 
     # Verifica checklist (se não existir, cria)
     result_checklist = await db.execute(select(ChecklistRecebimento).filter(ChecklistRecebimento.recebimento_id == recebimento.id))
@@ -115,6 +125,7 @@ async def salvar_links_fotos(link_data: LinksFotos, db: AsyncSession = Depends(g
     if not checklist:
         checklist = ChecklistRecebimento(recebimento_id=recebimento.id)
         db.add(checklist)
+        await db.flush()
 
     # 🚨 Criação da nova tarefa vinculada ao recebimento
     result_tarefa = await db.execute(
@@ -133,6 +144,7 @@ async def salvar_links_fotos(link_data: LinksFotos, db: AsyncSession = Depends(g
             referencia_produto=None,
             nota_interna=nota_fiscal_id,
             data_checklist_ordem=datetime.now(),
+            checklistrecebimento_id=checklist.id,
         )
         db.add(tarefa)
 

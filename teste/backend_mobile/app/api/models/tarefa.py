@@ -16,7 +16,6 @@ if TYPE_CHECKING:
     from app.api.models.notafiscal import NotaFiscal
     from app.api.models.cliente import Cliente
 
-
 class Tarefa(Base, TimestampMixin):
     __tablename__ = "tarefas"
 
@@ -49,8 +48,14 @@ class Tarefa(Base, TimestampMixin):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
 
+    checklistrecebimento_id: Mapped[int] = mapped_column(
+    ForeignKey("checklist_recebimento.id", ondelete="CASCADE"),
+    nullable=False, index=True
+)
+
     # Relacionamento
     recebimento: Mapped["Recebimento"] = relationship(back_populates="tarefas")
+    checklist: Mapped["ChecklistRecebimento"] = relationship(back_populates="tarefas")
 
     def __repr__(self):
         return f"<Tarefa id={self.id} recebimento_id={self.recebimento_id} status={self.status}>"

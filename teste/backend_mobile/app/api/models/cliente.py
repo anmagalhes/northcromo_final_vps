@@ -3,14 +3,17 @@ from __future__ import annotations
 from sqlalchemy import Integer, String, DateTime, ForeignKey, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from datetime import datetime
+from sqlalchemy import ForeignKey
 
 from app.utils.datetime import utcnow
 from app.api.models.mixins import TimestampMixin
 from app.api.models.base import Base
+from typing import Optional, List
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from app.api.models.fornecedor import Fornecedor
+    from app.api.models.recebimento import Recebimento
 
 class Cliente(Base, TimestampMixin):
     __tablename__ = "clientes"
@@ -118,6 +121,13 @@ class Cliente(Base, TimestampMixin):
 
     # Relacionamento com Fornecedor
     fornecedor_cliente: Mapped[Fornecedor] = relationship("Fornecedor", back_populates="clientes")
+
+    recebimentos: Mapped[List["Recebimento"]] = relationship(
+    "Recebimento",
+    back_populates="cliente",  # deve ser exatamente o mesmo nome usado no relacionamento inverso
+    cascade="all, delete-orphan"
+)
+
 
     def __repr__(self):
         return f"<Cliente(id={self.id}, nome={self.nome_cliente}, doc={self.doc_cliente})>"

@@ -5,8 +5,7 @@ from pydantic import HttpUrl
 from enum import Enum
 from datetime import datetime
 
-
-#from app.Schema.cliente_schema import ClienteRead
+from app.Schema.cliente_schema import ClienteRead
 class TipoOrdemEnum(str, Enum):
     NOVO = "NOVO"
     NAO = "NAO"
@@ -23,7 +22,7 @@ class LinksFotos(BaseModel):
     foto2: Optional[str]
     foto3: Optional[str]
     foto4: Optional[str]
-    cliente: Optional[str]
+    cliente_id: Optional[int]
     quantidade: Optional[int] = Field(default=0)
     tipoOrdem: Optional[TipoOrdemEnum]
     referencia: Optional[str]
@@ -44,7 +43,7 @@ class LinksFotos(BaseModel):
 
 
     @validator(
-        "cliente", "referencia", "nfRemessa", "queixa_cliente", "dataRecebimento", "horaRecebimento",
+        "cliente_id", "referencia", "nfRemessa", "queixa_cliente", "dataRecebimento", "horaRecebimento",
         "foto1", "foto2", "foto3", "foto4",
         pre=True
     )
@@ -78,7 +77,7 @@ class LinksFotos(BaseModel):
 class RecebimentoSchema(BaseModel):
     numero_ordem: Optional[int]
     os_formatado: str
-    cliente: Optional[str]
+    cliente_id: Optional[int]
     quantidade: Optional[int] = Field(default=1)
     img1_ordem: Optional[str]
     img2_ordem: Optional[str]
@@ -114,7 +113,7 @@ class RecebimentoRead(BaseModel):
     id: int
     numero_ordem: Optional[int]
     os_formatado: str
-    cliente: Optional[str]
+    cliente_id: Optional[int]
     quantidade: Optional[int] = Field(default=1)
     tipoOrdem: Optional[TipoOrdemEnum] = None
     queixa_cliente: Optional[str] = None
@@ -136,7 +135,7 @@ class RecebimentoRead(BaseModel):
     fotos: Optional[LinksFotos] = None
 
     # Relacionamento Cliente
-    #cliente: Optional[ClienteRead]
+    cliente: Optional[ClienteRead]
 
     class Config:
         from_attributes = True

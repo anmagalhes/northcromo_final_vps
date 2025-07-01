@@ -2,7 +2,8 @@ from datetime import datetime
 from typing import Optional,  List
 from pydantic import BaseModel
 from app.api.models.enums import StatusTarefaEnum
-from app.Schema.recebimento_schema import RecebimentoRead  # Você precisa garantir que existe
+from app.Schema.recebimento_schema import RecebimentoRead
+from app.Schema.checklist_recebimento_schema import ChecklistRecebimentoRead
 
 class TarefaBase(BaseModel):
     recebimento_id: int
@@ -40,7 +41,8 @@ class TarefaRead(TarefaBase):
     created_at: datetime
     updated_at: datetime
 
-    recebimento: Optional[RecebimentoRead]  # <- Aqui você acessa o cliente
+    recebimento: Optional[RecebimentoRead]
+    checklist: Optional[ChecklistRecebimentoRead]
     class Config:
         orm_mode = True
 
