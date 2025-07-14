@@ -75,7 +75,8 @@ async def listar_checklists(
     try:
         #query = select(ChecklistModel)
         query = select(ChecklistModel).options(
-            selectinload(ChecklistModel.recebimento),
+            selectinload(ChecklistModel.recebimento)
+            .selectinload(Recebimento.cliente)
         )
         # QUANDO TEM RELACIONAMENTOS
        # query = select(ChecklistModel).options(

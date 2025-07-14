@@ -49,6 +49,7 @@ from app.api.Routes.cliente import router as cliente_router
 
 # Definição do FastAPI
 app = FastAPI()
+#application = app para o deploy
 
 title="Northcromo API",
 description="Documentação da API de Recebimento, Componentes e Checklists",

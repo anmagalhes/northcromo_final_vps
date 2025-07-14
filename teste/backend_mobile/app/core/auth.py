@@ -1,66 +1,75 @@
-# app/core/auth.py
-from pytz import timezone
-
-from typing import Optional, List
-from datetime import datetime, timedelta
+from typing import Optional
+from datetime import datetime, timedelta, timezone as dt_timezone
 
 from fastapi.security import OAuth2PasswordBearer
-
 from sqlalchemy.future import select
 from sqlalchemy.ext.asyncio import AsyncSession
-
 from jose import jwt, JWTError
+from pydantic import EmailStr
 
 from ..models.user import User
 from ..core.config import settings
-from ..core.security import verificar_senha
+from ..core.security import verificar_senha  # Sua função para validar hash de senha
 
-from pydantic import EmailStr
-
+# OAuth2 URL para login — ajustar a rota conforme sua API
 oauth2_schema = OAuth2PasswordBearer(tokenUrl=f"{settings.API_V1_STR}/usuarios/login")
 
 
 async def autenticar(email: EmailStr, senha: str, db: AsyncSession) -> Optional[User]:
-    async with db as session:
-        query = select(User).filter(User.email == email)
-        result = await session.execute(query)
-        usuario: User = result.scalars().unique().one_or_none()
+    # Busca o usuário pelo email
+    query = select(User).filter(User.email == email)
+    result = await db.execute(query)
+    usuario: User = result.scalars().unique().one_or_none()
 
-        if not usuario:
-            return None
+    if not usuario:
+        return None
 
-        if not verificar_senha(senha, usuario.senha):
-            return None
-        return usuario
+    # Verifica se a senha bate com o hash salvo
+    if not verificar_senha(senha, usuario.senha):
+        return None
+
+    return usuario
 
 
 def _criar_token(tipo_token: str, tempo_vida: timedelta, sub: str) -> str:
-    # Inicializando o payload
-    payload = {}
+    # Usa UTC para datas no token (padrão JWT)
+    agora = datetime.now(tz=dt_timezone.utc)
+    expira = agora + tempo_vida
 
-    # Definindo o fuso horário de São Paulo
-    sp = timezone("America/Sao_Paulo")
+    payload = {
+        "type": tipo_token,
+        "exp": expira,
+        "iat": agora,
+        "sub": str(sub),
+    }
 
-    # Calculando o tempo de expiração do token
-    expira = datetime.now(tz=sp) + tempo_vida  # Tempo atual + tempo de vida do token
-
-    # Adicionando as informações ao payload
-    payload["type"] = tipo_token  # Tipo do token (ex: access_token, refresh_token)
-    payload["exp"] = expira  # Expiração do token
-    payload["iat"] = datetime.now(tz=sp)  # Data de emissão (now)
-    payload["sub"] = str(sub)  # Subject (usuário ou identificador único)
-
-    # Assinando o token com o segredo (JWT_SECRET) e o algoritmo (HS256)
-    token = jwt.encode(payload, settings.JWT_SECRET, algorithm=settings.ALGORITHM)
-
+    token = jwt.encode(payload, settings.JWT_SECRET, algorithm=settings.JWT_ALGORITHM)
     return token
 
 
 def criar_token_acesso(sub: str) -> str:
     return _criar_token(
-        tipo_token="access_token",  # Tipo do token
-        tempo_vida=timedelta(
-            minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES
-        ),  # Correção de "minutos" para "minutes"
-        sub=sub,  # Subject do token (geralmente o ID do usuário ou outra chave única)
+        tipo_token="access_token",
+        tempo_vida=timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES),
+        sub=sub,
     )
+
+
+def criar_token_refresh(sub: str) -> str:
+    return _criar_token(
+        tipo_token="refresh_token",
+        tempo_vida=timedelta(minutes=settings.REFRESH_TOKEN_EXPIRE_MINUTES),
+        sub=sub,
+    )
+
+
+async def validar_token(token: str) -> Optional[str]:
+    """
+    Valida o token JWT, retorna o 'sub' (usuário) se válido,
+    ou None se inválido ou expirado.
+    """
+    try:
+        payload = jwt.decode(token, settings.JWT_SECRET, algorithms=[settings.JWT_ALGORITHM])
+        return payload.get("sub")
+    except JWTError:
+        return None

@@ -2,7 +2,6 @@ from sqlalchemy import inspect
 from app.core.database import Session
 import asyncio
 
-
 async def check_tables():
     # Abrindo uma sessão assíncrona
     async with Session() as session:
